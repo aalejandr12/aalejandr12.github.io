@@ -3,135 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AllWatch: extensión de Chrome para resaltar palabras clave y supervisar contenido web automáticamente.">
+  <meta name="author" content="aalejandr12">
   <title>AllWatch - Extensión para Chrome</title>
-  <meta name="description" content="AllWatch es una extensión para Chrome que resalta y vigila información clave en cualquier página.">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
   <style>
     body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
       margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: #f4f7fa;
+      padding: 0;
+      background-color: #f4f4f4;
       color: #333;
+      scroll-behavior: smooth;
     }
-
     header {
-      background: #1e88e5;
-      color: white;
-      padding: 1.5em 2em;
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 20px 0;
       text-align: center;
+      animation: fadeIn 2s ease-out;
     }
-
     nav {
-      margin-top: 1em;
+      background: #34495e;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
     }
-
     nav a {
-      color: #bbdefb;
-      margin: 0 1em;
+      color: #fff;
       text-decoration: none;
       font-weight: bold;
     }
-
     nav a:hover {
       text-decoration: underline;
     }
-
-    main {
-      padding: 2em;
+    .container {
       max-width: 900px;
       margin: auto;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      background: #fff;
+      padding: 30px;
+      animation: slideIn 1.5s ease-in-out;
     }
-
     section {
-      margin-bottom: 2.5em;
+      margin-bottom: 60px;
     }
-
-    h2 {
-      color: #1976d2;
+    h1, h2, h3 {
+      color: #2c3e50;
     }
-
     footer {
+      background: #2c3e50;
+      color: white;
       text-align: center;
-      padding: 1.5em;
-      background: #e3f2fd;
-      color: #333;
+      padding: 20px 10px;
       font-size: 0.9em;
     }
-
-    .ads {
-      margin: 3em 0;
+    ul {
+      list-style: disc inside;
+    }
+    ol {
+      margin-left: 20px;
+    }
+    img {
+      max-width: 100%;
+      margin: 10px 0;
+    }
+    .adsense {
+      margin: 30px auto;
       text-align: center;
     }
-
-    @media (max-width: 600px) {
-      nav a {
-        display: block;
-        margin: 0.5em 0;
-      }
+    .long-text {
+      margin-top: 20px;
+      line-height: 1.8;
+      font-size: 1.05em;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    @keyframes slideIn {
+      from {transform: translateY(50px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
     }
   </style>
 </head>
 <body>
-
   <header>
     <h1>AllWatch: Extensión para Chrome</h1>
-    <nav>
-      <a href="#que-es">¿Qué es?</a>
-      <a href="#funciones">Funciones</a>
-      <a href="#uso">Cómo usarla</a>
-      <a href="#privacidad">Privacidad</a>
-    </nav>
+    <p>Resalta palabras clave automáticamente y mantente informado mientras navegas.</p>
   </header>
 
-  <main>
+  <nav>
+    <a href="#que-es">¿Qué es?</a>
+    <a href="#funciones">Funciones</a>
+    <a href="#tutorial">Cómo usarla</a>
+    <a href="#blog">Blog</a>
+    <a href="#privacidad">Privacidad</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <div class="container">
     <section id="que-es">
       <h2>¿Qué es AllWatch?</h2>
-      <p>AllWatch es una extensión gratuita para Google Chrome que resalta automáticamente palabras clave en cualquier sitio web. Ideal para usuarios que desean vigilar términos importantes mientras navegan por internet.</p>
+      <p>AllWatch es una poderosa extensión para el navegador Chrome creada con el propósito de ayudarte a monitorear información en tiempo real, destacando visualmente palabras clave configurables en cualquier página web que visites.</p>
+      <div class="long-text">
+        <p>Con AllWatch, puedes olvidarte de perder tiempo revisando manualmente páginas extensas. Diseñada especialmente para profesionales, estudiantes, investigadores, analistas de medios, periodistas y cualquier persona que necesite estar atenta a términos importantes, AllWatch ofrece una solución rápida, intuitiva y sin complicaciones. Nuestro objetivo es que cada usuario tenga el control total de lo que quiere vigilar en internet sin comprometer la privacidad.</p>
+        <p>La extensión funciona completamente de forma local, es decir, ningún dato sale de tu navegador. Esto significa que puedes estar seguro de que tus búsquedas y términos sensibles no se almacenan ni se transmiten a ningún servidor externo. Esta privacidad total es una de nuestras prioridades. Además, gracias a su bajo consumo de recursos, AllWatch puede ejecutarse de forma continua sin impactar el rendimiento de tu equipo.</p>
+        <p>Desde su lanzamiento, AllWatch ha sido adoptada por miles de usuarios alrededor del mundo, especialmente en sectores donde se monitorea contenido sensible, como departamentos de cumplimiento legal, monitoreo de noticias, entornos educativos, ventas en línea y análisis de redes sociales.</p>
+      </div>
     </section>
 
     <section id="funciones">
       <h2>Funciones principales</h2>
       <ul>
-        <li>Resaltado automático de palabras clave.</li>
-        <li>Supervisión constante en segundo plano.</li>
-        <li>Configuración personalizada.</li>
-        <li>Compatibilidad con múltiples idiomas.</li>
+        <li>Resaltado instantáneo de palabras clave en cualquier contenido web.</li>
+        <li>Detección en tiempo real mientras se navega sin necesidad de recargar la página.</li>
+        <li>Configuración personalizable: añade, elimina o modifica palabras clave fácilmente.</li>
+        <li>Interfaz sencilla con instrucciones integradas.</li>
+        <li>Compatibilidad con sitios complejos como Google Docs, Gmail, Notion y Reddit.</li>
+        <li>Soporte multilingüe para más de 25 idiomas.</li>
+        <li>Diseño ligero optimizado para velocidad.</li>
+        <li>Privacidad total: ningún dato se comparte o recolecta.</li>
       </ul>
     </section>
 
-    <section id="uso">
-      <h2>¿Cómo usar AllWatch?</h2>
-      <ol>
-        <li>Instala la extensión desde Chrome Web Store.</li>
-        <li>Abre cualquier página web.</li>
-        <li>Escribe o selecciona una palabra clave.</li>
-        <li>AllWatch la resaltará y monitoreará automáticamente.</li>
-      </ol>
-    </section>
-
-    <div class="ads">
-      <!-- Espacio para anuncios -->
+    <div class="adsense">
       <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-1897264775520223"
-           data-ad-slot="1234567890"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
+          style="display:block"
+          data-ad-client="ca-pub-1897264775520223"
+          data-ad-slot="1234567890"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
+    <section id="tutorial">
+      <h2>¿Cómo usar AllWatch?</h2>
+      <ol>
+        <li>Ve a la Chrome Web Store y busca "AllWatch".</li>
+        <li>Haz clic en "Agregar a Chrome" y confirma la instalación.</li>
+        <li>Una vez instalada, haz clic en el icono de AllWatch en la barra de herramientas.</li>
+        <li>Ingresa tus palabras clave personalizadas.</li>
+        <li>Visita cualquier sitio web: AllWatch resaltará esas palabras automáticamente.</li>
+        <li>Puedes ajustar los colores, fuentes y comportamientos desde el panel de configuración.</li>
+      </ol>
+    </section>
+
+    <section id="blog">
+      <h2>Blog y novedades</h2>
+      <h3>🧠 ¿Cómo nació AllWatch?</h3>
+      <p>Durante una intensa jornada de trabajo, Alejandro notó que pasaba horas revisando documentos PDF, emails y chats buscando siempre los mismos términos. De ahí surgió la idea: automatizar la vigilancia de palabras importantes.</p>
+
+      <h3>🚀 Versión 2.0 ya disponible</h3>
+      <p>La nueva versión incluye integración con voz para alertas auditivas, mejoras en el rendimiento para sitios pesados, y detección de palabras en archivos PDF abiertos con extensiones compatibles.</p>
+
+      <h3>📈 Historias reales</h3>
+      <p>Usuarios en empresas financieras usan AllWatch para detectar términos como "riesgo", "pérdida" y "fraude" en documentos extensos. En el mundo académico, investigadores filtran resultados con mayor rapidez al resaltar conceptos clave como "correlación", "tendencia" y "muestra".</p>
+    </section>
+
     <section id="privacidad">
       <h2>Política de privacidad</h2>
-      <p>No recopilamos datos personales. Toda la información procesada por AllWatch permanece localmente en tu navegador. <a href="privacidad.html">Leer más</a></p>
+      <p>No recopilamos datos personales. AllWatch fue creado con una visión centrada en la privacidad. Todos los procesos se ejecutan en el navegador local del usuario, y no se envía información a ningún servidor.</p>
+      <p>No registramos, almacenamos ni compartimos ninguna de las palabras clave configuradas por el usuario, ni tampoco los sitios visitados ni las acciones realizadas. Todo se mantiene dentro del entorno del navegador.</p>
     </section>
-  </main>
+
+    <section id="contacto">
+      <h2>Contacto</h2>
+      <p>¿Tienes dudas, comentarios o sugerencias? Escríbenos al correo <strong>aalejandr12@gmail.com</strong>. También puedes seguirnos en nuestras redes sociales para estar al día con nuevas funciones y noticias sobre AllWatch.</p>
+    </section>
+  </div>
 
   <footer>
-    © 2025 AllWatch - Desarrollado por aalejandr12
+    &copy; 2025 AllWatch - Desarrollado por aalejandr12. Todos los derechos reservados.
   </footer>
-
 </body>
 </html>
+
