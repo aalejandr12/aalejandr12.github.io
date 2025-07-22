@@ -2,82 +2,136 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Extensión Chrome - AllWatch</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AllWatch - Extensión para Chrome</title>
+  <meta name="description" content="AllWatch es una extensión para Chrome que resalta y vigila información clave en cualquier página.">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 2em;
-      line-height: 1.6;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f4f7fa;
+      color: #333;
     }
-    header, section, footer {
-      margin-bottom: 2em;
-    }
-    nav a {
-      margin-right: 15px;
-    }
-    .ad {
-      margin-top: 2em;
+
+    header {
+      background: #1e88e5;
+      color: white;
+      padding: 1.5em 2em;
       text-align: center;
+    }
+
+    nav {
+      margin-top: 1em;
+    }
+
+    nav a {
+      color: #bbdefb;
+      margin: 0 1em;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    section {
+      margin-bottom: 2.5em;
+    }
+
+    h2 {
+      color: #1976d2;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5em;
+      background: #e3f2fd;
+      color: #333;
+      font-size: 0.9em;
+    }
+
+    .ads {
+      margin: 3em 0;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      nav a {
+        display: block;
+        margin: 0.5em 0;
+      }
     }
   </style>
 </head>
-
 <body>
+
   <header>
     <h1>AllWatch: Extensión para Chrome</h1>
     <nav>
-      <a href="#">Inicio</a>
+      <a href="#que-es">¿Qué es?</a>
       <a href="#funciones">Funciones</a>
       <a href="#uso">Cómo usarla</a>
       <a href="#privacidad">Privacidad</a>
     </nav>
   </header>
 
-  <section id="descripcion">
-    <h2>¿Qué es AllWatch?</h2>
-    <p>AllWatch es una extensión para Google Chrome que te permite resaltar y monitorear palabras clave en cualquier sitio web. Ideal para quienes necesitan supervisar términos importantes al navegar.</p>
-  </section>
+  <main>
+    <section id="que-es">
+      <h2>¿Qué es AllWatch?</h2>
+      <p>AllWatch es una extensión gratuita para Google Chrome que resalta automáticamente palabras clave en cualquier sitio web. Ideal para usuarios que desean vigilar términos importantes mientras navegan por internet.</p>
+    </section>
 
-  <section id="funciones">
-    <h2>Funciones principales</h2>
-    <ul>
-      <li>Resaltado automático de palabras clave.</li>
-      <li>Supervisión constante en segundo plano.</li>
-      <li>Configuración personalizable.</li>
-      <li>Compatibilidad con múltiples idiomas.</li>
-    </ul>
-  </section>
+    <section id="funciones">
+      <h2>Funciones principales</h2>
+      <ul>
+        <li>Resaltado automático de palabras clave.</li>
+        <li>Supervisión constante en segundo plano.</li>
+        <li>Configuración personalizada.</li>
+        <li>Compatibilidad con múltiples idiomas.</li>
+      </ul>
+    </section>
 
-  <section id="uso">
-    <h2>Cómo usar AllWatch</h2>
-    <ol>
-      <li>Instala la extensión desde Chrome Web Store.</li>
-      <li>Abre cualquier página web.</li>
-      <li>Escribe una palabra clave.</li>
-      <li>La extensión resaltará y vigilará ese término automáticamente.</li>
-    </ol>
-  </section>
+    <section id="uso">
+      <h2>¿Cómo usar AllWatch?</h2>
+      <ol>
+        <li>Instala la extensión desde Chrome Web Store.</li>
+        <li>Abre cualquier página web.</li>
+        <li>Escribe o selecciona una palabra clave.</li>
+        <li>AllWatch la resaltará y monitoreará automáticamente.</li>
+      </ol>
+    </section>
 
-  <section id="privacidad">
-    <h2>Política de privacidad</h2>
-    <p>No recopilamos datos personales. Toda la información procesada por AllWatch permanece localmente en tu navegador. <a href="privacidad.html">Leer más</a></p>
-  </section>
+    <div class="ads">
+      <!-- Espacio para anuncios -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-1897264775520223"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
 
-  <div class="ad">
-    <!-- Espacio para anuncios -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-1897264775520223"
-         data-ad-slot="1234567890"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
+    <section id="privacidad">
+      <h2>Política de privacidad</h2>
+      <p>No recopilamos datos personales. Toda la información procesada por AllWatch permanece localmente en tu navegador. <a href="privacidad.html">Leer más</a></p>
+    </section>
+  </main>
 
   <footer>
-    <p>&copy; 2025 AllWatch - Desarrollado por aalejandr12</p>
+    © 2025 AllWatch - Desarrollado por aalejandr12
   </footer>
+
 </body>
 </html>
