@@ -41,27 +41,80 @@
        (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 
-<!-- Botón de validación -->
-  <button id="validarBtn">Continuar con SniffCopy</button>
+ <button id="validarBtn" disabled>Continuar con SniffCopy</button>
+
+  <!-- Mensajes -->
+  <div id="unlock-msg">Debes apretar el botón para desbloquear SniffCopy.</div>
+  <div id="ab-msg">Debes desactivar tu bloqueador de anuncios para continuar.</div>
 
   <script>
-    document.getElementById("validarBtn").addEventListener("click", () => {
+    const validarBtn = document.getElementById("validarBtn");
+    const abMsg = document.getElementById("ab-msg");
+    const unlockMsg = document.getElementById("unlock-msg");
+    const adEl = document.getElementById("adslot");
+
+    function setBlocked(blocked) {
+      if (blocked) {
+        validarBtn.disabled = true;
+        abMsg.style.display = "block";
+        unlockMsg.style.display = "none";
+      } else {
+        validarBtn.disabled = false;
+        abMsg.style.display = "none";
+        unlockMsg.style.display = "block";
+      }
+    }
+
+    async function checkAdblock() {
+      setBlocked(true);
+
+      if (typeof window.adsbygoogle === "undefined") {
+        setBlocked(true);
+        return;
+      }
+
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+
+      const observer = new MutationObserver(() => {
+        if (adEl && adEl.querySelector("iframe")) {
+          setBlocked(false);
+          observer.disconnect();
+        }
+      });
+      observer.observe(adEl, { childList: true, subtree: true });
+
+      await new Promise(r => setTimeout(r, 2000));
+      const hasFrame = !!adEl.querySelector("iframe");
+      const hasHeight = (adEl.offsetHeight || adEl.clientHeight || 0) > 0;
+
+      if (hasFrame || hasHeight) {
+        setBlocked(false);
+        observer.disconnect();
+      } else {
+        setBlocked(true);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", checkAdblock);
+
+    validarBtn.addEventListener("click", () => {
+      if (validarBtn.disabled) return;
       try {
-        // Enviar mensaje a la extensión para marcar validación
         chrome.runtime.sendMessage("validarSniffCopy", (res) => {
           if (res && res.ok) {
             alert("Extensión activada. Ya puedes usar SniffCopy.");
-            window.close(); // opcional: cerrar la pestaña después de validar
+            window.close(); 
           } else {
             alert("No se pudo validar. Verifica que la extensión esté instalada.");
           }
         });
       } catch (e) {
-        console.warn("Validación sólo funciona cuando esta página fue abierta por la extensión:", e);
+        console.warn("Esta validación solo funciona cuando la página fue abierta por la extensión:", e);
       }
     });
   </script>
   
 </body>
 </html>
+
 
