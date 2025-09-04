@@ -40,5 +40,28 @@
   <script>
        (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
+
+<!-- Botón de validación -->
+  <button id="validarBtn">Continuar con SniffCopy</button>
+
+  <script>
+    document.getElementById("validarBtn").addEventListener("click", () => {
+      try {
+        // Enviar mensaje a la extensión para marcar validación
+        chrome.runtime.sendMessage("validarSniffCopy", (res) => {
+          if (res && res.ok) {
+            alert("Extensión activada. Ya puedes usar SniffCopy.");
+            window.close(); // opcional: cerrar la pestaña después de validar
+          } else {
+            alert("No se pudo validar. Verifica que la extensión esté instalada.");
+          }
+        });
+      } catch (e) {
+        console.warn("Validación sólo funciona cuando esta página fue abierta por la extensión:", e);
+      }
+    });
+  </script>
+  
 </body>
 </html>
+
