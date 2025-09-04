@@ -65,57 +65,64 @@
       }
     }
 
-    async function checkAdblock() {
-      setBlocked(true);
+async function checkAdblock() {
+  setBlocked(true);
 
-      if (typeof window.adsbygoogle === "undefined") {
-        setBlocked(true);
-        return;
-      }
+  if (typeof window.adsbygoogle === "undefined") {
+    setBlocked(true);
+    return;
+  }
 
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
 
-      const observer = new MutationObserver(() => {
-        if (adEl && adEl.querySelector("iframe")) {
-          setBlocked(false);
-          observer.disconnect();
-        }
-      });
-      observer.observe(adEl, { childList: true, subtree: true });
-
-      await new Promise(r => setTimeout(r, 2000));
-      const hasFrame = !!adEl.querySelector("iframe");
-      const hasHeight = (adEl.offsetHeight || adEl.clientHeight || 0) > 0;
-
-      if (hasFrame || hasHeight) {
-        setBlocked(false);
-        observer.disconnect();
-      } else {
-        setBlocked(true);
-      }
+  const observer = new MutationObserver(() => {
+    if (adEl && adEl.querySelector("iframe")) {
+      // Esperar 3 segundos antes de habilitar el botón
+      setTimeout(() => setBlocked(false), 3000);
+      observer.disconnect();
     }
+  });
+  observer.observe(adEl, { childList: true, subtree: true });
 
-    document.addEventListener("DOMContentLoaded", checkAdblock);
+  await new Promise(r => setTimeout(r, 2000));
+  const hasFrame = !!adEl.querySelector("iframe");
+  const hasHeight = (adEl.offsetHeight || adEl.clientHeight || 0) > 0;
 
-    validarBtn.addEventListener("click", () => {
-      if (validarBtn.disabled) return;
-      try {
-        chrome.runtime.sendMessage("validarSniffCopy", (res) => {
-          if (res && res.ok) {
-            alert("Extensión activada. Ya puedes usar SniffCopy.");
-            window.close(); 
-          } else {
-            alert("No se pudo validar. Verifica que la extensión esté instalada.");
-          }
-        });
-      } catch (e) {
-        console.warn("Esta validación solo funciona cuando la página fue abierta por la extensión:", e);
-      }
-    });
+  if (hasFrame || hasHeight) {
+    setTimeout(() => setBlocked(false), 3000); // enfriamiento de 3s
+    observer.disconnect();
+  } else {
+    setBlocked(true);
+  }
+}
+
+// Enviar validación a la extensión
+document.addEventListener("DOMContentLoaded", checkAdblock);
+
+// Enviar validación a la extensión (con defensa contra clics múltiples)
+validarBtn.addEventListener("click", () => {
+  if (validarBtn.disabled) return;
+  validarBtn.disabled = true; // evita clics repetidos
+  window.postMessage({ type: "SNIFFCOPY_VALIDATE" }, "*");
+
+  // Si en 2s no hay respuesta, reactivar el botón
+  setTimeout(() => { validarBtn.disabled = false; }, 2000);
+});
+
+// Escuchar confirmación de la extensión
+window.addEventListener("message", (e) => {
+  if (e.data && e.data.type === "SNIFFCOPY_VALIDATED") {
+    alert("Extensión activada. Ya puedes usar SniffCopy.");
+    window.close();
+  }
+});
+
+
   </script>
   
 </body>
 </html>
+
 
 
 
