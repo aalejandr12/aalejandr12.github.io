@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Unir PDFs por MIA</title>
+  <title>Organizador de PDFs por Código</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:800px;margin:24px auto;padding:0 14px}
@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <h1>Unir PDFs por MIA</h1>
+  <h1>Organizador de PDFs por Código</h1>
 
   <section>
     <label>Modo de unión</label>
@@ -30,7 +30,7 @@
     
     <div id="modeInfo" class="mode-info">
       <strong>Modo actual:</strong> Por nombre de archivo
-      <br><em>Busca códigos MIA en los nombres de los archivos PDF. Es más rápido y confiable.</em>
+      <br><em>Busca códigos en los nombres de los archivos PDF. Es más rápido y confiable.</em>
     </div>
   </section>
 
@@ -45,9 +45,9 @@
   </section>
 
   <section>
-    <label>Orden de CÓDIGOS (MIA) — uno por línea</label>
-    <textarea id="codes" rows="5" placeholder="MIA000044043205&#10;000044043206&#10;MIA784587451"></textarea>
-    <div class="muted">Puedes escribir solo números (ej: 000044043205) o el código completo (MIA000044043205)</div>
+    <label>Orden de CÓDIGOS — uno por línea</label>
+    <textarea id="codes" rows="5" placeholder="ABC123456&#10;XYZ789012&#10;MIA000044043205&#10;SAC2022VII"></textarea>
+    <div class="muted">Escribe cualquier tipo de código alfanumérico. Ejemplos: ABC123456, MIA000044043205, SAC-2022-VII, etc.</div>
   </section>
 
   <section>
@@ -72,10 +72,10 @@
       
       switch(selectedMode) {
         case 'filename':
-          modeInfo.innerHTML = '<strong>Modo actual:</strong> Por nombre de archivo<br><em>Busca códigos MIA en los nombres de los archivos PDF. Es más rápido y confiable.</em>';
+          modeInfo.innerHTML = '<strong>Modo actual:</strong> Por nombre de archivo<br><em>Busca códigos en los nombres de los archivos PDF. Es más rápido y confiable.</em>';
           break;
         case 'content':
-          modeInfo.innerHTML = '<strong>Modo actual:</strong> Por contenido del PDF<br><em>Busca códigos MIA dentro del texto de los PDFs. Más lento pero útil si los nombres no tienen códigos.</em>';
+          modeInfo.innerHTML = '<strong>Modo actual:</strong> Por contenido del PDF<br><em>Busca códigos dentro del texto de los PDFs. Más lento pero útil si los nombres no tienen códigos.</em>';
           break;
         case 'both':
           modeInfo.innerHTML = '<strong>Modo actual:</strong> Híbrido (nombre + contenido)<br><em>Combina ambos métodos para máxima cobertura. El más completo pero también el más lento.</em>';
@@ -84,9 +84,8 @@
     }
 
     const normalize = s => {
+      // Normalización genérica: quitar espacios, guiones, convertir a mayúsculas
       s = (s || '').toUpperCase().trim().replace(/[\s_-]+/g, '');
-      if (!s) return '';
-      if (!s.startsWith('MIA') && /^\d+$/.test(s)) s = 'MIA' + s;
       return s;
     };
 
@@ -128,14 +127,14 @@
         case 'content':
           body = { 
             scan_mode: 'content', 
-            pattern: '\\bMIA[-_ ]?\\d{1,}[A-Za-z0-9]*\\b', 
+            pattern: '\\b[A-Za-z]{2,}[-_ ]?\\d{1,}[A-Za-z0-9]*\\b', 
             max_pages: 10000 
           };
           break;
         case 'both':
           body = { 
             scan_mode: 'both', 
-            pattern: '\\bMIA[-_ ]?\\d{1,}[A-Za-z0-9]*\\b', 
+            pattern: '\\b[A-Za-z]{2,}[-_ ]?\\d{1,}[A-Za-z0-9]*\\b', 
             max_pages: 10000 
           };
           break;
@@ -187,7 +186,7 @@
       if (!files.length) { alert('Selecciona uno o más PDFs.'); return; }
 
       let order = $('codes').value.split(/\r?\n/).map(normalize).filter(Boolean);
-      if (!order.length) { alert('Ingresa el orden de códigos (MIA).'); return; }
+      if (!order.length) { alert('Ingresa el orden de códigos.'); return; }
 
       const outName = $('outName').value.trim() || 'resultado.pdf';
       const scan_mode = mode();
