@@ -377,7 +377,10 @@
         function updateButtonState() {
             if (uploadedFiles.length > 0) {
                 mainButton.disabled = false;
-                mainButton.querySelector('.button-text').textContent = 'Continuar';
+                mainButton.querySelector('.button-text').textContent = `Continuar (${uploadedFiles.length} archivo${uploadedFiles.length > 1 ? 's' : ''})`;
+                
+                // Debug: mostrar archivos en consola
+                console.log('📄 Archivos listos para continuar:', uploadedFiles);
             } else {
                 mainButton.disabled = true;
                 mainButton.querySelector('.button-text').textContent = 'Continuar';
@@ -402,34 +405,39 @@
         mainButton.addEventListener('click', () => {
             if (uploadedFiles.length === 0) return;
             
-                // Simular procesamiento de archivos con animación
-                mainButton.classList.add('loading');
-                mainButton.disabled = true;
+            // Guardar datos ANTES de la animación
+            sessionStorage.setItem('workspaceId', workspaceId);
+            sessionStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+            
+            // Simular procesamiento de archivos con animación
+            mainButton.classList.add('loading');
+            mainButton.disabled = true;
+            
+            // Simular progreso de carga REALISTA
+            let progress = 0;
+            const interval = setInterval(() => {
+                // Progreso más lento y realista
+                progress += Math.floor(Math.random() * 8) + 2;
+                if (progress > 100) progress = 100;
                 
-                // Simular progreso de carga
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.floor(Math.random() * 15) + 5;
-                    if (progress > 100) progress = 100;
-                    
-                    const progressBar = mainButton.querySelector('.progress-bar');
-                    const progressText = mainButton.querySelector('.progress-text');
-                    if (progressBar) progressBar.style.width = progress + '%';
-                    if (progressText) progressText.textContent = progress + '%';
-                    
-                    if (progress === 100) {
-                        clearInterval(interval);
+                const progressBar = mainButton.querySelector('.progress-bar');
+                const progressText = mainButton.querySelector('.progress-text');
+                if (progressBar) progressBar.style.width = progress + '%';
+                if (progressText) progressText.textContent = progress + '%';
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        mainButton.classList.remove('loading');
+                        mainButton.classList.add('success');
+                        
                         setTimeout(() => {
-                            mainButton.classList.remove('loading');
-                            mainButton.classList.add('success');
-                            
-                            setTimeout(() => {
-                                // Navegar a la siguiente página
-                                window.location.href = 'orden-nombre.html';
-                            }, 1500);
-                        }, 500);
-                    }
-                }, 150);
+                            // Navegar a la siguiente página
+                            window.location.href = 'orden-nombre.html';
+                        }, 1500);
+                    }, 500);
+                }
+            }, 200); // Intervalo más lento para carga realista
         });
     </script>
 </body>

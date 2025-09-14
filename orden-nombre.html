@@ -206,13 +206,30 @@ sja745458"></textarea>
             workspaceId = sessionStorage.getItem('workspaceId');
             const filesData = sessionStorage.getItem('uploadedFiles');
             
-            if (filesData) {
-                uploadedFiles = JSON.parse(filesData);
-                displayFilesPreview();
-            } else {
-                alert('No se encontraron archivos. Volviendo a la página anterior.');
-                window.location.href = 'subir-nombre.html';
+            console.log('🔍 Verificando datos de sesión...');
+            console.log('WorkspaceId:', workspaceId);
+            console.log('FilesData:', filesData);
+            
+            if (filesData && filesData !== 'null') {
+                try {
+                    uploadedFiles = JSON.parse(filesData);
+                    console.log('✅ Archivos cargados:', uploadedFiles);
+                    
+                    if (uploadedFiles && uploadedFiles.length > 0) {
+                        displayFilesPreview();
+                        return;
+                    }
+                } catch (error) {
+                    console.error('❌ Error parseando archivos:', error);
+                }
             }
+            
+            // Si no hay archivos válidos, mostrar mensaje y volver
+            console.log('❌ No se encontraron archivos válidos');
+            alert('No se encontraron archivos. Asegúrate de haber subido archivos en la página anterior.');
+            setTimeout(() => {
+                window.location.href = 'subir-nombre.html';
+            }, 1000);
         }
 
         function displayFilesPreview() {
