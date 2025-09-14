@@ -394,9 +394,26 @@
         mainButton.addEventListener('click', () => {
             if (uploadedFiles.length === 0) return;
             
+            // Crear almacén global para los archivos File
+            if (!window.globalFileStore) {
+                window.globalFileStore = new Map();
+            }
+            
+            // Guardar archivos File reales en el almacén global
+            const fileMetadata = uploadedFiles.map((item, index) => {
+                const fileId = `file_${Date.now()}_${index}`;
+                window.globalFileStore.set(fileId, item.file);
+                return {
+                    name: item.name,
+                    size: item.size,
+                    id: item.id,
+                    fileId: fileId // Referencia al archivo real
+                };
+            });
+            
             // Guardar datos y navegar directamente
             sessionStorage.setItem('workspaceId', workspaceId);
-            sessionStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+            sessionStorage.setItem('uploadedFiles', JSON.stringify(fileMetadata));
             
             console.log('✅ Navegando a orden-contenido.html con', uploadedFiles.length, 'archivos');
             window.location.href = 'orden-contenido.html';
