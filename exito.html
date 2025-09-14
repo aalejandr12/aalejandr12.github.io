@@ -150,8 +150,13 @@
         }
 
         try {
+            downloadButton.disabled = true;
+            downloadButton.innerHTML = '📥 Descargando...';
+            
             // Crear enlace directo de descarga
             const downloadUrl = `${API}/workspaces/${workspaceId}/download/resultado.pdf`;
+            console.log('🔗 URL de descarga:', downloadUrl);
+            
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.download = 'PDFs-Unidos-PurrCrafter.pdf';
@@ -160,11 +165,20 @@
             link.click();
             document.body.removeChild(link);
 
-            console.log('Descarga iniciada exitosamente');
+            console.log('✅ Descarga iniciada exitosamente');
+            
+            // Restablecer botón después de un momento
+            setTimeout(() => {
+                downloadButton.disabled = false;
+                downloadButton.innerHTML = '📥 Descargar PDF Unido';
+            }, 2000);
 
         } catch (error) {
-            console.error('Error al descargar:', error);
+            console.error('❌ Error al descargar:', error);
             alert('Error al descargar el archivo. Por favor, inténtalo de nuevo.');
+            
+            downloadButton.disabled = false;
+            downloadButton.innerHTML = '📥 Descargar PDF Unido';
         }
     }
 

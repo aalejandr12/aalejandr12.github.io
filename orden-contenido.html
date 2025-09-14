@@ -304,18 +304,44 @@ sja745458"></textarea>
             
             isProcessing = true;
             mainButton.classList.add('loading');
+            mainButton.disabled = true;
             
+            // Simular progreso de procesamiento REALISTA
+            let progress = 0;
+            const interval = setInterval(() => {
+                // Progreso más lento y realista para procesamiento
+                progress += Math.floor(Math.random() * 8) + 2;
+                if (progress > 100) progress = 100;
+                
+                const progressBar = mainButton.querySelector('.progress-bar');
+                const progressText = mainButton.querySelector('.progress-text');
+                if (progressBar) progressBar.style.width = progress + '%';
+                if (progressText) progressText.textContent = `Procesando... ${progress}%`;
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        processUnification();
+                    }, 500);
+                }
+            }, 250); // Intervalo más lento para procesamiento realista
+        }
+
+        // Función para procesar la unificación real
+        async function processUnification() {
             try {
-                // Simular procesamiento
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                // Simular procesamiento adicional para contenido
+                console.log('🔧 Analizando contenido de archivos...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 
                 // Marcar como exitoso
                 mainButton.classList.remove('loading');
                 mainButton.classList.add('success');
+                mainButton.innerHTML = '✅ ¡Procesamiento Completo!';
                 
                 // Guardar datos para la página de éxito
                 sessionStorage.setItem('workspaceId', workspaceId);
-                sessionStorage.setItem('mergeOrder', JSON.stringify(validation.order));
+                sessionStorage.setItem('mergeOrder', JSON.stringify(validateOrder(orderInput.value).order));
                 
                 // Ir a la página de éxito después de un momento
                 setTimeout(() => {
@@ -327,7 +353,15 @@ sja745458"></textarea>
                 alert('Error al unir los PDFs. Por favor, inténtalo de nuevo.');
                 
                 mainButton.classList.remove('loading');
+                mainButton.classList.add('error');
+                mainButton.innerHTML = '❌ Error - Reintentar';
+                mainButton.disabled = false;
                 isProcessing = false;
+                
+                setTimeout(() => {
+                    mainButton.classList.remove('error');
+                    mainButton.innerHTML = '🔄 Unir PDFs';
+                }, 3000);
             }
         }
 

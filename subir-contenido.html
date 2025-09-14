@@ -393,43 +393,16 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
-        // Continuar al siguiente paso
+        // Continuar al siguiente paso (sin animación de carga)
         mainButton.addEventListener('click', () => {
             if (uploadedFiles.length === 0) return;
             
-            // Guardar datos ANTES de la animación
+            // Guardar datos y navegar directamente
             sessionStorage.setItem('workspaceId', workspaceId);
             sessionStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
             
-            // Simular procesamiento de archivos con animación
-            mainButton.classList.add('loading');
-            mainButton.disabled = true;
-            
-            // Simular progreso de carga REALISTA
-            let progress = 0;
-            const interval = setInterval(() => {
-                // Progreso más lento y realista
-                progress += Math.floor(Math.random() * 8) + 2;
-                if (progress > 100) progress = 100;
-                
-                const progressBar = mainButton.querySelector('.progress-bar');
-                const progressText = mainButton.querySelector('.progress-text');
-                if (progressBar) progressBar.style.width = progress + '%';
-                if (progressText) progressText.textContent = progress + '%';
-                
-                if (progress === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        mainButton.classList.remove('loading');
-                        mainButton.classList.add('success');
-                        
-                        setTimeout(() => {
-                            // Navegar a la siguiente página
-                            window.location.href = 'orden-contenido.html';
-                        }, 1500);
-                    }, 500);
-                }
-            }, 200); // Intervalo más lento para carga realista
+            console.log('✅ Navegando a orden-contenido.html con', uploadedFiles.length, 'archivos');
+            window.location.href = 'orden-contenido.html';
         });
     </script>
 </body>
