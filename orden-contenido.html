@@ -129,11 +129,11 @@
                     </label>
                     <div class="relative">
                         <textarea id="order-input" rows="4" class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent resize-none font-mono text-lg" placeholder="Ejemplo:
-3
-1
-2"></textarea>
+mia44854
+sv48451
+sja745458"></textarea>
                     </div>
-                    <p class="text-sm text-[var(--text-muted-color)] mt-2 ml-11">Introduce el número de cada archivo en una nueva línea para establecer el orden de unión basándose en el contenido analizado.</p>
+                    <p class="text-sm text-[var(--text-muted-color)] mt-2 ml-11">Introduce el código de cada archivo en una nueva línea para establecer el orden de unión basándose en el contenido analizado. Puedes usar códigos alfanuméricos como mia44854, sv48451, etc.</p>
                 </div>
 
                 <!-- Botón de acción -->
@@ -236,8 +236,8 @@
                 filesPreview.appendChild(fileDiv);
             });
 
-            // Establecer orden por defecto
-            const defaultOrder = uploadedFiles.map((_, index) => index + 1).join('\n');
+            // Establecer orden por defecto con códigos alfanuméricos
+            const defaultOrder = uploadedFiles.map((_, index) => `file${index + 1}`).join('\n');
             orderInput.value = defaultOrder;
         }
 
@@ -249,29 +249,30 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Validar orden de entrada
+        // Validar orden de entrada (permite códigos alfanuméricos)
         function validateOrder(orderText) {
             const lines = orderText.trim().split('\n').filter(line => line.trim());
-            const numbers = lines.map(line => parseInt(line.trim()));
+            const codes = lines.map(line => line.trim());
             
-            // Verificar que todos son números válidos
-            if (numbers.some(num => isNaN(num))) {
-                return { valid: false, error: 'Todos los valores deben ser números.' };
-            }
-            
-            // Verificar que están en el rango correcto
-            const validRange = numbers.every(num => num >= 1 && num <= uploadedFiles.length);
-            if (!validRange) {
-                return { valid: false, error: `Los números deben estar entre 1 y ${uploadedFiles.length}.` };
+            // Verificar que todos son códigos válidos (letras y números)
+            const validCodePattern = /^[a-zA-Z0-9]+$/;
+            const invalidCodes = codes.filter(code => !validCodePattern.test(code));
+            if (invalidCodes.length > 0) {
+                return { valid: false, error: `Códigos inválidos: ${invalidCodes.join(', ')}. Solo se permiten letras y números.` };
             }
             
             // Verificar que no hay duplicados
-            const uniqueNumbers = new Set(numbers);
-            if (uniqueNumbers.size !== numbers.length) {
-                return { valid: false, error: 'No puede haber números duplicados.' };
+            const uniqueCodes = new Set(codes);
+            if (uniqueCodes.size !== codes.length) {
+                return { valid: false, error: 'No puede haber códigos duplicados.' };
             }
             
-            return { valid: true, order: numbers };
+            // Verificar que hay al menos un código
+            if (codes.length === 0) {
+                return { valid: false, error: 'Debe proporcionar al menos un código.' };
+            }
+            
+            return { valid: true, order: codes };
         }
 
         // Unir PDFs por contenido

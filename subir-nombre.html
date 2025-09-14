@@ -402,12 +402,34 @@
         mainButton.addEventListener('click', () => {
             if (uploadedFiles.length === 0) return;
             
-            // Guardar el workspace ID en sessionStorage para la siguiente página
-            sessionStorage.setItem('workspaceId', workspaceId);
-            sessionStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-            
-            // Redirigir a la página de orden
-            window.location.href = 'orden-nombre.html';
+                // Simular procesamiento de archivos con animación
+                mainButton.classList.add('loading');
+                mainButton.disabled = true;
+                
+                // Simular progreso de carga
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.floor(Math.random() * 15) + 5;
+                    if (progress > 100) progress = 100;
+                    
+                    const progressBar = mainButton.querySelector('.progress-bar');
+                    const progressText = mainButton.querySelector('.progress-text');
+                    if (progressBar) progressBar.style.width = progress + '%';
+                    if (progressText) progressText.textContent = progress + '%';
+                    
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            mainButton.classList.remove('loading');
+                            mainButton.classList.add('success');
+                            
+                            setTimeout(() => {
+                                // Navegar a la siguiente página
+                                window.location.href = 'orden-nombre.html';
+                            }, 1500);
+                        }, 500);
+                    }
+                }, 150);
         });
     </script>
 </body>
