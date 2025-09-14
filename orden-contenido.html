@@ -91,24 +91,10 @@
             0% { transform: scale(0.9); }
             100% { transform: scale(1); }
         }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .spinner-alt {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        #main-action-button.loading .spinner-alt {
-            display: none;
-        }
         .file-preview {
             transition: all 0.2s ease-in-out;
         }
+        
     </style>
 </head>
 <body class="antialiased">
@@ -160,7 +146,6 @@ sja745458"></textarea>
                             <div class="progress-bar"></div>
                             <div class="progress-text">0%</div>
                         </div>
-                        <div class="spinner-alt"></div>
                         <div class="success-icon">
                             <span class="material-symbols-outlined">check_circle</span>
                         </div>
