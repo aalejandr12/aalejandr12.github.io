@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Unir PDF por Nombre - PurrCrafter</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #1F2937;
+            --primary-color: #2563EB;
+            --secondary-color: #F9FAFB;
+            --accent-color: #3B82F6;
+            --border-color: #E5E7EB;
+            --text-muted-color: #6B7280;
+            --success-color: #10B981;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .purr-button {
+            transition: all 0.3s ease-in-out;
+            background-color: var(--primary-color);
+        }
+        .purr-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+        .file-item:hover {
+            background-color: #F3F4F6;
+            border-color: var(--accent-color);
+        }
+        .file-item {
+             transition: all 0.2s ease-in-out;
+        }
+        #main-action-button .button-content { display: flex; align-items: center; justify-content: center; }
+        #main-action-button .progress-container { display: none; }
+        #main-action-button .success-icon { display: none; }
+        #main-action-button.loading .button-text,
+        #main-action-button.loading .button-icon {
+            display: none;
+        }
+        #main-action-button.loading .progress-container {
+            display: block;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        #main-action-button .progress-bar-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--accent-color);
+            opacity: 0.3;
+            border-radius: 0.75rem;
+        }
+        #main-action-button .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: var(--accent-color);
+            border-radius: 0.75rem;
+            transition: width 0.5s ease-out;
+        }
+        #main-action-button .progress-text {
+            position: relative;
+            z-index: 10;
+            color: white;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        #main-action-button.success {
+             background-color: var(--success-color) !important;
+             transform: scale(1.0) !important;
+             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2) !important;
+        }
+        #main-action-button.success .button-content,
+        #main-action-button.success .progress-container {
+            display: none;
+        }
+        #main-action-button.success .success-icon {
+            display: block;
+            animation: success-pop 0.3s ease-out;
+        }
+        @keyframes success-pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .files-section {
+            display: none;
+        }
+        .files-section.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
+        <header class="text-center w-full max-w-4xl mb-8">
+            <a class="inline-block mb-6 text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors" href="index.html">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined">
+                        arrow_back
+                    </span>
+                    <span>Volver a Inicio</span>
+                </div>
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">Unir PDF por Nombre</h1>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Sube, ordena y une tus archivos PDF en un solo documento.</p>
+        </header>
+
+        <main class="w-full max-w-4xl flex-grow">
+            <div class="bg-[var(--secondary-color)] rounded-2xl border border-[var(--border-color)] p-6 md:p-8 shadow-sm">
+                <!-- Zona de subida de archivos -->
+                <div id="upload-zone" class="border-2 border-dashed border-[var(--border-color)] rounded-xl p-8 text-center flex flex-col items-center justify-center transition-colors duration-300 hover:border-[var(--accent-color)] hover:bg-blue-50/50">
+                    <span class="material-symbols-outlined text-6xl text-[var(--primary-color)] mb-4">
+                        upload_file
+                    </span>
+                    <h2 class="text-xl font-semibold text-[var(--text-color)] mb-2">Arrastra y suelta tus archivos aquí</h2>
+                    <p class="text-[var(--text-muted-color)] mb-4">o</p>
+                    <label class="cursor-pointer purr-button text-white px-6 py-3 rounded-xl font-semibold text-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)]" for="file-upload">
+                        Seleccionar Archivos
+                    </label>
+                    <input accept=".pdf" class="sr-only" id="file-upload" multiple name="file-upload" type="file"/>
+                    <p class="text-xs text-[var(--text-muted-color)] mt-4">Solo se permiten archivos PDF.</p>
+                </div>
+
+                <!-- Sección de archivos subidos -->
+                <div id="files-section" class="files-section mt-8">
+                    <h3 id="files-count" class="text-lg font-medium text-[var(--text-color)] mb-4">Archivos Subidos (0)</h3>
+                    <div id="files-list" class="space-y-3 max-h-60 overflow-y-auto"></div>
+                </div>
+
+                <!-- Sección de orden -->
+                <div id="order-section" class="files-section mt-6">
+                    <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">📝 Orden de Unión</h3>
+                    <textarea id="order-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Introduce el código de cada archivo en una nueva línea para establecer el orden de unión. Puedes usar códigos alternativos como mia44854, sv84541, etc.
+
+Ejemplo:
+MIA000044035959
+MIA000044037328"></textarea>
+                    <p class="text-sm text-[var(--text-muted-color)] mt-2">
+                        Introduce el código de cada archivo en una nueva línea para establecer el orden de unión. Puedes usar códigos alternativos como mia44854, sv84541, etc.
+                    </p>
+                </div>
+
+                <!-- Botón de acción principal -->
+                <div class="mt-8 pt-6 border-t border-[var(--border-color)] text-center">
+                    <button class="w-full max-w-md purr-button text-white px-8 py-4 rounded-xl font-semibold text-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] flex items-center justify-center mx-auto disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none min-h-[64px]" id="main-action-button" disabled>
+                        <div class="button-content flex items-center justify-center">
+                            <span class="material-symbols-outlined button-icon mr-2">picture_as_pdf</span>
+                            <span class="button-text">Unir PDFs</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar-bg"></div>
+                            <div class="progress-bar" id="progress-bar-inner" style="width: 0%;"></div>
+                            <span class="progress-text" id="progress-text">0%</span>
+                        </div>
+                        <span class="material-symbols-outlined text-3xl success-icon">check_circle</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="contacto.html">Contacto</a>
+            </div>
+            <p>© 2024 PurrCrafter. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========= CONFIGURACIÓN =========
+        const API = 'https://api-oculto-9k7s.aaleddy.app';
+        
+        // ========= ELEMENTOS DOM =========
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-upload');
+        const filesSection = document.getElementById('files-section');
+        const orderSection = document.getElementById('order-section');
+        const filesCount = document.getElementById('files-count');
+        const filesList = document.getElementById('files-list');
+        const orderInput = document.getElementById('order-input');
+        const mainButton = document.getElementById('main-action-button');
+
+        // ========= ESTADO GLOBAL =========
+        let uploadedFiles = [];
+        let workspaceId = null;
+        let isProcessing = false;
+
+        // ========= FUNCIONES UTILITARIAS =========
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function validateOrder(orderText) {
+            if (!orderText.trim()) {
+                return { valid: false, error: 'Por favor, especifica el orden de unión.' };
+            }
+            return { valid: true };
+        }
+
+        function jsonpRequest(url, callbackName) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                const uniqueCallback = callbackName + '_' + Date.now();
+                
+                window[uniqueCallback] = function(data) {
+                    resolve(data);
+                    document.head.removeChild(script);
+                    delete window[uniqueCallback];
+                };
+                
+                script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + uniqueCallback;
+                script.onerror = () => {
+                    reject(new Error('JSONP request failed'));
+                    document.head.removeChild(script);
+                    delete window[uniqueCallback];
+                };
+                
+                document.head.appendChild(script);
+                
+                setTimeout(() => {
+                    if (window[uniqueCallback]) {
+                        reject(new Error('JSONP request timeout'));
+                        document.head.removeChild(script);
+                        delete window[uniqueCallback];
+                    }
+                }, 10000);
+            });
+        }
+
+        // ========= MANEJO DE ARCHIVOS =========
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('border-[var(--accent-color)]', 'bg-blue-50');
+        });
+
+        uploadZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('border-[var(--accent-color)]', 'bg-blue-50');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('border-[var(--accent-color)]', 'bg-blue-50');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        });
+
+        async function handleFiles(files) {
+            if (files.length === 0) {
+                alert('No se seleccionaron archivos PDF válidos.');
+                return;
+            }
+
+            console.log(`Procesando ${files.length} archivo(s) localmente`);
+
+            // Procesar todos los archivos inmediatamente
+            for (const file of files) {
+                try {
+                    console.log(`Agregando archivo: ${file.name} (${file.size} bytes)`);
+                    
+                    // Convertir File a ArrayBuffer para poder guardarlo
+                    const arrayBuffer = await file.arrayBuffer();
+                    const fileData = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        arrayBuffer: Array.from(new Uint8Array(arrayBuffer)), // Convertir a array para JSON
+                        id: uploadedFiles.length
+                    };
+                    
+                    uploadedFiles.push(fileData);
+                    
+                    // Actualizar la lista en tiempo real
+                    updateFilesList();
+                    
+                    console.log(`Archivo ${file.name} agregado exitosamente`);
+                    
+                } catch (error) {
+                    console.error(`Error al procesar ${file.name}:`, error);
+                    alert(`Error al procesar ${file.name}: ${error.message}`);
+                }
+            }
+
+            updateButtonState();
+        }
+
+        function updateFilesList() {
+            filesCount.textContent = `Archivos Subidos (${uploadedFiles.length})`;
+            
+            if (uploadedFiles.length > 0) {
+                filesSection.classList.add('show');
+                orderSection.classList.add('show');
+            }
+
+            filesList.innerHTML = '';
+
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item flex items-center justify-between p-4 border border-[var(--border-color)] rounded-lg';
+                fileItem.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-[var(--primary-color)] text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                ${index + 1}
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-medium text-[var(--text-color)]">${file.name}</h4>
+                            <p class="text-sm text-[var(--text-muted-color)]">${formatFileSize(file.size)}</p>
+                        </div>
+                    </div>
+                    <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeFile(${index})">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                `;
+                filesList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            updateFilesList();
+            updateButtonState();
+        }
+
+        function updateButtonState() {
+            if (uploadedFiles.length > 0) {
+                mainButton.disabled = false;
+            } else {
+                mainButton.disabled = true;
+                filesSection.classList.remove('show');
+                orderSection.classList.remove('show');
+            }
+        }
+
+        // ========= PROCESAMIENTO PRINCIPAL =========
+        async function mergePDFs() {
+            if (isProcessing) return;
+            
+            const validation = validateOrder(orderInput.value);
+            if (!validation.valid) {
+                alert(validation.error);
+                return;
+            }
+            
+            isProcessing = true;
+            mainButton.classList.add('loading');
+            mainButton.disabled = true;
+            
+            try {
+                // PASO 1: Crear workspace (10%)
+                console.log('📁 Creando workspace...');
+                updateProgress(10, 'Creando workspace...');
+                
+                const workspaceData = await jsonpRequest(`${API}/jsonp/workspaces`, 'callback');
+                if (!workspaceData.workspace_id) {
+                    throw new Error('Error creando workspace');
+                }
+                workspaceId = workspaceData.workspace_id;
+                console.log('✅ Workspace creado:', workspaceId);
+                
+                // PASO 2: Subir archivos (10% - 80%)
+                console.log('📤 Subiendo archivos...');
+                await uploadFilesToServer();
+                
+                // PASO 3: Procesar y unir (80% - 100%)
+                console.log('🔧 Procesando archivos...');
+                updateProgress(85, 'Procesando y uniendo...');
+                
+                const processData = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-filename`, 'callback');
+                console.log('✅ Archivos procesados:', processData);
+                
+                if (processData.success) {
+                    updateProgress(100, '¡Completado!');
+                    
+                    setTimeout(() => {
+                        mainButton.classList.remove('loading');
+                        mainButton.classList.add('success');
+                        
+                        // Navegar a página de éxito después de 1 segundo
+                        setTimeout(() => {
+                            window.location.href = `exito.html?file=${processData.filename}`;
+                        }, 1000);
+                    }, 500);
+                } else {
+                    throw new Error(processData.error || 'Error en el procesamiento');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en el proceso:', error);
+                alert('Error al procesar los PDFs. Por favor, inténtalo de nuevo.');
+                
+                mainButton.classList.remove('loading');
+                mainButton.classList.add('error');
+                mainButton.innerHTML = '❌ Error - Reintentar';
+                mainButton.disabled = false;
+                isProcessing = false;
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+            }
+        }
+
+        async function uploadFilesToServer() {
+            const totalFiles = uploadedFiles.length;
+            const uploadStep = 70 / totalFiles; // De 10% a 80% = 70% total
+            
+            for (let i = 0; i < totalFiles; i++) {
+                const fileItem = uploadedFiles[i];
+                
+                // Reconstruir el archivo File desde el ArrayBuffer
+                const uint8Array = new Uint8Array(fileItem.arrayBuffer);
+                const actualFile = new File([uint8Array], fileItem.name, {
+                    type: fileItem.type
+                });
+                
+                const progress = 10 + ((i + 1) * uploadStep);
+                updateProgress(Math.round(progress), `Subiendo ${fileItem.name}...`);
+                
+                const formData = new FormData();
+                formData.append('files', actualFile);
+                
+                const response = await fetch(`${API}/workspaces/${workspaceId}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error subiendo ${fileItem.name}`);
+                }
+                
+                console.log(`✅ Archivo subido: ${fileItem.name}`);
+            }
+        }
+
+        function updateProgress(percentage, text) {
+            const progressBar = mainButton.querySelector('.progress-bar');
+            const progressText = mainButton.querySelector('.progress-text');
+            
+            if (progressBar) progressBar.style.width = percentage + '%';
+            if (progressText) progressText.textContent = text;
+        }
+
+        // ========= EVENT LISTENERS =========
+        mainButton.addEventListener('click', mergePDFs);
+
+        // Crear workspace al cargar la página
+        window.addEventListener('load', async () => {
+            try {
+                const workspaceData = await jsonpRequest(`${API}/jsonp/workspaces`, 'callback');
+                if (workspaceData.workspace_id) {
+                    workspaceId = workspaceData.workspace_id;
+                    console.log('✅ Workspace inicial creado:', workspaceId);
+                }
+            } catch (error) {
+                console.error('❌ Error creando workspace inicial:', error);
+            }
+        });
+    </script>
+</body>
+</html>
