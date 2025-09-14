@@ -1,266 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AllWatch: extensión de Chrome para resaltar palabras clave y supervisar contenido web automáticamente.">
-  <meta name="author" content="aalejandr12">
-  <title>AllWatch - Extensión para Chrome</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      color: #333;
-      scroll-behavior: smooth;
-    }
-    header {
-      background-color: #2c3e50;
-      color: #fff;
-      padding: 20px 0;
-      text-align: center;
-      animation: fadeIn 2s ease-out;
-    }
-    nav {
-      background: #34495e;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 10px;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      animation: slideIn 1.5s ease-in-out;
-    }
-    section {
-      margin-bottom: 60px;
-    }
-    h1, h2, h3 {
-      color: #2c3e50;
-    }
-    footer {
-      background: #2c3e50;
-      color: white;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 0.9em;
-    }
-    ul {
-      list-style: disc inside;
-    }
-    ol {
-      margin-left: 20px;
-    }
-    img {
-      max-width: 100%;
-      margin: 10px 0;
-    }
-    .adsense {
-      margin: 30px auto;
-      text-align: center;
-    }
-    .long-text {
-      margin-top: 20px;
-      line-height: 1.8;
-      font-size: 1.05em;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    @keyframes slideIn {
-      from {transform: translateY(50px); opacity: 0;}
-      to {transform: translateY(0); opacity: 1;}
-    }
-  </style>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>PurrCrafter - Organizador de PDFs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .purr-button { 
+            transition: all 0.3s ease-in-out;
+            background: linear-gradient(135deg, #2563EB, #3B82F6);
+        }
+        .purr-button:hover { 
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+    </style>
 </head>
-<body>
-  <!-- Bloque de anuncio principal -->
-<div class="adsense" style="margin-top:20px; text-align:center;">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-1897264775520223"
-       data-ad-slot="7931434015"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
-
-<header>
-
-    <h1>AllWatch: Extensión para Chrome</h1>
-    <p>Resalta palabras clave automáticamente y mantente informado mientras navegas.</p>
-  </header>
-
-  <nav>
-    <a href="#que-es">¿Qué es?</a>
-    <a href="#funciones">Funciones</a>
-    <a href="#tutorial">Cómo usarla</a>
-    <a href="#blog">Blog</a>
-    <a href="#privacidad">Privacidad</a>
-    <a href="#contacto">Contacto</a>
-  </nav>
-
-  <div class="container">
-    <section id="que-es">
-      <h2>¿Qué es AllWatch?</h2>
-      <p>AllWatch es una poderosa extensión para el navegador Chrome creada con el propósito de ayudarte a monitorear información en tiempo real, destacando visualmente palabras clave configurables en cualquier página web que visites.</p>
-      <div class="long-text">
-        <p>Con AllWatch, puedes olvidarte de perder tiempo revisando manualmente páginas extensas. Diseñada especialmente para profesionales, estudiantes, investigadores, analistas de medios, periodistas y cualquier persona que necesite estar atenta a términos importantes, AllWatch ofrece una solución rápida, intuitiva y sin complicaciones. Nuestro objetivo es que cada usuario tenga el control total de lo que quiere vigilar en internet sin comprometer la privacidad.</p>
-        <p>La extensión funciona completamente de forma local, es decir, ningún dato sale de tu navegador. Esto significa que puedes estar seguro de que tus búsquedas y términos sensibles no se almacenan ni se transmiten a ningún servidor externo. Esta privacidad total es una de nuestras prioridades. Además, gracias a su bajo consumo de recursos, AllWatch puede ejecutarse de forma continua sin impactar el rendimiento de tu equipo.</p>
-        <p>Desde su lanzamiento, AllWatch ha sido adoptada por miles de usuarios alrededor del mundo, especialmente en sectores donde se monitorea contenido sensible, como departamentos de cumplimiento legal, monitoreo de noticias, entornos educativos, ventas en línea y análisis de redes sociales.</p>
-      </div>
-    </section>
-
-    <section id="funciones">
-      <h2>Funciones principales</h2>
-      <ul>
-        <li>Resaltado instantáneo de palabras clave en cualquier contenido web.</li>
-        <li>Detección en tiempo real mientras se navega sin necesidad de recargar la página.</li>
-        <li>Configuración personalizable: añade, elimina o modifica palabras clave fácilmente.</li>
-        <li>Interfaz sencilla con instrucciones integradas.</li>
-        <li>Compatibilidad con sitios complejos como Google Docs, Gmail, Notion y Reddit.</li>
-        <li>Soporte multilingüe para más de 25 idiomas.</li>
-        <li>Diseño ligero optimizado para velocidad.</li>
-        <li>Privacidad total: ningún dato se comparte o recolecta.</li>
-      </ul>
-    </section>
-
-    <section id="html-fundamentos">
-  <h2>📚 Fundamentos de HTML: La base de la web moderna</h2>
-  <p>HTML (HyperText Markup Language) es el lenguaje fundamental que estructura el contenido de las páginas web. Desde la creación de encabezados y párrafos hasta la incorporación de imágenes, enlaces, formularios y tablas, HTML permite darle orden y sentido a la información digital.</p>
-  <p>Comprender HTML es el primer paso para todo desarrollador. No importa si estás comenzando tu viaje en la programación o si eres un diseñador que quiere ampliar sus habilidades, dominar HTML te dará el poder de construir desde blogs simples hasta aplicaciones web sofisticadas.</p>
-
-  <div style="text-align:center; margin: 30px 0;">
-    <iframe width="100%" height="400" src="https://www.youtube.com/embed/JxbMHSvI2DA" title="Curso de HTML desde CERO - FaztCode" frameborder="0" allowfullscreen></iframe>
-  </div>
-
-  <div class="long-text">
-    <p>En este curso impartido por <strong>FaztCode</strong>, aprenderás paso a paso los elementos esenciales del HTML moderno: desde etiquetas semánticas como <code>&lt;header&gt;</code>, <code>&lt;article&gt;</code> y <code>&lt;footer&gt;</code>, hasta cómo incrustar elementos multimedia, generar listas, y trabajar con atributos de accesibilidad. También entenderás cómo HTML se integra con CSS y JavaScript para crear experiencias completas y accesibles.</p>
-    <p>HTML es más que estructura: es semántica, accesibilidad y usabilidad. Aprenderlo no solo mejorará tus proyectos, sino también tu comprensión del ecosistema web. Recuerda: todos los sitios comienzan con una página HTML.</p>
-  </div>
-</section>
-
-
-    <div class="adsense">
-      <ins class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-1897264775520223"
-          data-ad-slot="1234567890"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+            <div class="mb-6">
+                <span class="material-symbols-outlined text-6xl text-blue-600 mb-4 block">picture_as_pdf</span>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">PurrCrafter</h1>
+                <p class="text-gray-600">Organizador de PDFs por Nombre</p>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <p class="text-sm text-gray-500">¡Bienvenido! Tu aplicación está lista.</p>
+                <p class="text-xs text-orange-600 bg-orange-50 p-3 rounded-lg">
+                    <strong>Nota:</strong> Usa la URL correcta para acceder a la aplicación
+                </p>
+            </div>
+            
+            <div class="space-y-3">
+                <a href="https://api-oculto-9k7s.aaleddy.app/docs/git-subir-nombre.html" 
+                   class="block w-full purr-button text-white py-3 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                    🚀 Subir PDFs por Nombre
+                </a>
+                
+                <a href="https://api-oculto-9k7s.aaleddy.app/docs/git-subir-contenido.html" 
+                   class="block w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                    📄 Subir PDFs por Contenido
+                </a>
+                
+                <a href="https://api-oculto-9k7s.aaleddy.app/docs/git-test-triple.html" 
+                   class="block w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all">
+                    🧪 Test API Completo
+                </a>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <p class="text-xs text-gray-500">
+                    <strong>APIs Funcionando:</strong><br>
+                    ✅ https://api-oculto-9k7s.aaleddy.app<br>
+                    ✅ CORS configurado<br>
+                    ✅ SSL válido
+                </p>
+            </div>
+        </div>
     </div>
-
-    <section id="tutorial">
-      <h2>¿Cómo usar AllWatch?</h2>
-      <ol>
-        <li>Ve a la Chrome Web Store y busca "AllWatch".</li>
-        <li>Haz clic en "Agregar a Chrome" y confirma la instalación.</li>
-        <li>Una vez instalada, haz clic en el icono de AllWatch en la barra de herramientas.</li>
-        <li>Ingresa tus palabras clave personalizadas.</li>
-        <li>Visita cualquier sitio web: AllWatch resaltará esas palabras automáticamente.</li>
-        <li>Puedes ajustar los colores, fuentes y comportamientos desde el panel de configuración.</li>
-      </ol>
-    </section>
-
-    <section id="ciberseguridad">
-  <h2>🔐 Ciberseguridad desde cero - Protege tu información</h2>
-  <p>La ciberseguridad es una de las áreas más importantes del mundo moderno. Desde bancos hasta redes sociales, la información personal es vulnerable si no se toman medidas preventivas. Este curso extenso de freeCodeCamp.org cubre los fundamentos, ataques comunes, métodos de defensa y herramientas utilizadas por profesionales.</p>
-  <p>Entender cómo proteger tu identidad, tus dispositivos y tu información es una habilidad imprescindible tanto para usuarios comunes como para desarrolladores y administradores de sistemas.</p>
-
-  <div style="text-align:center; margin: 30px 0;">
-    <iframe width="100%" height="400" src="https://www.youtube.com/embed/0n809nd4Zu4" title="Curso completo de Ciberseguridad 2024 - freeCodeCamp" frameborder="0" allowfullscreen></iframe>
-  </div>
-
-  <div class="long-text">
-    <p>Durante este curso aprenderás sobre amenazas como malware, ransomware, phishing y ataques de ingeniería social. También se profundiza en criptografía, firewalls, gestión de contraseñas, autenticación multifactor y protección en la nube. Todo está explicado desde cero, sin necesidad de experiencia previa.</p>
-    <p>Con este conocimiento, podrás implementar mejores hábitos de seguridad y también entender por qué AllWatch es una extensión confiable: no se conecta con servidores, no registra tu actividad, y funciona completamente de forma local. Es una herramienta alineada con las mejores prácticas de ciberhigiene digital.</p>
-    <p>La seguridad comienza contigo. Empieza por aprender y aplica lo que ves. Internet no es peligroso, pero sí exige estar informado.</p>
-  </div>
-</section>
-
-    <section id="chrome-extension">
-  <h2>🧩 Crea tu propia extensión de Chrome paso a paso</h2>
-  <p>Las extensiones de Chrome permiten ampliar las capacidades del navegador con funcionalidades personalizadas: desde automatización hasta mejoras visuales. Si alguna vez quisiste tener una herramienta solo para ti o crear una solución para miles de usuarios, este es el lugar para empezar.</p>
-  <p>Aprender a construir extensiones no requiere ser experto. Con conocimientos básicos de HTML, JavaScript y JSON, puedes crear utilidades potentes que se ejecutan directamente en el navegador del usuario, sin depender de servidores.</p>
-
-  <div style="text-align:center; margin: 30px 0;">
-    <iframe width="100%" height="400" src="https://www.youtube.com/embed/GGi7Brsf7js" title="Cómo crear una extensión de Chrome - TrainToCode" frameborder="0" allowfullscreen></iframe>
-  </div>
-
-  <div class="long-text">
-    <p>El video te enseña cómo estructurar tu proyecto con archivos clave como <code>manifest.json</code>, <code>popup.html</code> y <code>background.js</code>. También aprenderás cómo utilizar permisos de forma responsable, buenas prácticas de seguridad y cómo publicar tu extensión en la Chrome Web Store. Todo esto es fundamental si quieres que tu herramienta pase las revisiones de Google sin problemas.</p>
-    <p>Este conocimiento es esencial para comprender cómo funciona AllWatch, ya que está construido con los mismos principios explicados en este curso. Una extensión que prioriza el rendimiento, la eficiencia, la privacidad y la utilidad para los usuarios.</p>
-  </div>
-</section>
-
-
-    <section id="blog">
-      <h2>Blog y novedades</h2>
-      <h3>🧠 ¿Cómo nació AllWatch?</h3>
-      <p>Durante una intensa jornada de trabajo, Alejandro notó que pasaba horas revisando documentos PDF, emails y chats buscando siempre los mismos términos. De ahí surgió la idea: automatizar la vigilancia de palabras importantes.</p>
-
-      <h3>🚀 Versión 2.0 ya disponible</h3>
-      <p>La nueva versión incluye integración con voz para alertas auditivas, mejoras en el rendimiento para sitios pesados, y detección de palabras en archivos PDF abiertos con extensiones compatibles.</p>
-
-      <h3>📈 Historias reales</h3>
-      <p>Usuarios en empresas financieras usan AllWatch para detectar términos como "riesgo", "pérdida" y "fraude" en documentos extensos. En el mundo académico, investigadores filtran resultados con mayor rapidez al resaltar conceptos clave como "correlación", "tendencia" y "muestra".</p>
-    </section>
-
-    <section id="privacidad">
-      <h2>Política de privacidad</h2>
-      <p>No recopilamos datos personales. AllWatch fue creado con una visión centrada en la privacidad. Todos los procesos se ejecutan en el navegador local del usuario, y no se envía información a ningún servidor.</p>
-      <p>No registramos, almacenamos ni compartimos ninguna de las palabras clave configuradas por el usuario, ni tampoco los sitios visitados ni las acciones realizadas. Todo se mantiene dentro del entorno del navegador.</p>
-      <div class="long-text">
-        <p>La privacidad del usuario es un pilar fundamental para AllWatch. A diferencia de muchas aplicaciones modernas que requieren conexión constante con servidores externos, nuestra extensión está diseñada para funcionar completamente de forma local. Esto significa que incluso sin conexión a internet, AllWatch puede operar de manera efectiva y sin interrupciones.</p>
-        <p>AllWatch no integra ningún sistema de análisis de comportamiento ni telemetría oculta. No utilizamos cookies, ni rastreadores de terceros, ni técnicas de fingerprinting. El usuario mantiene total control sobre su experiencia y su información. Cada configuración, cada palabra clave y cada interacción permanece exclusivamente en el navegador del usuario.</p>
-        <p>De acuerdo con el Reglamento General de Protección de Datos (GDPR) de la Unión Europea y otras legislaciones globales como la CCPA de California, nos aseguramos de no recolectar, procesar ni almacenar datos personales o sensibles. AllWatch cumple de forma estricta con todos los principios de privacidad por diseño y privacidad por defecto.</p>
-        <p>Para mayor transparencia, todo el código fuente de AllWatch puede ser auditado por terceros. Invitamos a investigadores de seguridad, expertos en privacidad y miembros de la comunidad a revisar la implementación para confirmar que cumplimos nuestras promesas.</p>
-        <p>Además, nos comprometemos a no incluir publicidad invasiva, minería de datos, ni vender datos a empresas externas. Nuestro modelo de negocio se basa exclusivamente en funcionalidades premium opcionales (en futuras versiones) y en la confianza y satisfacción de nuestros usuarios.</p>
-        <p>Sabemos que la privacidad es un derecho, no un privilegio. Por eso, AllWatch fue construido desde sus cimientos para garantizar que cada usuario tenga la tranquilidad de que sus hábitos de navegación y sus intereses personales permanecen seguros y protegidos. Nuestro compromiso es inquebrantable: jamás comprometer la privacidad por conveniencia técnica o económica.</p>
-      </div>
-    </section>
-
-    <section id="contenido-extra">
-  <h2>📹 Video recomendado: ¿Cómo funciona el reconocimiento de texto en la web?</h2>
-  <div style="text-align:center; margin: 20px 0;">
-    <iframe width="100%" height="400" src="https://www.youtube.com/embed/K8pYfaRIQ0o" title="Reconocimiento de texto en tiempo real" frameborder="0" allowfullscreen></iframe>
-  </div>
-  <div class="long-text">
-    <p>El reconocimiento de texto en páginas web es una tecnología clave para muchas herramientas modernas, incluyendo AllWatch. Este proceso permite a una extensión identificar términos específicos en tiempo real y resaltar su presencia, incluso en sitios dinámicos como chats, correos o plataformas colaborativas.</p>
-    <p>En este video educativo, aprenderás cómo los navegadores modernos interpretan el DOM (Modelo de Objetos del Documento) y cómo las extensiones pueden interactuar con este modelo para modificar visualmente el contenido de la página. También se explora cómo manejar mutaciones en el DOM, lo que permite actualizar el resaltado de palabras automáticamente cuando la página cambia.</p>
-    <p>Este tipo de tecnología tiene aplicaciones que van más allá de la productividad: desde la accesibilidad (como lectores de pantalla que detectan texto clave), hasta la ciberseguridad (para alertar sobre términos sensibles en correos sospechosos). AllWatch utiliza estos principios para ofrecerte una herramienta poderosa, sin comprometer tu privacidad ni ralentizar tu experiencia de navegación.</p>
-    <p>Si te interesa el mundo del desarrollo web, el análisis de contenido y las herramientas de asistencia inteligente, este video es una excelente introducción a los fundamentos técnicos que hacen posible este tipo de soluciones.</p>
-    <p><strong>No olvides suscribirte al canal si te interesa el desarrollo web y las tecnologías de extensión.</strong></p>
-  </div>
-</section>
-
-
-    <section id="contacto">
-      <h2>Contacto</h2>
-      <p>¿Tienes dudas, comentarios o sugerencias? Escríbenos al correo <strong>aalejandr12@gmail.com</strong>. También puedes seguirnos en nuestras redes sociales para estar al día con nuevas funciones y noticias sobre AllWatch.</p>
-    </section>
-  </div>
-
-  <footer>
-    &copy; 2025 AllWatch - Desarrollado por aalejandr12. Todos los derechos reservados.
-  </footer>
 </body>
 </html>
-
-
