@@ -144,21 +144,22 @@
                     <div id="files-list" class="space-y-3 max-h-60 overflow-y-auto"></div>
                 </div>
 
-                <!-- Sección de listado de MIAs -->
+                <!-- Sección de listado de códigos -->
                 <div id="mia-order-section" class="files-section mt-6">
-                    <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">📋 Listado de MIAs</h3>
+                    <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">📋 Listado de Códigos</h3>
                     <p class="text-sm text-[var(--text-muted-color)] mb-3">
-                        Especifica los códigos MIA que deseas extraer, uno por línea. 
+                        Especifica los códigos que deseas extraer, uno por línea. 
                         El sistema buscará estos códigos en el contenido de los PDFs y extraerá las páginas correspondientes.
                     </p>
                     <textarea id="mia-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Ejemplo:
+SV2225756406
 MIA000044043205
-MIA000044044302
-MIA000044055305
+ABC123456
+XYZ789012
 
-Escribe un código MIA por línea en el orden deseado..."></textarea>
+Escribe un código por línea en el orden deseado..."></textarea>
                     <p class="text-xs text-[var(--text-muted-color)] mt-2">
-                        💡 <strong>Tip:</strong> Si no especificas MIAs, se extraerán automáticamente todos los encontrados en orden alfabético.
+                        💡 <strong>Tip:</strong> Acepta cualquier código alfanumérico (SV, MIA, ABC, etc.). Si no especificas códigos, se extraerán automáticamente todos los encontrados en orden alfabético.
                     </p>
                 </div>
 
@@ -394,19 +395,19 @@ Escribe un código MIA por línea en el orden deseado..."></textarea>
                 // Construir URL del API con parámetros opcionales
                 let apiUrl = `${API}/jsonp/workspaces/${workspaceId}/order-by-content`;
                 
-                // Verificar si el usuario especificó una lista de códigos MIA
-                const miaListInput = miaInput.value.trim();
-                if (miaListInput) {
-                    // Limpiar y formatear la lista de códigos MIA
-                    const miaList = miaListInput
+                // Verificar si el usuario especificó una lista de códigos
+                const codigoListInput = miaInput.value.trim();
+                if (codigoListInput) {
+                    // Limpiar y formatear la lista de códigos
+                    const codigoList = codigoListInput
                         .split(/[,\n]/)
-                        .map(mia => mia.trim())
-                        .filter(mia => mia.length > 0)
+                        .map(codigo => codigo.trim())
+                        .filter(codigo => codigo.length > 0)
                         .join(',');
                     
-                    if (miaList) {
-                        apiUrl += `?mia_list=${encodeURIComponent(miaList)}`;
-                        console.log('📋 Lista de MIA especificada:', miaList);
+                    if (codigoList) {
+                        apiUrl += `?codigo_list=${encodeURIComponent(codigoList)}`;
+                        console.log('📋 Lista de códigos especificada:', codigoList);
                     }
                 }
                 
