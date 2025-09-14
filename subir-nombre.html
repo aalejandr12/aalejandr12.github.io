@@ -185,8 +185,8 @@
 
     <script>
         const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:5000' 
-            : 'https://pdf-api-production-url.com';
+            ? 'http://localhost:3002' 
+            : 'https://api-oculto-9k7s.aaleddy.app';
 
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-upload');
@@ -202,15 +202,36 @@
         // Crear workspace al cargar la página
         async function createWorkspace() {
             try {
+                console.log('Intentando crear workspace en:', API);
                 const response = await fetch(`${API}/workspaces`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    }
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
                 workspaceId = data.workspace_id;
+                console.log('Workspace creado exitosamente:', workspaceId);
+                
+                // Mostrar confirmación visual
+                document.body.style.borderTop = '3px solid #10B981';
+                setTimeout(() => {
+                    document.body.style.borderTop = 'none';
+                }, 2000);
+                
             } catch (error) {
                 console.error('Error creating workspace:', error);
-                alert('Error al inicializar la aplicación. Por favor, recarga la página.');
+                console.error('API endpoint:', API);
+                
+                // Mostrar error visual
+                document.body.style.borderTop = '3px solid #EF4444';
+                
+                alert(`Error al conectar con el servidor: ${error.message}\n\nPor favor:\n1. Verifica que el servidor esté funcionando\n2. Recarga la página\n3. Si el problema persiste, contacta soporte`);
             }
         }
 
@@ -241,10 +262,22 @@
         });
 
         async function handleFiles(files) {
-            if (files.length === 0) return;
+            if (files.length === 0) {
+                alert('No se seleccionaron archivos PDF válidos.');
+                return;
+            }
+
+            if (!workspaceId) {
+                alert('Error: No se ha inicializado el workspace. Por favor, recarga la página.');
+                return;
+            }
+
+            console.log(`Subiendo ${files.length} archivo(s) al workspace ${workspaceId}`);
 
             for (const file of files) {
                 try {
+                    console.log(`Subiendo archivo: ${file.name} (${file.size} bytes)`);
+                    
                     // Subir archivo al workspace
                     const formData = new FormData();
                     formData.append('file', file);
@@ -254,16 +287,22 @@
                         body: formData
                     });
 
-                    if (response.ok) {
-                        uploadedFiles.push({
-                            name: file.name,
-                            size: file.size,
-                            id: uploadedFiles.length
-                        });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
+
+                    const result = await response.json();
+                    console.log(`Archivo ${file.name} subido exitosamente:`, result);
+
+                    uploadedFiles.push({
+                        name: file.name,
+                        size: file.size,
+                        id: uploadedFiles.length
+                    });
+                    
                 } catch (error) {
-                    console.error('Error uploading file:', error);
-                    alert(`Error al subir ${file.name}`);
+                    console.error(`Error al subir ${file.name}:`, error);
+                    alert(`Error al subir ${file.name}: ${error.message}`);
                 }
             }
 
