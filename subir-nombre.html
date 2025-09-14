@@ -215,7 +215,8 @@
                 }
                 
                 const data = await response.json();
-                workspaceId = data.workspace_id;
+                // Nueva estructura de respuesta de la API REST
+                workspaceId = data.workspace_id || data.data?.workspace_id;
                 console.log('Workspace creado exitosamente:', workspaceId);
                 
                 // Mostrar confirmación visual
