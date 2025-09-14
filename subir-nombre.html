@@ -302,36 +302,32 @@
                 return;
             }
 
-            if (!workspaceId) {
-                alert('Error: No se ha inicializado el workspace. Por favor, recarga la página.');
-                return;
-            }
+            console.log(`Procesando ${files.length} archivo(s) localmente`);
 
-            console.log(`Subiendo ${files.length} archivo(s) al workspace ${workspaceId}`);
-
+            // Procesar todos los archivos inmediatamente (sin delay)
             for (const file of files) {
                 try {
-                    console.log(`Subiendo archivo: ${file.name} (${file.size} bytes)`);
+                    console.log(`Agregando archivo: ${file.name} (${file.size} bytes)`);
                     
-                    // Simular upload exitoso (JSONP no puede hacer uploads reales)
-                    // En una implementación real, necesitarías otro método para uploads
-                    await new Promise(resolve => setTimeout(resolve, 500));
-
+                    // Guardar el archivo completo para usar en la página de orden
                     uploadedFiles.push({
                         name: file.name,
                         size: file.size,
+                        file: file, // Guardamos el objeto File completo
                         id: uploadedFiles.length
                     });
                     
-                    console.log(`Archivo ${file.name} subido exitosamente (simulado)`);
+                    // Actualizar la lista en tiempo real
+                    updateFilesList();
+                    
+                    console.log(`Archivo ${file.name} agregado exitosamente`);
                     
                 } catch (error) {
-                    console.error(`Error al subir ${file.name}:`, error);
-                    alert(`Error al subir ${file.name}: ${error.message}`);
+                    console.error(`Error al procesar ${file.name}:`, error);
+                    alert(`Error al procesar ${file.name}: ${error.message}`);
                 }
             }
 
-            updateFilesList();
             updateButtonState();
         }
 

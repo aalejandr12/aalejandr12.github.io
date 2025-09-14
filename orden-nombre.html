@@ -374,13 +374,14 @@ sja745458"></textarea>
             const totalFiles = uploadedFiles.length;
             
             for (let i = 0; i < totalFiles; i++) {
-                const file = uploadedFiles[i];
+                const fileItem = uploadedFiles[i];
+                const actualFile = fileItem.file; // Extraer el objeto File real
                 const progress = 20 + (50 * (i + 1) / totalFiles); // 20% a 70%
                 
-                updateProgress(progress, `Subiendo ${file.name}...`);
+                updateProgress(progress, `Subiendo ${fileItem.name}...`);
                 
                 const formData = new FormData();
-                formData.append('files', file);
+                formData.append('files', actualFile);
                 
                 const response = await fetch(`${API}/workspaces/${workspaceId}/upload`, {
                     method: 'POST',
@@ -388,10 +389,10 @@ sja745458"></textarea>
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`Error subiendo ${file.name}`);
+                    throw new Error(`Error subiendo ${fileItem.name}`);
                 }
                 
-                console.log(`✅ Archivo subido: ${file.name}`);
+                console.log(`✅ Archivo subido: ${fileItem.name}`);
             }
         }
 
