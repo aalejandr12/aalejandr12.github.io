@@ -309,13 +309,17 @@
                 try {
                     console.log(`Agregando archivo: ${file.name} (${file.size} bytes)`);
                     
-                    // Guardar el archivo completo para usar en la página de orden
-                    uploadedFiles.push({
+                    // Convertir File a ArrayBuffer para poder guardarlo
+                    const arrayBuffer = await file.arrayBuffer();
+                    const fileData = {
                         name: file.name,
                         size: file.size,
-                        file: file, // Guardamos el objeto File completo
+                        type: file.type,
+                        arrayBuffer: Array.from(new Uint8Array(arrayBuffer)), // Convertir a array para JSON
                         id: uploadedFiles.length
-                    });
+                    };
+                    
+                    uploadedFiles.push(fileData);
                     
                     // Actualizar la lista en tiempo real
                     updateFilesList();
@@ -401,26 +405,9 @@
         mainButton.addEventListener('click', () => {
             if (uploadedFiles.length === 0) return;
             
-            // Crear almacén global para los archivos File
-            if (!window.globalFileStore) {
-                window.globalFileStore = new Map();
-            }
-            
-            // Guardar archivos File reales en el almacén global
-            const fileMetadata = uploadedFiles.map((item, index) => {
-                const fileId = `file_${Date.now()}_${index}`;
-                window.globalFileStore.set(fileId, item.file);
-                return {
-                    name: item.name,
-                    size: item.size,
-                    id: item.id,
-                    fileId: fileId // Referencia al archivo real
-                };
-            });
-            
-            // Guardar datos y navegar directamente
+            // Guardar datos directamente (ahora los archivos están serializables)
             sessionStorage.setItem('workspaceId', workspaceId);
-            sessionStorage.setItem('uploadedFiles', JSON.stringify(fileMetadata));
+            sessionStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
             
             console.log('✅ Navegando a orden-nombre.html con', uploadedFiles.length, 'archivos');
             window.location.href = 'orden-nombre.html';

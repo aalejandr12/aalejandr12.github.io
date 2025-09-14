@@ -376,12 +376,11 @@ sja745458"></textarea>
             for (let i = 0; i < totalFiles; i++) {
                 const fileItem = uploadedFiles[i];
                 
-                // Recuperar el archivo File real del almacén global
-                const actualFile = window.globalFileStore ? window.globalFileStore.get(fileItem.fileId) : null;
-                
-                if (!actualFile) {
-                    throw new Error(`No se pudo recuperar el archivo: ${fileItem.name}`);
-                }
+                // Reconstruir el archivo File desde el ArrayBuffer
+                const uint8Array = new Uint8Array(fileItem.arrayBuffer);
+                const actualFile = new File([uint8Array], fileItem.name, {
+                    type: fileItem.type
+                });
                 
                 const progress = 20 + (50 * (i + 1) / totalFiles); // 20% a 70%
                 
