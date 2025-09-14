@@ -147,7 +147,20 @@
                 <!-- Sección de orden -->
                 <div id="order-section" class="files-section mt-6">
                     <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">📝 Orden de Unión</h3>
-                    <textarea id="order-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Introduce el código de cada archivo en una nueva línea para establecer el orden de unión. Puedes usar códigos alternativos como mia44854, sv84541, etc.
+                    <p class="text-sm text-[var(--text-muted-color)] mb-3">
+                        Especifica el orden escribiendo las bases de archivos (ej: MIA000044043205), una por línea.
+                        El sistema buscará archivos con patrón base_0.pdf, base_1.pdf, etc.
+                    </p>
+                    <textarea id="order-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Ejemplo:
+MIA000044043205
+MIA000044044302
+MIA000044055305
+
+Escribe una base por línea en el orden deseado..."></textarea>
+                    <p class="text-xs text-[var(--text-muted-color)] mt-2">
+                        💡 <strong>Tip:</strong> Si no especificas orden, se procesarán todos los archivos automáticamente en orden alfabético.
+                    </p>
+                </div>
 
 Ejemplo:
 MIA000044035959
@@ -395,7 +408,26 @@ MIA000044037328"></textarea>
                 console.log('🔧 Procesando archivos...');
                 updateProgress(85, 'Procesando y uniendo...');
                 
-                const processData = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-filename`, 'callback');
+                // Obtener lista de orden del usuario
+                const orderList = orderInput.value.trim();
+                let apiUrl = `${API}/jsonp/workspaces/${workspaceId}/order-by-filename`;
+                
+                if (orderList) {
+                    // Convertir líneas a lista separada por comas
+                    const bases = orderList.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0);
+                    
+                    if (bases.length > 0) {
+                        const orderParam = encodeURIComponent(bases.join(','));
+                        apiUrl += `?order_list=${orderParam}`;
+                        console.log(`📋 Procesando ${bases.length} bases específicas:`, bases);
+                    }
+                } else {
+                    console.log('📋 Procesando todos los archivos automáticamente');
+                }
+                
+                const processData = await jsonpRequest(apiUrl, 'callback');
                 console.log('✅ Archivos procesados:', processData);
                 
                 if (processData.success) {

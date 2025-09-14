@@ -144,21 +144,22 @@
                     <div id="files-list" class="space-y-3 max-h-60 overflow-y-auto"></div>
                 </div>
 
-                <!-- Información sobre ordenamiento automático -->
-                <div id="auto-order-info" class="files-section mt-6">
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div class="flex items-start space-x-3">
-                            <span class="material-symbols-outlined text-blue-600 mt-1">info</span>
-                            <div>
-                                <h4 class="text-blue-800 font-semibold mb-1">Ordenamiento Automático por Contenido</h4>
-                                <p class="text-blue-700 text-sm">
-                                    Los archivos se ordenarán automáticamente basándose en el contenido de los documentos. 
-                                    El sistema analizará patrones como fechas, números de expediente y otros elementos para 
-                                    determinar el orden más lógico.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Sección de listado de MIAs -->
+                <div id="mia-order-section" class="files-section mt-6">
+                    <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">📋 Listado de MIAs</h3>
+                    <p class="text-sm text-[var(--text-muted-color)] mb-3">
+                        Especifica los códigos MIA que deseas extraer, uno por línea. 
+                        El sistema buscará estos códigos en el contenido de los PDFs y extraerá las páginas correspondientes.
+                    </p>
+                    <textarea id="mia-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Ejemplo:
+MIA000044043205
+MIA000044044302
+MIA000044055305
+
+Escribe un código MIA por línea en el orden deseado..."></textarea>
+                    <p class="text-xs text-[var(--text-muted-color)] mt-2">
+                        💡 <strong>Tip:</strong> Si no especificas MIAs, se extraerán automáticamente todos los encontrados en orden alfabético.
+                    </p>
                 </div>
 
                 <!-- Botón de acción principal -->
@@ -197,7 +198,8 @@
         const uploadZone = document.getElementById('upload-zone');
         const fileInput = document.getElementById('file-upload');
         const filesSection = document.getElementById('files-section');
-        const autoOrderInfo = document.getElementById('auto-order-info');
+        const miaOrderSection = document.getElementById('mia-order-section');
+        const miaInput = document.getElementById('mia-input');
         const filesCount = document.getElementById('files-count');
         const filesList = document.getElementById('files-list');
         const mainButton = document.getElementById('main-action-button');
@@ -313,7 +315,7 @@
             
             if (uploadedFiles.length > 0) {
                 filesSection.classList.add('show');
-                autoOrderInfo.classList.add('show');
+                miaOrderSection.classList.add('show');
             }
 
             filesList.innerHTML = '';
@@ -353,7 +355,7 @@
             } else {
                 mainButton.disabled = true;
                 filesSection.classList.remove('show');
-                autoOrderInfo.classList.remove('show');
+                miaOrderSection.classList.remove('show');
             }
         }
 
@@ -389,7 +391,26 @@
                 console.log('🔧 Procesando y ordenando archivos...');
                 updateProgress(90, 'Procesando y uniendo...');
                 
-                const processData = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-content`, 'callback');
+                // Construir URL del API con parámetros opcionales
+                let apiUrl = `${API}/jsonp/workspaces/${workspaceId}/order-by-content`;
+                
+                // Verificar si el usuario especificó una lista de códigos MIA
+                const miaListInput = miaInput.value.trim();
+                if (miaListInput) {
+                    // Limpiar y formatear la lista de códigos MIA
+                    const miaList = miaListInput
+                        .split(/[,\n]/)
+                        .map(mia => mia.trim())
+                        .filter(mia => mia.length > 0)
+                        .join(',');
+                    
+                    if (miaList) {
+                        apiUrl += `?mia_list=${encodeURIComponent(miaList)}`;
+                        console.log('📋 Lista de MIA especificada:', miaList);
+                    }
+                }
+                
+                const processData = await jsonpRequest(apiUrl, 'callback');
                 console.log('✅ Archivos procesados:', processData);
                 
                 if (processData.success) {

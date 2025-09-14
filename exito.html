@@ -183,12 +183,7 @@
             console.log('🔗 API base:', API);
             console.log('🔗 Workspace ID:', workspaceId);
             
-            // Verificar si el archivo existe antes de intentar descargarlo
-            const checkResponse = await fetch(downloadUrl, { method: 'HEAD' });
-            if (!checkResponse.ok) {
-                throw new Error(`Archivo no encontrado (${checkResponse.status})`);
-            }
-            
+            // NO verificar con HEAD - nginx no lo permite, ir directo a la descarga
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.download = sessionStorage.getItem('filename') || 'PDFs-Unidos-PurrCrafter.pdf';
