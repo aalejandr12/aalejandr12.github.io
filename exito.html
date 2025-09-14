@@ -135,6 +135,12 @@
     function loadSessionData() {
         workspaceId = sessionStorage.getItem('mergeWorkspaceId') || sessionStorage.getItem('workspaceId');
         
+        // Obtener URL de descarga real si está disponible
+        const downloadUrl = sessionStorage.getItem('downloadUrl');
+        if (downloadUrl) {
+            console.log('📥 URL de descarga encontrada:', downloadUrl);
+        }
+        
         if (!workspaceId) {
             alert('No se encontró información de la sesión. Redirigiendo al inicio.');
             window.location.href = 'index.html';
@@ -153,9 +159,17 @@
             downloadButton.disabled = true;
             downloadButton.innerHTML = '📥 Descargando...';
             
-            // Crear enlace directo de descarga
-            const downloadUrl = `${API}/workspaces/${workspaceId}/download/resultado.pdf`;
-            console.log('🔗 URL de descarga:', downloadUrl);
+            // Usar URL de descarga guardada o construir la URL por defecto
+            let downloadUrl = sessionStorage.getItem('downloadUrl');
+            if (downloadUrl) {
+                // URL relativa del API, necesitamos hacer la URL completa
+                downloadUrl = `${API}${downloadUrl}`;
+            } else {
+                // Fallback a la URL por defecto (por si acaso)
+                downloadUrl = `${API}/workspaces/${workspaceId}/download/resultado_por_nombre.pdf`;
+            }
+            
+            console.log('🔗 URL de descarga final:', downloadUrl);
             
             const link = document.createElement('a');
             link.href = downloadUrl;

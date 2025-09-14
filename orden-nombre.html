@@ -41,19 +41,35 @@
             display: none;
         }
         #main-action-button.loading .progress-bar-container {
-            display: block;
-            width: 80%;
-            background-color: #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 8px;
+        }
+        #main-action-button.loading .progress-bar {
+            width: 0%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 9999px;
+            transition: width 0.3s ease-in-out;
+            position: relative;
+            background: linear-gradient(90deg, #ffffff 0%, #f0f9ff 100%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #main-action-button.loading .progress-text {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .progress-bar-container {
+            display: none;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
             height: 8px;
             overflow: hidden;
-        }
-        #main-action-button.loading .progress-bar {
-            width: 50%;
-            height: 100%;
-            background-color: var(--accent-color);
-            border-radius: 9999px;
-            animation: progress-animation 2s ease-in-out infinite;
         }
         @keyframes progress-animation {
             0%, 100% { transform: translateX(-100%); }
@@ -88,9 +104,6 @@
             animation: spin 1s ease-in-out infinite;
         }
         #main-action-button.loading .spinner-alt {
-            display: block;
-        }
-        #main-action-button.loading .progress-bar-container {
             display: none;
         }
         .file-preview {
@@ -145,6 +158,7 @@ sja745458"></textarea>
                         </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar"></div>
+                            <div class="progress-text">0%</div>
                         </div>
                         <div class="spinner-alt"></div>
                         <div class="success-icon">
@@ -334,19 +348,24 @@ sja745458"></textarea>
                 const data = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-filename`, 'callback');
                 console.log('✅ Archivos ordenados:', data);
                 
-                // Marcar como exitoso
-                mainButton.classList.remove('loading');
-                mainButton.classList.add('success');
-                mainButton.innerHTML = '✅ ¡Procesamiento Completo!';
-                
-                // Guardar datos para la página de éxito
-                sessionStorage.setItem('workspaceId', workspaceId);
-                sessionStorage.setItem('mergeOrder', JSON.stringify(validateOrder(orderInput.value).order));
-                
-                // Ir a la página de éxito después de un momento
-                setTimeout(() => {
-                    window.location.href = 'exito.html';
-                }, 1500);
+                if (data.success) {
+                    // Marcar como exitoso
+                    mainButton.classList.remove('loading');
+                    mainButton.classList.add('success');
+                    mainButton.innerHTML = '✅ ¡Procesamiento Completo!';
+                    
+                    // Guardar URL de descarga real
+                    sessionStorage.setItem('workspaceId', workspaceId);
+                    sessionStorage.setItem('downloadUrl', data.data.pdf_url);
+                    sessionStorage.setItem('mergeOrder', JSON.stringify(validateOrder(orderInput.value).order));
+                    
+                    // Ir a la página de éxito después de un momento
+                    setTimeout(() => {
+                        window.location.href = 'exito.html';
+                    }, 1500);
+                } else {
+                    throw new Error(data.error || 'Error en la respuesta del servidor');
+                }
                 
             } catch (error) {
                 console.error('❌ Error uniendo PDFs:', error);
