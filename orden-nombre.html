@@ -290,7 +290,7 @@ sja745458"></textarea>
             return { valid: true, order: codes };
         }
 
-        // Unir PDFs
+        // Unir PDFs: subir archivos + procesar
         async function mergePDFs() {
             if (isProcessing) return;
             
@@ -304,57 +304,57 @@ sja745458"></textarea>
             mainButton.classList.add('loading');
             mainButton.disabled = true;
             
-            // Simular progreso de procesamiento REALISTA
-            let progress = 0;
-            const interval = setInterval(() => {
-                // Progreso más lento y realista para procesamiento
-                progress += Math.floor(Math.random() * 8) + 2;
-                if (progress > 100) progress = 100;
-                
-                const progressBar = mainButton.querySelector('.progress-bar');
-                const progressText = mainButton.querySelector('.progress-text');
-                if (progressBar) progressBar.style.width = progress + '%';
-                if (progressText) progressText.textContent = `Procesando... ${progress}%`;
-                
-                if (progress === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        processUnification();
-                    }, 500);
-                }
-            }, 250); // Intervalo más lento para procesamiento realista
-        }
-
-        // Función para procesar la unificación real
-        async function processUnification() {
             try {
-                // Usar JSONP para ordenar archivos por nombre
-                console.log('🔧 Ordenando archivos por nombre...');
-                const data = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-filename`, 'callback');
-                console.log('✅ Archivos ordenados:', data);
+                // PASO 1: Crear workspace
+                console.log('📁 Creando workspace...');
+                updateProgress(10, 'Creando workspace...');
                 
-                if (data.success) {
+                const workspaceData = await jsonpRequest(`${API}/jsonp/workspaces`, 'callback');
+                if (!workspaceData.workspace_id) {
+                    throw new Error('Error creando workspace');
+                }
+                workspaceId = workspaceData.workspace_id;
+                console.log('✅ Workspace creado:', workspaceId);
+                
+                // PASO 2: Subir archivos
+                console.log('📤 Subiendo archivos...');
+                updateProgress(20, 'Subiendo archivos...');
+                
+                await uploadFilesToServer();
+                
+                // PASO 3: Procesar y unir
+                console.log('🔧 Procesando archivos...');
+                updateProgress(80, 'Procesando y uniendo...');
+                
+                const processData = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-filename`, 'callback');
+                console.log('✅ Archivos procesados:', processData);
+                
+                if (processData.success) {
+                    updateProgress(100, '¡Completado!');
+                    
                     // Marcar como exitoso
-                    mainButton.classList.remove('loading');
-                    mainButton.classList.add('success');
-                    mainButton.innerHTML = '✅ ¡Procesamiento Completo!';
-                    
-                    // Guardar URL de descarga real
-                    sessionStorage.setItem('workspaceId', workspaceId);
-                    sessionStorage.setItem('downloadUrl', data.data.pdf_url);
-                    sessionStorage.setItem('mergeOrder', JSON.stringify(validateOrder(orderInput.value).order));
-                    
-                    // Ir a la página de éxito después de un momento
                     setTimeout(() => {
-                        window.location.href = 'exito.html';
-                    }, 1500);
+                        mainButton.classList.remove('loading');
+                        mainButton.classList.add('success');
+                        mainButton.innerHTML = '✅ ¡Procesamiento Completo!';
+                        
+                        // Guardar URL de descarga real
+                        sessionStorage.setItem('workspaceId', workspaceId);
+                        sessionStorage.setItem('downloadUrl', processData.data.pdf_url);
+                        sessionStorage.setItem('mergeOrder', JSON.stringify(validation.order));
+                        
+                        // Ir a la página de éxito
+                        setTimeout(() => {
+                            window.location.href = 'exito.html';
+                        }, 1500);
+                    }, 500);
                 } else {
-                    throw new Error(data.error || 'Error en la respuesta del servidor');
+                    throw new Error(processData.error || 'Error en el procesamiento');
                 }
                 
             } catch (error) {
-                console.error('❌ Error uniendo PDFs:', error);
-                alert('Error al unir los PDFs. Por favor, inténtalo de nuevo.');
+                console.error('❌ Error en el proceso:', error);
+                alert('Error al procesar los PDFs. Por favor, inténtalo de nuevo.');
                 
                 mainButton.classList.remove('loading');
                 mainButton.classList.add('error');
@@ -367,6 +367,41 @@ sja745458"></textarea>
                     mainButton.innerHTML = '🔄 Unir PDFs';
                 }, 3000);
             }
+        }
+
+        // Función para subir archivos al servidor
+        async function uploadFilesToServer() {
+            const totalFiles = uploadedFiles.length;
+            
+            for (let i = 0; i < totalFiles; i++) {
+                const file = uploadedFiles[i];
+                const progress = 20 + (50 * (i + 1) / totalFiles); // 20% a 70%
+                
+                updateProgress(progress, `Subiendo ${file.name}...`);
+                
+                const formData = new FormData();
+                formData.append('files', file);
+                
+                const response = await fetch(`${API}/workspaces/${workspaceId}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error subiendo ${file.name}`);
+                }
+                
+                console.log(`✅ Archivo subido: ${file.name}`);
+            }
+        }
+
+        // Función para actualizar la barra de progreso
+        function updateProgress(percentage, text) {
+            const progressBar = mainButton.querySelector('.progress-bar');
+            const progressText = mainButton.querySelector('.progress-text');
+            
+            if (progressBar) progressBar.style.width = percentage + '%';
+            if (progressText) progressText.textContent = text;
         }
 
         // Event listeners
