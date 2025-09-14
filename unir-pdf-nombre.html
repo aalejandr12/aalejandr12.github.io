@@ -401,13 +401,22 @@ MIA000044037328"></textarea>
                 if (processData.success) {
                     updateProgress(100, '¡Completado!');
                     
+                    // Guardar información en sessionStorage para la página de éxito
+                    sessionStorage.setItem('workspaceId', workspaceId);
+                    if (processData.data && processData.data.pdf_url) {
+                        sessionStorage.setItem('downloadUrl', processData.data.pdf_url);
+                        // Extraer el nombre del archivo de la URL
+                        const filename = processData.data.pdf_url.split('/').pop();
+                        sessionStorage.setItem('filename', filename);
+                    }
+                    
                     setTimeout(() => {
                         mainButton.classList.remove('loading');
                         mainButton.classList.add('success');
                         
                         // Navegar a página de éxito después de 1 segundo
                         setTimeout(() => {
-                            window.location.href = `exito.html?file=${processData.filename}`;
+                            window.location.href = `exito.html`;
                         }, 1000);
                     }, 500);
                 } else {

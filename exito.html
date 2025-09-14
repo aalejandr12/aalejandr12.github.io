@@ -133,7 +133,12 @@
 
     // Recuperar workspace ID de la sesión
     function loadSessionData() {
-        workspaceId = sessionStorage.getItem('mergeWorkspaceId') || sessionStorage.getItem('workspaceId');
+        workspaceId = sessionStorage.getItem('workspaceId');
+        
+        console.log('🔍 Datos de sesión encontrados:');
+        console.log('  workspaceId:', workspaceId);
+        console.log('  downloadUrl:', sessionStorage.getItem('downloadUrl'));
+        console.log('  filename:', sessionStorage.getItem('filename'));
         
         // Obtener URL de descarga real si está disponible
         const downloadUrl = sessionStorage.getItem('downloadUrl');
@@ -142,22 +147,26 @@
         }
         
         if (!workspaceId) {
+            console.error('❌ No se encontró workspace ID en sessionStorage');
             alert('No se encontró información de la sesión. Redirigiendo al inicio.');
             window.location.href = 'index.html';
             return;
         }
+        
+        console.log('✅ Datos de sesión cargados correctamente');
     }
 
     // Descargar el PDF generado
     async function downloadMergedPDF() {
         if (!workspaceId) {
+            console.error('❌ No se encontró el workspace ID');
             alert('Error: No se encontró el workspace ID.');
             return;
         }
 
         try {
             downloadButton.disabled = true;
-            downloadButton.innerHTML = '📥 Descargando...';
+            downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargando...</span>';
             
             // Usar URL de descarga guardada o construir la URL por defecto
             let downloadUrl = sessionStorage.getItem('downloadUrl');
@@ -166,14 +175,23 @@
                 downloadUrl = `${API}${downloadUrl}`;
             } else {
                 // Fallback a la URL por defecto (por si acaso)
-                downloadUrl = `${API}/workspaces/${workspaceId}/download/resultado_por_nombre.pdf`;
+                console.warn('⚠️ No hay downloadUrl en sessionStorage, usando fallback');
+                downloadUrl = `${API}/workspaces/${workspaceId}/download/resultado_nombre.pdf`;
             }
             
             console.log('🔗 URL de descarga final:', downloadUrl);
+            console.log('🔗 API base:', API);
+            console.log('🔗 Workspace ID:', workspaceId);
+            
+            // Verificar si el archivo existe antes de intentar descargarlo
+            const checkResponse = await fetch(downloadUrl, { method: 'HEAD' });
+            if (!checkResponse.ok) {
+                throw new Error(`Archivo no encontrado (${checkResponse.status})`);
+            }
             
             const link = document.createElement('a');
             link.href = downloadUrl;
-            link.download = 'PDFs-Unidos-PurrCrafter.pdf';
+            link.download = sessionStorage.getItem('filename') || 'PDFs-Unidos-PurrCrafter.pdf';
             link.target = '_blank';
             document.body.appendChild(link);
             link.click();
@@ -184,15 +202,15 @@
             // Restablecer botón después de un momento
             setTimeout(() => {
                 downloadButton.disabled = false;
-                downloadButton.innerHTML = '📥 Descargar PDF Unido';
+                downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
             }, 2000);
 
         } catch (error) {
             console.error('❌ Error al descargar:', error);
-            alert('Error al descargar el archivo. Por favor, inténtalo de nuevo.');
+            alert(`Error al descargar el archivo: ${error.message}. Por favor, inténtalo de nuevo.`);
             
             downloadButton.disabled = false;
-            downloadButton.innerHTML = '📥 Descargar PDF Unido';
+            downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
         }
     }
 
