@@ -53,39 +53,38 @@
             height: 100%;
             background-color: var(--accent-color);
             border-radius: 9999px;
-            animation: progress-animation 2s ease-in-out forwards;
+            animation: progress-animation 2s ease-in-out infinite;
         }
         @keyframes progress-animation {
-          from { width: 0%; }
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(200%); }
         }
         #main-action-button.success {
-             background-color: var(--success-color) !important;
-             transform: scale(1.0) !important;
-             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2) !important;
+            background-color: var(--success-color);
+            animation: success-pop 0.3s ease-in-out;
         }
         #main-action-button.success .button-content,
         #main-action-button.success .progress-bar-container {
             display: none;
         }
         #main-action-button.success .success-icon {
-            display: block;
-            animation: success-pop 0.3s ease-out;
+            display: flex;
+            animation: success-pop 0.3s ease-in-out;
         }
         @keyframes success-pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            80% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1); }
         }
         @keyframes spin {
-          to { transform: rotate(360deg); }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         .spinner-alt {
-            display: none;
             width: 24px;
             height: 24px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border-top-color: #fff;
+            border-top-color: white;
             animation: spin 1s ease-in-out infinite;
         }
         #main-action-button.loading .spinner-alt {
@@ -95,43 +94,41 @@
             display: none;
         }
         .file-preview {
-            max-height: 300px;
-            overflow-y: auto;
+            transition: all 0.2s ease-in-out;
         }
     </style>
 </head>
 <body class="antialiased">
     <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
         <header class="text-center w-full max-w-4xl mb-8">
-            <a class="inline-block mb-6 text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors" href="subir-nombre.html">
+            <a href="subir-nombre.html" class="inline-block mb-6 text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors">
                 <div class="flex items-center space-x-2">
                     <span class="material-symbols-outlined">arrow_back</span>
-                    <span>Volver Atrás</span>
+                    <span>Volver a Subir Archivos</span>
                 </div>
             </a>
-            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">Definir Orden de Unión</h1>
-            <p class="text-lg text-[var(--text-muted-color)] mt-2">Especifica el orden en que deseas unir tus archivos PDF.</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">Definir Orden</h1>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Establece el orden de unión para tus archivos PDF</p>
         </header>
 
         <main class="w-full max-w-4xl flex-grow">
-            <div class="bg-[var(--secondary-color)] rounded-2xl border border-[var(--border-color)] p-6 md:p-8 shadow-sm">
-                
+            <div class="bg-[var(--secondary-color)] rounded-2xl border border-[var(--border-color)] p-6 md:p-10 shadow-sm">
                 <!-- Vista previa de archivos -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">Archivos a unir:</h3>
-                    <div id="files-preview" class="file-preview space-y-2 bg-white rounded-lg border border-[var(--border-color)] p-4">
-                        <!-- Se llenarán dinámicamente -->
+                    <h3 class="text-xl font-semibold text-[var(--text-color)] mb-4">📄 Archivos Subidos</h3>
+                    <div id="files-preview" class="space-y-4">
+                        <!-- Los archivos aparecerán aquí -->
                     </div>
                 </div>
 
-                <!-- Orden manual -->
-                <div class="mt-8 pt-6 border-t border-[var(--border-color)]">
-                    <label class="block text-lg font-medium text-[var(--text-color)] mb-3" for="order-input">
-                        Definición del orden de unión
+                <!-- Campo de orden -->
+                <div class="space-y-4">
+                    <label for="order-input" class="flex items-center space-x-3 text-lg font-medium text-[var(--text-color)]">
+                        <span class="material-symbols-outlined">reorder</span>
+                        <span>Orden de Unión</span>
                     </label>
-                    <div class="flex items-start space-x-3">
-                        <span class="material-symbols-outlined text-3xl text-[var(--text-muted-color)] mt-3">123</span>
-                        <textarea class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-shadow min-h-[200px] resize-y" id="order-input" placeholder="Ej:
+                    <div class="relative">
+                        <textarea id="order-input" rows="4" class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent resize-none font-mono text-lg" placeholder="Ejemplo:
 3
 1
 2"></textarea>
@@ -142,15 +139,17 @@
                 <!-- Botón de acción -->
                 <div class="mt-8 pt-6 border-t border-[var(--border-color)] text-center">
                     <button class="w-full max-w-md purr-button text-white px-8 py-4 rounded-xl font-semibold text-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] flex items-center justify-center mx-auto disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none min-h-[64px]" id="main-action-button">
-                        <div class="button-content flex items-center justify-center">
+                        <div class="button-content">
                             <span class="material-symbols-outlined mr-2 button-icon">merge_type</span>
-                            <span class="button-text">Unir PDF</span>
+                            <span class="button-text">Unir PDFs</span>
                         </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar"></div>
                         </div>
                         <div class="spinner-alt"></div>
-                        <span class="material-symbols-outlined text-3xl success-icon">check_circle</span>
+                        <div class="success-icon">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -179,41 +178,64 @@
         let uploadedFiles = [];
         let isProcessing = false;
 
+        // Función JSONP
+        function jsonpRequest(url, callback) {
+            return new Promise((resolve, reject) => {
+                const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+                
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    resolve(data);
+                };
+                
+                const script = document.createElement('script');
+                script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+                script.onerror = function() {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    reject(new Error('JSONP request failed'));
+                };
+                
+                document.body.appendChild(script);
+            });
+        }
+
         // Recuperar datos de la página anterior
         function loadSessionData() {
             workspaceId = sessionStorage.getItem('workspaceId');
             const filesData = sessionStorage.getItem('uploadedFiles');
             
-            if (!workspaceId || !filesData) {
-                alert('No se encontraron datos de la sesión. Redirigiendo al inicio.');
+            if (filesData) {
+                uploadedFiles = JSON.parse(filesData);
+                displayFilesPreview();
+            } else {
+                alert('No se encontraron archivos. Volviendo a la página anterior.');
                 window.location.href = 'subir-nombre.html';
-                return;
             }
-            
-            uploadedFiles = JSON.parse(filesData);
-            displayFilesPreview();
         }
 
         function displayFilesPreview() {
             filesPreview.innerHTML = '';
             
             uploadedFiles.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg border';
-                fileItem.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-sm font-medium text-[var(--text-muted-color)]">${index + 1}.</span>
-                        <span class="material-symbols-outlined text-2xl text-[var(--primary-color)]">picture_as_pdf</span>
-                        <div>
-                            <span class="font-medium text-sm text-[var(--text-color)]">${file.name}</span>
-                            <div class="text-xs text-[var(--text-muted-color)]">${formatFileSize(file.size)}</div>
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'file-preview flex items-center space-x-4 p-4 bg-white rounded-lg border border-[var(--border-color)]';
+                fileDiv.innerHTML = `
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-[var(--primary-color)] text-white rounded-full flex items-center justify-center font-bold text-sm">
+                            ${index + 1}
                         </div>
                     </div>
+                    <div class="flex-grow">
+                        <h4 class="font-medium text-[var(--text-color)]">${file.name}</h4>
+                        <p class="text-sm text-[var(--text-muted-color)] mt-1">${formatFileSize(file.size)}</p>
+                    </div>
                 `;
-                filesPreview.appendChild(fileItem);
+                filesPreview.appendChild(fileDiv);
             });
 
-            // Pre-llenar el textarea con el orden secuencial
+            // Establecer orden por defecto
             const defaultOrder = uploadedFiles.map((_, index) => index + 1).join('\n');
             orderInput.value = defaultOrder;
         }
@@ -223,28 +245,29 @@
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         // Validar orden de entrada
         function validateOrder(orderText) {
-            const lines = orderText.trim().split('\n').map(line => line.trim()).filter(line => line);
-            const numbers = lines.map(line => parseInt(line));
+            const lines = orderText.trim().split('\n').filter(line => line.trim());
+            const numbers = lines.map(line => parseInt(line.trim()));
             
-            // Verificar que todos sean números válidos
-            if (numbers.some(isNaN)) {
-                return { valid: false, error: 'Todos los valores deben ser números enteros.' };
+            // Verificar que todos son números válidos
+            if (numbers.some(num => isNaN(num))) {
+                return { valid: false, error: 'Todos los valores deben ser números.' };
             }
             
-            // Verificar que estén en el rango correcto
-            const maxNumber = uploadedFiles.length;
-            if (numbers.some(num => num < 1 || num > maxNumber)) {
-                return { valid: false, error: `Los números deben estar entre 1 y ${maxNumber}.` };
+            // Verificar que están en el rango correcto
+            const validRange = numbers.every(num => num >= 1 && num <= uploadedFiles.length);
+            if (!validRange) {
+                return { valid: false, error: `Los números deben estar entre 1 y ${uploadedFiles.length}.` };
             }
             
-            // Verificar que la cantidad coincida
-            if (numbers.length !== maxNumber) {
-                return { valid: false, error: `Debes especificar exactamente ${maxNumber} números.` };
+            // Verificar que no hay duplicados
+            const uniqueNumbers = new Set(numbers);
+            if (uniqueNumbers.size !== numbers.length) {
+                return { valid: false, error: 'No puede haber números duplicados.' };
             }
             
             return { valid: true, order: numbers };
@@ -254,9 +277,7 @@
         async function mergePDFs() {
             if (isProcessing) return;
             
-            const orderText = orderInput.value;
-            const validation = validateOrder(orderText);
-            
+            const validation = validateOrder(orderInput.value);
             if (!validation.valid) {
                 alert(validation.error);
                 return;
@@ -264,39 +285,34 @@
             
             isProcessing = true;
             mainButton.classList.add('loading');
-            mainButton.disabled = true;
-
+            
             try {
-                // Crear PDF unificado usando el orden especificado
-                const mergeResponse = await fetch(`${API}/workspaces/${workspaceId}/merge-by-filename`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        order: validation.order,
-                        output_name: 'resultado.pdf'
-                    })
-                });
-
-                if (!mergeResponse.ok) {
-                    throw new Error('Error al unir los PDFs');
-                }
-
-                // Mostrar éxito y redirigir
+                // Usar JSONP para ordenar archivos por nombre
+                console.log('🔧 Ordenando archivos por nombre...');
+                const data = await jsonpRequest(`${API}/jsonp/workspaces/${workspaceId}/order-by-filename`, 'callback');
+                console.log('✅ Archivos ordenados:', data);
+                
+                // Simular tiempo de procesamiento adicional
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Marcar como exitoso
                 mainButton.classList.remove('loading');
                 mainButton.classList.add('success');
-
+                
+                // Guardar datos para la página de éxito
+                sessionStorage.setItem('workspaceId', workspaceId);
+                sessionStorage.setItem('mergeOrder', JSON.stringify(validation.order));
+                
+                // Ir a la página de éxito después de un momento
                 setTimeout(() => {
-                    // Guardar workspace ID para la página de descarga
-                    sessionStorage.setItem('mergeWorkspaceId', workspaceId);
                     window.location.href = 'exito.html';
-                }, 2000);
-
+                }, 1500);
+                
             } catch (error) {
-                console.error('Error:', error);
-                alert('Error al procesar los archivos. Por favor, inténtalo de nuevo.');
+                console.error('❌ Error uniendo PDFs:', error);
+                alert('Error al unir los PDFs. Por favor, inténtalo de nuevo.');
                 
                 mainButton.classList.remove('loading');
-                mainButton.disabled = false;
                 isProcessing = false;
             }
         }

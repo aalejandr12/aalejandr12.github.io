@@ -49,6 +49,466 @@
             color: white;
             font-weight: 500;
         }
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .status-success { background: #10B981; color: white; }
+        .status-error { background: #EF4444; color: white; }
+        .status-info { background: #3B82F6; color: white; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Status Bar -->
+    <div id="statusBar" class="status-bar hidden"></div>
+
+    <!-- Header Mejorado -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="text-2xl">🐱</div>
+                    <h1 class="text-xl font-bold text-gray-900">PurrCrafter</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="connectionStatus" class="text-sm">
+                        <span class="text-gray-500">Conectando...</span>
+                    </div>
+                    <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <span class="text-xl">🌙</span>
+                    </button>
+                    <a href="/docs" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium">API Docs</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-12 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-2xl p-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Organiza tus PDFs como un <span class="text-blue-600">profesional</span>
+            </h2>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                Herramienta inteligente para organizar y unir documentos PDF por nombre de archivo o contenido
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="scrollToUpload()" class="purr-button text-white px-8 py-3 rounded-lg font-medium">
+                    Empezar Ahora
+                </button>
+                <a href="#como-funciona" class="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    Cómo Funciona
+                </a>
+            </div>
+        </section>
+
+        <!-- Workspace Info -->
+        <section id="workspace-info" class="mb-8 hidden">
+            <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                <div class="flex items-center">
+                    <div class="text-green-500 text-xl mr-3">✅</div>
+                    <div>
+                        <h3 class="font-semibold text-green-800">Workspace Activo</h3>
+                        <p class="text-green-600 text-sm">ID: <span id="workspaceId" class="font-mono"></span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros de Organización -->
+        <section id="upload-section" class="mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Selecciona tu método de organización</h3>
+                
+                <div class="flex flex-wrap gap-4 justify-center mb-6">
+                    <button onclick="setOrderType('filename')" class="filter-button bg-blue-600 text-white px-6 py-3 rounded-lg font-medium active">
+                        📝 Por Nombre de Archivo
+                    </button>
+                    <button onclick="setOrderType('content')" class="filter-button bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium">
+                        📄 Por Contenido
+                    </button>
+                    <button onclick="setOrderType('hybrid')" class="filter-button bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium">
+                        🔀 Híbrido (Nombre + Contenido)
+                    </button>
+                </div>
+
+                <!-- Descripción del método seleccionado -->
+                <div id="method-description" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <h4 class="font-semibold text-blue-900 mb-2">📝 Organización por Nombre de Archivo</h4>
+                    <p class="text-blue-800">Organiza los PDFs basándose en códigos o patrones encontrados en el nombre del archivo.</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 transition-colors bg-gray-50">
+                    <div class="text-6xl mb-4">📎</div>
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">Arrastra y suelta tus PDFs aquí</h4>
+                    <p class="text-gray-600 mb-4">o haz clic para seleccionar archivos</p>
+                    <input type="file" id="fileInput" multiple accept=".pdf" class="hidden">
+                    <button onclick="document.getElementById('fileInput').click()" class="purr-button text-white px-6 py-3 rounded-lg font-medium">
+                        Seleccionar Archivos
+                    </button>
+                </div>
+
+                <!-- Files List -->
+                <div id="filesList" class="mt-6 hidden">
+                    <h4 class="font-semibold text-gray-900 mb-3">Archivos seleccionados:</h4>
+                    <div id="filesContainer" class="space-y-2"></div>
+                    <button id="processBtn" onclick="processFiles()" class="mt-4 purr-button text-white px-6 py-3 rounded-lg font-medium w-full">
+                        Procesar y Organizar PDFs
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resultados -->
+        <section id="results" class="hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Resultados</h3>
+                <div id="resultsContent"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2025 PurrCrafter. Hecho con ❤️ para organizar tus documentos.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'https://api-oculto-9k7s.aaleddy.app';
+        let currentOrderType = 'filename';
+        let currentWorkspaceId = null;
+        let callbackCounter = 0;
+        let uploadedFiles = [];
+
+        // Helper function para JSONP (reemplaza fetch)
+        function jsonpRequest(url, params = {}) {
+            return new Promise((resolve, reject) => {
+                callbackCounter++;
+                const callbackName = `jsonpCallback${callbackCounter}`;
+                
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    document.head.removeChild(script);
+                    resolve(data);
+                };
+                
+                params.callback = callbackName;
+                
+                const queryString = Object.keys(params)
+                    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+                    .join('&');
+                
+                const fullUrl = `${url}?${queryString}`;
+                const script = document.createElement('script');
+                script.src = fullUrl;
+                
+                script.onerror = function() {
+                    delete window[callbackName];
+                    document.head.removeChild(script);
+                    reject(new Error('Error de conexión con el servidor'));
+                };
+                
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        document.head.removeChild(script);
+                        reject(new Error('Tiempo de espera agotado'));
+                    }
+                }, 15000);
+                
+                document.head.appendChild(script);
+            });
+        }
+
+        // Status functions
+        function showStatus(message, type = 'info', duration = 3000) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.className = `status-bar status-${type}`;
+            statusBar.classList.remove('hidden');
+            
+            if (duration > 0) {
+                setTimeout(() => {
+                    statusBar.classList.add('hidden');
+                }, duration);
+            }
+        }
+
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            if (status === 'connected') {
+                statusEl.innerHTML = '<span class="text-green-600">✅ Conectado</span>';
+            } else if (status === 'error') {
+                statusEl.innerHTML = '<span class="text-red-600">❌ Error</span>';
+            } else {
+                statusEl.innerHTML = '<span class="text-yellow-600">⏳ Conectando...</span>';
+            }
+        }
+
+        // Initialize workspace
+        async function initializeWorkspace() {
+            try {
+                updateConnectionStatus('connecting');
+                
+                const data = await jsonpRequest(`${API_BASE_URL}/jsonp/workspaces`);
+                
+                if (data.success && data.workspace_id) {
+                    currentWorkspaceId = data.workspace_id;
+                    document.getElementById('workspaceId').textContent = currentWorkspaceId;
+                    document.getElementById('workspace-info').classList.remove('hidden');
+                    
+                    updateConnectionStatus('connected');
+                    console.log('Workspace creado:', currentWorkspaceId);
+                } else {
+                    throw new Error('No se pudo crear el workspace');
+                }
+                
+            } catch (error) {
+                console.error('Error creando workspace:', error);
+                updateConnectionStatus('error');
+                showStatus('❌ Error al conectar con el servidor', 'error', 5000);
+            }
+        }
+
+        // Set order type
+        function setOrderType(type) {
+            currentOrderType = type;
+            
+            // Update buttons
+            document.querySelectorAll('.filter-button').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            event.target.classList.add('active', 'bg-blue-600', 'text-white');
+            event.target.classList.remove('bg-gray-200', 'text-gray-700');
+            
+            // Update description
+            updateMethodDescription(type);
+        }
+
+        function updateMethodDescription(type) {
+            const descriptions = {
+                filename: {
+                    icon: '📝',
+                    title: 'Organización por Nombre de Archivo',
+                    description: 'Organiza los PDFs basándose en códigos o patrones encontrados en el nombre del archivo.'
+                },
+                content: {
+                    icon: '📄',
+                    title: 'Organización por Contenido',
+                    description: 'Analiza el contenido interno de los PDFs para encontrar códigos y organizarlos.'
+                },
+                hybrid: {
+                    icon: '🔀',
+                    title: 'Organización Híbrida',
+                    description: 'Combina análisis de nombre de archivo y contenido para la mejor organización posible.'
+                }
+            };
+            
+            const desc = descriptions[type];
+            document.getElementById('method-description').innerHTML = `
+                <h4 class="font-semibold text-blue-900 mb-2">${desc.icon} ${desc.title}</h4>
+                <p class="text-blue-800">${desc.description}</p>
+            `;
+        }
+
+        // File handling
+        function scrollToUpload() {
+            document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // File input handling
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                displaySelectedFiles(files);
+            }
+        }
+
+        function displaySelectedFiles(files) {
+            const filesList = document.getElementById('filesList');
+            const filesContainer = document.getElementById('filesContainer');
+            
+            filesContainer.innerHTML = '';
+            uploadedFiles = files;
+            
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-lg';
+                fileItem.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-red-500 text-xl">📄</span>
+                        <span class="font-medium">${file.name}</span>
+                        <span class="text-gray-500 text-sm">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    </div>
+                    <button onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
+                        <span class="text-xl">🗑️</span>
+                    </button>
+                `;
+                filesContainer.appendChild(fileItem);
+            });
+            
+            filesList.classList.remove('hidden');
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            displaySelectedFiles(uploadedFiles);
+        }
+
+        // Process files
+        async function processFiles() {
+            if (!currentWorkspaceId) {
+                showStatus('❌ No hay workspace activo. Recarga la página.', 'error');
+                return;
+            }
+            
+            if (uploadedFiles.length === 0) {
+                showStatus('❌ No hay archivos seleccionados', 'error');
+                return;
+            }
+
+            const processBtn = document.getElementById('processBtn');
+            processBtn.disabled = true;
+            processBtn.textContent = 'Procesando...';
+
+            try {
+                // Simular procesamiento
+                showStatus('🔄 Organizando PDFs...', 'info', 0);
+                
+                const endpoint = currentOrderType === 'filename' ? 'order-by-filename' :
+                               currentOrderType === 'content' ? 'order-by-content' : 'order-hybrid';
+
+                const result = await jsonpRequest(`${API_BASE_URL}/jsonp/workspaces/${currentWorkspaceId}/${endpoint}`);
+                
+                if (result.success) {
+                    showResults(result);
+                    showStatus('✅ PDFs organizados exitosamente', 'success');
+                } else {
+                    throw new Error(result.error || 'Error desconocido');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error', 5000);
+                showErrorResults(error.message);
+            } finally {
+                processBtn.disabled = false;
+                processBtn.textContent = 'Procesar y Organizar PDFs';
+            }
+        }
+
+        function showResults(data) {
+            const resultsSection = document.getElementById('results');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            if (data.success && data.data && data.data.pdf_url) {
+                resultsContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="text-6xl mb-4">✅</div>
+                        <h4 class="text-2xl font-bold text-green-600 mb-4">¡PDFs organizados exitosamente!</h4>
+                        <p class="text-gray-600 mb-6">Tu archivo organizado está listo para descargar</p>
+                        <div class="space-y-4">
+                            <a href="${API_BASE_URL}${data.data.pdf_url}" target="_blank" 
+                               class="inline-block purr-button text-white px-8 py-3 rounded-lg font-medium">
+                                📥 Descargar PDF Organizado
+                            </a>
+                            <div class="mt-4">
+                                <button onclick="resetForm()" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50">
+                                    Organizar más PDFs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                showErrorResults('Respuesta inesperada del servidor');
+            }
+            
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showErrorResults(errorMessage) {
+            const resultsSection = document.getElementById('results');
+            const resultsContent = document.getElementById('resultsContent');
+            
+            resultsContent.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="text-4xl mb-4">❌</div>
+                    <h4 class="text-xl font-bold text-red-600 mb-4">Error al procesar</h4>
+                    <p class="text-gray-600 mb-4">${errorMessage}</p>
+                    <button onclick="resetForm()" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50">
+                        Intentar de nuevo
+                    </button>
+                </div>
+            `;
+            
+            resultsSection.classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('filesList').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            uploadedFiles = [];
+        }
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+        });
+
+        // Drag and drop
+        const dropZone = document.getElementById('dropZone');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-400', 'bg-blue-50');
+        });
+        
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+            
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            if (files.length > 0) {
+                displaySelectedFiles(files);
+            }
+        });
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            console.log('🚀 Inicializando PurrCrafter...');
+            setTimeout(initializeWorkspace, 1000);
+        });
+    </script>
+</body>
+</html>
+        }
         .filter-button:hover:not(.active) {
             background-color: #E5E7EB;
             color: var(--text-color);
