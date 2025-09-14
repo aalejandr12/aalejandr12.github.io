@@ -152,14 +152,14 @@
                         El sistema buscará estos códigos en el contenido de los PDFs y extraerá las páginas correspondientes.
                     </p>
                     <textarea id="mia-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Ejemplo:
-SV2225756406
-MIA000044043205
+CB2225756406
+LIO000044043205
 ABC123456
 XYZ789012
 
 Escribe un código por línea en el orden deseado..."></textarea>
                     <p class="text-xs text-[var(--text-muted-color)] mt-2">
-                        💡 <strong>Tip:</strong> Acepta cualquier código alfanumérico (SV, MIA, ABC, etc.). Si no especificas códigos, se extraerán automáticamente todos los encontrados en orden alfabético.
+                        💡 <strong>Tip:</strong> Acepta cualquier código alfanumérico. Si no especificas códigos, se extraerán automáticamente todos los encontrados en orden alfabético.
                     </p>
                 </div>
 
@@ -381,15 +381,15 @@ Escribe un código por línea en el orden deseado..."></textarea>
                 console.log('✅ Workspace creado:', workspaceId);
                 
                 // PASO 2: Subir archivos (10% - 60%)
-                console.log('📤 Subiendo archivos...');
+                console.log('Subiendo archivos...');
                 await uploadFilesToServer();
                 
                 // PASO 3: Analizar contenido (60% - 85%)
-                console.log('🔍 Analizando contenido...');
+                console.log('Analizando contenido...');
                 updateProgress(75, 'Analizando contenido de documentos...');
                 
                 // PASO 4: Procesar y unir (85% - 100%)
-                console.log('🔧 Procesando y ordenando archivos...');
+                console.log('Procesando y ordenando archivos...');
                 updateProgress(90, 'Procesando y uniendo...');
                 
                 // Construir URL del API con parámetros opcionales

@@ -152,14 +152,14 @@
                         El sistema buscará archivos con patrón base_0.pdf, base_1.pdf, etc.
                     </p>
                     <textarea id="order-input" class="w-full h-32 p-4 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--accent-color)] focus:border-[var(--accent-color)] transition-colors duration-200" placeholder="Ejemplo:
-SV2225756406
-MIA000044043205
-ABC123456
+CR2225756406
+SJO000044043205
+LAC123456
 XYZ789012
 
 Escribe una base por línea en el orden deseado..."></textarea>
                     <p class="text-xs text-[var(--text-muted-color)] mt-2">
-                        💡 <strong>Tip:</strong> Acepta cualquier código alfanumérico (SV, MIA, ABC, etc.). Si no especificas orden, se procesarán todos los archivos automáticamente en orden alfabético.
+                        💡 <strong>Tip:</strong> Acepta cualquier código alfanumérico. Si no especificas orden, se procesarán todos los archivos automáticamente en orden alfabético.
                     </p>
                 </div>
 
@@ -391,14 +391,14 @@ Escribe una base por línea en el orden deseado..."></textarea>
                     throw new Error('Error creando workspace');
                 }
                 workspaceId = workspaceData.workspace_id;
-                console.log('✅ Workspace creado:', workspaceId);
+                console.log('Workspace creado:', workspaceId);
                 
                 // PASO 2: Subir archivos (10% - 80%)
-                console.log('📤 Subiendo archivos...');
+                console.log('Subiendo archivos...');
                 await uploadFilesToServer();
                 
                 // PASO 3: Procesar y unir (80% - 100%)
-                console.log('🔧 Procesando archivos...');
+                console.log('Procesando archivos...');
                 updateProgress(85, 'Procesando y uniendo...');
                 
                 // Obtener lista de orden del usuario
@@ -417,7 +417,7 @@ Escribe una base por línea en el orden deseado..."></textarea>
                         console.log(`📋 Procesando ${bases.length} bases específicas:`, bases);
                     }
                 } else {
-                    console.log('📋 Procesando todos los archivos automáticamente');
+                    console.log('Procesando todos los archivos automáticamente');
                 }
                 
                 const processData = await jsonpRequest(apiUrl, 'callback');
