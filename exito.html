@@ -5,9 +5,6 @@
 <title>Unión Exitosa - PurrCrafter</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223"
      crossorigin="anonymous"></script>
-<script>
-  window.adsbygoogle = window.adsbygoogle || [];
-</script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -91,17 +88,6 @@
 <body class="antialiased">
 <div class="container mx-auto px-4 min-h-screen flex flex-col items-center justify-center pt-10">
 <main class="w-full max-w-2xl flex-grow flex flex-col items-center justify-center text-center">
-
-<!-- Anuncio Superior - Primera impresión -->
-<div class="w-full max-w-xl mb-8 flex justify-center">
-    <ins class="adsbygoogle"
-         style="display:block; width:728px; height:90px;"
-         data-ad-client="ca-pub-1897264775520223"
-         data-ad-slot="2473509960"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-</div>
-
 <div class="bg-[var(--secondary-color)] rounded-2xl border border-[var(--border-color)] p-8 md:p-12 shadow-sm w-full">
 <div class="flex justify-center items-center">
 <svg class="check-icon" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
@@ -118,14 +104,18 @@
 </button>
 </div>
 
-<!-- Anuncio Central - Después del botón de descarga -->
-<div class="mt-8 mb-8 w-full flex justify-center">
+<!-- Bloque de anuncios AdSense -->
+<div class="mt-8 mb-8 flex justify-center">
+    <!-- PurrCrafter -->
     <ins class="adsbygoogle"
-         style="display:block; min-height:280px; width:100%; max-width:336px;"
+         style="display:block"
          data-ad-client="ca-pub-1897264775520223"
          data-ad-slot="2473509960"
-         data-ad-format="rectangle"
+         data-ad-format="auto"
          data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </div>
 
 <div class="mt-8 pt-6 border-t border-[var(--border-color)] flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
@@ -241,39 +231,6 @@
 
     // Cargar datos al iniciar
     loadSessionData();
-
-    // Inicializar anuncios de AdSense de forma optimizada
-    function initializeAds() {
-        try {
-            console.log('🎯 Inicializando anuncios...');
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            console.log('✅ Anuncios inicializados');
-        } catch (error) {
-            console.warn('⚠️ Error al inicializar anuncios:', error);
-        }
-    }
-
-    // Inicializar anuncios después de cargar la página
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeAds);
-    } else {
-        initializeAds();
-    }
 </script>
-
-<!-- Anuncio Footer - Al final de la página -->
-<div class="w-full max-w-2xl mt-8 mb-4 flex justify-center">
-    <ins class="adsbygoogle"
-         style="display:block; width:100%; height:280px;"
-         data-ad-client="ca-pub-1897264775520223"
-         data-ad-slot="2473509960"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-</div>
-
-</main>
-</div>
 
 </body></html>
