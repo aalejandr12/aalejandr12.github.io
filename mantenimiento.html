@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>PurrCrafter - Mantenimiento</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #1F2937;
+            --primary-color: #2563EB;
+            --secondary-color: #F9FAFB;
+            --accent-color: #3B82F6;
+            --border-color: #E5E7EB;
+            --text-muted-color: #6B7280;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .maintenance-icon {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .progress-bar {
+            animation: progress 3s ease-in-out infinite;
+        }
+        @keyframes progress {
+            0%, 100% { width: 25%; }
+            50% { width: 75%; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 min-h-screen flex flex-col items-center justify-center">
+        <div class="w-full max-w-2xl text-center">
+            <!-- Icono de mantenimiento -->
+            <div class="mb-8">
+                <svg class="w-24 h-24 text-[var(--primary-color)] mx-auto maintenance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                </svg>
+            </div>
+            
+            <!-- Título principal -->
+            <h1 class="text-5xl font-bold text-[var(--text-color)] drop-shadow-sm mb-4">PurrCrafter</h1>
+            
+            <!-- Subtítulo -->
+            <h2 class="text-3xl font-semibold text-[var(--primary-color)] mb-6">Sitio en Mantenimiento</h2>
+            
+            <!-- Descripción -->
+            <p class="text-lg text-[var(--text-muted-color)] mb-8 max-w-lg mx-auto">
+                Estamos trabajando para mejorar tu experiencia. Nuestro sitio web está temporalmente fuera de servicio debido a tareas de mantenimiento programado.
+            </p>
+            
+            <!-- Barra de progreso -->
+            <div class="w-full max-w-md mx-auto mb-8">
+                <div class="bg-[var(--secondary-color)] h-3 rounded-full overflow-hidden border border-[var(--border-color)]">
+                    <div class="h-full bg-gradient-to-r from-[var(--primary-color)] to-[var(--accent-color)] rounded-full progress-bar"></div>
+                </div>
+                <p class="text-sm text-[var(--text-muted-color)] mt-2">⏰ Próximamente disponible</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+            <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Actualizar automáticamente la página cada 5 minutos
+        setTimeout(function() {
+            location.reload();
+        }, 300000); // 5 minutos = 300000 ms
+    </script>
+</body>
+</html>
