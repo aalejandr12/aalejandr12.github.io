@@ -469,12 +469,12 @@
                 
                 updateProgress(20, 'Iniciando redimensionado...');
 
-                // Crear la solicitud usando la API existente con modo "por_pagina" para página 1
+                // Crear la solicitud usando "por_ancho" que redimensiona todas las páginas
                 const requestData = {
                     filename: uploadedFiles[0].name,
-                    tipo_redimension: "por_pagina", // Usar página específica como referencia
+                    tipo_redimension: "por_ancho", // Redimensionar todas las páginas por ancho
                     nuevo_ancho: anchoReferencia,
-                    numero_pagina: 1, // Página de referencia
+                    numero_pagina: null, // No se necesita para "por_ancho"
                     output_name: `redimensionado_${uploadedFiles[0].name}`
                 };
 
@@ -494,11 +494,12 @@
                 }
 
                 const text = await response.text();
+                console.log('Respuesta del servidor:', text);
                 
                 // Procesar respuesta JSONP
-                const callbackMatch = text.match(/callback\((.+)\)/);
+                const callbackMatch = text.match(/callback\\((.+)\\)/);
                 if (!callbackMatch) {
-                    throw new Error('Respuesta JSONP inválida');
+                    throw new Error('Respuesta JSONP inválida: ' + text);
                 }
 
                 const data = JSON.parse(callbackMatch[1]);
@@ -515,7 +516,9 @@
                             const link = document.createElement('a');
                             link.href = downloadUrl;
                             link.download = data.data.output_filename;
+                            document.body.appendChild(link);
                             link.click();
+                            document.body.removeChild(link);
                             
                             // Resetear botón después de un momento
                             setTimeout(() => {
@@ -530,7 +533,7 @@
                 }
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error completo:', error);
                 alert('Error: ' + error.message);
                 mainButton.classList.remove('loading');
                 mainButton.disabled = false;
