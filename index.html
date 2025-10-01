@@ -4,6 +4,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>PurrCrafter</title>
+<!-- PWA metas -->
+<meta name="theme-color" content="#ffffff"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="PurrCrafter"/>
 
 <!-- Meta SEO Básicas -->
 <meta name="description" content="Herramientas PDF online gratuitas: unir PDFs, redimensionar documentos, convertir a EPUB y escáner de cámaras IP. Sin registro, rápido y seguro. ¡Pruébalo gratis!"/>
@@ -141,6 +147,15 @@
         .card-item {
             will-change: transform, opacity;}
     </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err){
+                    console.log('SW registration failed:', err);
+                });
+            });
+        }
+    </script>
 </head>
 <body class="antialiased">
 <script>

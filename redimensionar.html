@@ -4,6 +4,12 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>PurrCrafter</title>
+    <!-- PWA metas -->
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <meta name="apple-mobile-web-app-title" content="PurrCrafter"/>
     
     <!-- Meta SEO Específicas -->
     <meta name="description" content="Redimensionar PDF online gratis manteniendo calidad. Cambia el ancho de tus documentos PDF sin perder proporciones. Sin registro, rápido y seguro. ¡Pruébalo!"/>
@@ -135,6 +141,15 @@
             display: block;
         }
     </style>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').catch(function(err){
+                        console.log('SW registration failed:', err);
+                    });
+                });
+            }
+        </script>
 </head>
 <body class="antialiased">
     <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
