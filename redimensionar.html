@@ -514,29 +514,21 @@
                             mainButton.classList.remove('loading');
                             mainButton.classList.add('success');
                             
-                            // Crear enlace de descarga inmediatamente
+                            // Guardar datos en sessionStorage para usar en la página de éxito
+                            sessionStorage.setItem('workspaceId', workspaceId);
+                            sessionStorage.setItem('downloadUrl', data.data.pdf_url);
+                            sessionStorage.setItem('filename', data.data.output_filename);
+                            sessionStorage.setItem('operationType', 'redimensionar');
+                            sessionStorage.setItem('operationDetails', JSON.stringify({
+                                tipo_redimension: data.data.tipo_redimension,
+                                nuevo_ancho_mm: data.data.nuevo_ancho_mm,
+                                total_paginas: data.data.metadata_resultado.total_paginas
+                            }));
+                            
+                            // Redirigir a la página de éxito después de un momento
                             setTimeout(() => {
-                                const downloadUrl = `${API}${data.data.pdf_url}`;
-                                console.log('URL de descarga:', downloadUrl);
-                                
-                                // Crear y hacer clic en el enlace de descarga
-                                const link = document.createElement('a');
-                                link.href = downloadUrl;
-                                link.download = data.data.output_filename;
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                
-                                // Mostrar mensaje de éxito
-                                alert(`¡PDF redimensionado exitosamente!\\n\\nArchivo: ${data.data.output_filename}\\nTipo: ${data.data.tipo_redimension}\\nNuevo ancho: ${data.data.nuevo_ancho_mm}mm\\nPáginas: ${data.data.metadata_resultado.total_paginas}`);
-                                
-                                // Resetear botón después de un momento
-                                setTimeout(() => {
-                                    mainButton.classList.remove('success');
-                                    mainButton.disabled = false;
-                                    isProcessing = false;
-                                }, 3000);
-                            }, 500);
+                                window.location.href = 'exito.html';
+                            }, 1000);
                         }, 400);
                     } else {
                         throw new Error(data.error || 'Error en el redimensionado');

@@ -95,8 +95,8 @@
 <polyline class="check-icon__check" fill="none" points="35,60 52,77 85,44"></polyline>
 </svg>
 </div>
-<h1 class="text-3xl md:text-4xl font-bold text-[var(--text-color)] mt-6">¡PDFs Unidos Exitosamente!</h1>
-<p class="text-lg text-[var(--text-muted-color)] mt-2">Tu nuevo documento está listo para ser descargado.</p>
+<h1 id="success-title" class="text-3xl md:text-4xl font-bold text-[var(--text-color)] mt-6">¡PDFs Unidos Exitosamente!</h1>
+<p id="success-description" class="text-lg text-[var(--text-muted-color)] mt-2">Tu nuevo documento está listo para ser descargado.</p>
 <div class="mt-10">
 <button id="download-button" class="w-full max-w-sm purr-button text-white px-8 py-4 rounded-xl font-semibold text-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] flex items-center justify-center mx-auto min-h-[64px]">
 <span class="material-symbols-outlined mr-2">download</span>
@@ -151,11 +151,28 @@
     // Recuperar workspace ID de la sesión
     function loadSessionData() {
         workspaceId = sessionStorage.getItem('workspaceId');
+        const operationType = sessionStorage.getItem('operationType') || 'unir';
         
         console.log('🔍 Datos de sesión encontrados:');
         console.log('  workspaceId:', workspaceId);
         console.log('  downloadUrl:', sessionStorage.getItem('downloadUrl'));
         console.log('  filename:', sessionStorage.getItem('filename'));
+        console.log('  operationType:', operationType);
+        
+        // Personalizar el contenido según el tipo de operación
+        const titleElement = document.getElementById('success-title');
+        const descriptionElement = document.getElementById('success-description');
+        const downloadButton = document.getElementById('download-button');
+        
+        if (operationType === 'redimensionar') {
+            titleElement.textContent = '¡PDF Redimensionado Exitosamente!';
+            descriptionElement.textContent = 'Tu PDF redimensionado está listo para ser descargado.';
+            downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Redimensionado</span>';
+        } else {
+            titleElement.textContent = '¡PDFs Unidos Exitosamente!';
+            descriptionElement.textContent = 'Tu nuevo documento está listo para ser descargado.';
+            downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
+        }
         
         // Obtener URL de descarga real si está disponible
         const downloadUrl = sessionStorage.getItem('downloadUrl');
