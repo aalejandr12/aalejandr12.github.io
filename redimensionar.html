@@ -162,15 +162,6 @@
                 <div id="resize-params" class="files-section mt-6">
                     <h3 class="text-lg font-medium text-[var(--text-color)] mb-4">Parámetros de Redimensionado</h3>
                     <div class="grid grid-cols-1 gap-4 text-left">
-                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                            <p class="text-sm text-blue-800 font-medium mb-2">
-                                🎯 Modo Automático: Se usará el ancho de la primera página como referencia
-                            </p>
-                            <p class="text-xs text-blue-600">
-                                Todas las páginas se redimensionarán para coincidir con el ancho de la página 1
-                            </p>
-                        </div>
-
                         <div id="metadata-info" class="mt-4 p-3 bg-gray-50 rounded-lg" style="display: none;">
                             <h4 class="font-medium text-gray-800 mb-2">Información del PDF:</h4>
                             <div id="metadata-content"></div>
@@ -204,7 +195,6 @@
             <div class="flex justify-center space-x-6 mb-4">
                 <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
                 <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
-                <a class="hover:text-[var(--accent-color)] transition-colors" href="contacto.html">Contacto</a>
             </div>
             <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
         </footer>
@@ -404,11 +394,6 @@
                 <p><strong>Total de páginas:</strong> ${metadata.total_paginas}</p>
                 <p><strong>📏 Ancho de referencia (Página 1):</strong> ${metadata.ancho_referencia}mm</p>
                 <p><strong>Estado:</strong> ${uniformeText}</p>
-                <div class="mt-2 p-2 bg-blue-50 rounded">
-                    <p class="text-sm text-blue-800">
-                        <strong>🎯 Redimensionado automático:</strong> Todas las páginas se ajustarán al ancho de ${metadata.ancho_referencia}mm
-                    </p>
-                </div>
             `;
             metadataInfo.style.display = 'block';
         }
