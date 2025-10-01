@@ -1,14 +1,15 @@
+
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>PurrCrafter</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223"
-         crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-    <style type="text/tailwindcss">
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PurrCrafter</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
+<style type="text/tailwindcss">
         :root {
             --bg-color: #FFFFFF;
             --text-color: #1F2937;
@@ -24,7 +25,7 @@
             color: var(--text-color);
         }
         .purr-card {
-            transition: all 0.3s ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background-color: var(--secondary-color);
             border: 1px solid var(--border-color);
         }
@@ -34,7 +35,7 @@
             border-color: var(--primary-color);
         }
         .purr-button {
-            transition: all 0.3s ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background-color: var(--primary-color);
         }
         .purr-button:hover {
@@ -43,7 +44,7 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
         .filter-button {
-            transition: all 0.3s ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-muted-color);
         }
         .filter-button.active {
@@ -55,76 +56,252 @@
             background-color: #E5E7EB;
             color: var(--text-color);
         }
+        #card-container {
+            position: relative;
+        }
+        .card-item {
+            will-change: transform, opacity;}
     </style>
 </head>
 <body class="antialiased">
-    <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
-        <header class="text-center w-full max-w-4xl mb-8">
-            <h1 class="text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">PurrCrafter</h1>
-            <p class="text-lg text-[var(--text-muted-color)] mt-2">Tu herramienta amigable para manipular tus archivos</p>
-        </header>
-
-        <!-- Bloque de anuncios AdSense -->
-        <div class="w-full max-w-4xl mb-8 flex justify-center">
-            <!-- PurrCrafter -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-1897264775520223"
-                 data-ad-slot="2473509960"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-        
-        <div class="w-full max-w-4xl mb-12 flex justify-center">
-            <div class="bg-[var(--secondary-color)]/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-[var(--border-color)] flex space-x-2">
-                <button class="filter-button active px-6 py-2 rounded-full text-md">Todos</button>
-                <button class="filter-button px-6 py-2 rounded-full text-md">PDF</button>
-                <button class="filter-button px-6 py-2 rounded-full text-md">Videos</button>
-            </div>
-        </div>
-        
-        <main class="w-full max-w-4xl flex-grow">
-            <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
-                <div class="p-8 rounded-2xl shadow-md flex flex-col items-center justify-center text-center purr-card">
-                    <div class="mb-6">
-                        <svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Unir por Nombre</h2>
-                    <p class="text-[var(--text-muted-color)] mb-8">Organiza y combina tus PDFs según su nombre de archivo.</p>
-                    <button onclick="window.location.href='unir-pdf-nombre.html'" class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+<script>
+    // Detector de AdBlock - Redirige a página dedicada
+    function detectAdBlock() {
+        const skipExpiration = localStorage.getItem('adblock_skip');
+        if (skipExpiration && new Date().getTime() < parseInt(skipExpiration)) {
+            return;
+        }
+        const testAd = document.createElement('div');
+        testAd.innerHTML = '&nbsp;';
+        testAd.className = 'adsbox';
+        testAd.style.position = 'absolute';
+        testAd.style.left = '-10000px';
+        document.body.appendChild(testAd);
+        setTimeout(() => {
+            const adBlockDetected = testAd.offsetHeight === 0 || 
+                                  window.getComputedStyle(testAd).display === 'none' ||
+                                  !document.querySelector('.adsbygoogle');
+            document.body.removeChild(testAd);
+            if (adBlockDetected) {
+                sessionStorage.setItem('originalPage', window.location.href);
+                window.location.href = 'adblock.html';
+            }
+        }, 100);
+    }
+    window.addEventListener('load', () => {
+        setTimeout(detectAdBlock, 2000);
+    });
+</script>
+<div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
+<header class="text-center w-full max-w-4xl mb-8">
+<h1 class="text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">PurrCrafter</h1>
+<p class="text-lg text-[var(--text-muted-color)] mt-2">Tu herramienta amigable para manipular tus archivos</p>
+</header>
+<div class="w-full max-w-4xl mb-12 flex justify-center">
+<div class="bg-[var(--secondary-color)]/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-[var(--border-color)] flex space-x-2" id="filter-buttons">
+<button class="filter-button active px-6 py-2 rounded-full text-md" data-filter="all">Todos</button>
+<button class="filter-button px-6 py-2 rounded-full text-md" data-filter="pdf">PDF</button>
+<button class="filter-button px-6 py-2 rounded-full text-md" data-filter="video">Video</button>
+<button class="filter-button px-6 py-2 rounded-full text-md" data-filter="epub">EPUB</button>
+</div>
+</div>
+<main class="w-full max-w-5xl flex-grow">
+<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="card-container">
+<!-- Tarjeta: Unir por Nombre -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="pdf">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Unir por Nombre</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Organiza y combina tus PDFs según su nombre.</p>
+</div>
+<button onclick="window.location.href='unir-pdf-nombre.html'" class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
                         Seleccionar PDF
                     </button>
-                </div>
-                
-                <div class="p-8 rounded-2xl shadow-md flex flex-col items-center justify-center text-center purr-card">
-                    <div class="mb-6">
-                        <svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Unir por Contenido</h2>
-                    <p class="text-[var(--text-muted-color)] mb-8">Fusiona tus PDFs basándose en el contenido de los documentos.</p>
-                    <button onclick="window.location.href='unir-pdf-contenido.html'" class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+</div>
+</div>
+<!-- Tarjeta: Unir por Contenido -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="pdf">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Unir por Contenido</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Fusiona tus PDFs basándose en el contenido.</p>
+</div>
+<button onclick="window.location.href='unir-pdf-contenido.html'" class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
                         Seleccionar PDF
                     </button>
-                </div>
-            </div>
-        </main>
-        
-        <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
-            <div class="flex justify-center space-x-6 mb-4">
-                <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
-                <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
-                <a class="hover:text-[var(--accent-color)] transition-colors" href="#contacto">Contacto</a>
-            </div>
-            <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
-        </footer>
-    </div>
-</body>
-</html>
+</div>
+</div>
+<!-- Tarjeta: Convertir Video -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="video">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Convertir Video</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Transforma tus videos al formato MP4 universal.</p>
+</div>
+<button class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+                        Seleccionar Video
+                    </button>
+</div>
+</div>
+<!-- Tarjeta: Convertir a EPUB -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="epub">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Convertir a EPUB</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Transforma documentos a formato EPUB para ebooks.</p>
+</div>
+<button class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+                        Seleccionar Archivo
+                    </button>
+</div>
+</div>
+<!-- Tarjeta: Colocar Portada EPUB -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="epub">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253m-9-6.5h3m-3 3h3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Colocar Portada para EPUB</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Modifica el contenido y metadatos de tus archivos EPUB.</p>
+</div>
+<button class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+                        Seleccionar EPUB
+                    </button>
+</div>
+</div>
+<!-- Tarjeta: Ajustar PDF -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="pdf">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 8V4m0 0h4M4 4l5 5m11-1V8m0 0h-4m4 0l-5-5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5 5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Ajustar PDF</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Ajusta el ancho de tus PDFs para una mejor visualización.</p>
+</div>
+<button class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+                        Ajustar PDF
+                    </button>
+</div>
+</div>
+<!-- Tarjeta: Escáner de Cámara -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="video">
+<div class="mb-6 flex-shrink-0">
+<svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Escáner de Cámara</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Digitaliza documentos directamente desde tu cámara web.</p>
+</div>
+<button class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+                        Iniciar Escáner
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+<div class="flex justify-center space-x-6 mb-4">
+<a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
+<a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
+<a class="hover:text-[var(--accent-color)] transition-colors" href="#contacto">Contacto</a>
+</div>
+<p>© 2024 PurrCrafter. Todos los derechos reservados.</p>
+</footer>
+</div>
+<!-- Bloque de anuncios AdSense -->
+<div class="mt-12 mb-8 flex justify-center w-full max-w-4xl">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-1897264775520223"
+         data-ad-slot="2473509960"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+<script>
+    gsap.registerPlugin(Flip);
+    const container = document.querySelector("#card-container");
+    const items = gsap.utils.toArray(".card-item");
+    const filterButtons = document.getElementById('filter-buttons');
+    function filterItems(filter) {
+        const state = Flip.getState(items);
+        items.forEach(item => {
+            if (item.style.display === 'none') {
+                item.style.display = 'flex';
+                item.style.opacity = 0;
+            }
+        });
+        items.forEach(item => {
+            const shouldShow = filter === 'all' || item.dataset.category === filter;
+            gsap.set(item, {
+                display: shouldShow ? 'flex' : 'none',
+                opacity: shouldShow ? 1 : 0
+            });
+        });
+        Flip.from(state, {
+            duration: 0.8,
+            scale: true,
+            ease: "expo.out",
+            absolute: true,
+            stagger: 0.05,
+            onEnter: elements => gsap.fromTo(elements, {
+                opacity: 0,
+                scale: 0.8
+            }, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.6,
+                ease: "expo.out",
+                delay: 0.1
+            }),
+            onLeave: elements => gsap.to(elements, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.4,
+                ease: "power1.in"
+            })
+        });
+    }
+    filterButtons.addEventListener("click", e => {
+        const el = e.target;
+        if (el.tagName !== "BUTTON" || el.classList.contains('active')) return;
+        filterButtons.querySelector('.active').classList.remove('active');
+        el.classList.add('active');
+        const filter = el.dataset.filter;
+        filterItems(filter);
+    });
+</script>
+</body></html>
