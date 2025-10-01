@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Escáner de Cámaras IP - PurrCrafter</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    
+    <style type="text/tailwindcss">
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #1F2937;
+            --primary-color: #2563EB;
+            --secondary-color: #F9FAFB;
+            --accent-color: #3B82F6;
+            --border-color: #E5E7EB;
+            --text-muted-color: #6B7280;
+            --success-color: #10B981;
+            --danger-color: #DC2626;
+            --danger-hover-color: #EF4444;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .purr-button {
+            transition: all 0.3s ease-in-out;
+            background-color: var(--primary-color);
+        }
+        .purr-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+        .purr-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .purr-button-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .purr-button-danger:hover:not(:disabled) {
+            background-color: var(--danger-hover-color);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+        .purr-button-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        .purr-button-success:hover:not(:disabled) {
+            background-color: #059669;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease-in-out;
+        }
+        .sortable:hover {
+            color: var(--accent-color);
+        }
+        .sort-indicator {
+            margin-left: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            transition: opacity 0.2s ease-in-out;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        td {
+            word-break: break-word;
+            vertical-align: top;
+        }
+        .est {
+            color: darkorange;
+            font-weight: 600;
+        }
+        .exact {
+            color: green;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <script>
+        // Detector de AdBlock - Redirige a página dedicada
+        function detectAdBlock() {
+            const skipExpiration = localStorage.getItem('adblock_skip');
+            if (skipExpiration && new Date().getTime() < parseInt(skipExpiration)) {
+                return;
+            }
+            const testAd = document.createElement('div');
+            testAd.innerHTML = '&nbsp;';
+            testAd.className = 'adsbox';
+            testAd.style.position = 'absolute';
+            testAd.style.left = '-10000px';
+            document.body.appendChild(testAd);
+            setTimeout(() => {
+                const adBlockDetected = testAd.offsetHeight === 0 || 
+                                      window.getComputedStyle(testAd).display === 'none' ||
+                                      !document.querySelector('.adsbygoogle');
+                document.body.removeChild(testAd);
+                if (adBlockDetected) {
+                    sessionStorage.setItem('originalPage', window.location.href);
+                    window.location.href = 'adblock.html';
+                }
+            }, 100);
+        }
+        window.addEventListener('load', () => {
+            setTimeout(detectAdBlock, 2000);
+        });
+    </script>
+
+    <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
+        <header class="text-center w-full max-w-6xl mb-6">
+            <a class="inline-block mb-4 text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors" href="index.html" aria-label="Volver a inicio">
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    <span>Volver a Inicio</span>
+                </div>
+            </a>
+            <h1 class="text-3xl md:text-4xl font-bold text-[var(--text-color)] drop-shadow-sm">Escáner de Cámaras IP</h1>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Detecta endpoints web / snapshot y extrae modelo cuando es posible (si la cámara permite CORS).</p>
+        </header>
+
+        <main class="w-full max-w-6xl flex-grow">
+            <div class="bg-[var(--secondary-color)] rounded-2xl border border-[var(--border-color)] p-6 md:p-8 shadow-sm">
+                <!-- Formulario de configuración -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6">
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-color)]">Subred</label>
+                        <input id="subnet" class="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]" value="192.168.1" placeholder="Ej: 192.168.1"/>
+                        <p class="text-xs text-[var(--text-muted-color)] mt-1">Ejemplo: 192.168.1</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-color)]">Inicio</label>
+                        <input id="start" type="number" class="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]" value="1" min="1" max="254"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-color)]">Fin</label>
+                        <input id="end" type="number" class="w-full border border-[var(--border-color)] rounded-lg px-3 py-2 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]" value="50" min="1" max="254"/>
+                    </div>
+
+                    <div class="flex gap-2 items-center flex-wrap">
+                        <button id="startBtn" class="purr-button text-white px-4 py-2 rounded-lg font-semibold flex items-center space-x-2">
+                            <span class="material-symbols-outlined">search</span>
+                            <span>Iniciar Escaneo</span>
+                        </button>
+                        <button id="stopBtn" class="purr-button purr-button-danger px-4 py-2 rounded-lg font-semibold flex items-center space-x-2" disabled>
+                            <span class="material-symbols-outlined">stop_circle</span>
+                            <span>Detener</span>
+                        </button>
+                        <button id="downloadBtn" class="purr-button purr-button-success px-4 py-2 rounded-lg font-semibold flex items-center space-x-2" disabled>
+                            <span class="material-symbols-outlined">download</span>
+                            <span>Descargar CSV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Indicador de progreso -->
+                <div class="mb-6">
+                    <span id="progress" class="text-sm text-[var(--text-muted-color)]"></span>
+                </div>
+
+                <!-- Bloque de anuncios AdSense -->
+                <div class="mb-8 flex justify-center">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-1897264775520223"
+                         data-ad-slot="2473509960"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+
+                <!-- Tabla de resultados -->
+                <div class="overflow-x-auto">
+                    <table id="resultsTable" class="min-w-full text-sm bg-white rounded-lg overflow-hidden shadow-sm" aria-live="polite" role="table">
+                        <thead class="bg-[var(--secondary-color)]">
+                            <tr class="text-left">
+                                <th class="px-6 py-3 text-xs font-medium text-[var(--text-muted-color)] uppercase tracking-wider sortable" data-col="0" role="columnheader" aria-sort="none">
+                                    <div class="flex items-center">
+                                        IP 
+                                        <span class="sort-indicator material-symbols-outlined" aria-hidden="true">unfold_more</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-[var(--text-muted-color)] uppercase tracking-wider sortable" data-col="1" role="columnheader" aria-sort="none">
+                                    <div class="flex items-center">
+                                        Modelo (fuente) 
+                                        <span class="sort-indicator material-symbols-outlined" aria-hidden="true">unfold_more</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-[var(--text-muted-color)] uppercase tracking-wider" role="columnheader">
+                                    Login / Abrir
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium text-[var(--text-muted-color)] uppercase tracking-wider sortable" data-col="3" role="columnheader" aria-sort="none">
+                                    <div class="flex items-center">
+                                        Ruta / Puerto 
+                                        <span class="sort-indicator material-symbols-outlined" aria-hidden="true">unfold_more</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-[var(--border-color)]" id="resultsBody" role="rowgroup">
+                            <tr id="no-results-row">
+                                <td class="px-6 py-12 text-center text-sm text-[var(--text-muted-color)]" colspan="4">
+                                    No se han encontrado resultados. Inicie un escaneo para comenzar.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-sm text-[var(--text-muted-color)] mt-4">
+                    <strong>Nota:</strong> La extracción de <em>Modelo</em> funciona solo si la cámara permite CORS o expone un endpoint legible (ONVIF/XML). En caso contrario se mostrará "no disponible".
+                </p>
+            </div>
+        </main>
+
+        <footer class="w-full max-w-6xl mt-8 text-center text-sm text-[var(--text-muted-color)]">
+            <p>© 2025 PurrCrafter - Escáner de Cámaras IP</p>
+        </footer>
+    </div>
+
+<script>
+(() => {
+  // probes / infoPaths (idénticos al original)
+  const probes = [
+    {port:80, path:'/axis-cgi/jpg/image.cgi'},
+    {port:80, path:'/snapshot.jpg'},
+    {port:80, path:'/image.jpg'},
+    {port:80, path:'/jpg/image.jpg'},
+    {port:80, path:'/cgi-bin/snapshot.cgi'},
+    {port:80, path:'/videostream.cgi'},
+    {port:80, path:'/video.cgi'},
+    {port:80, path:'/onvif/device_service'},
+    {port:80, path:'/ISAPI/System/deviceInfo'},
+    {port:80, path:'/cgi-bin/magicBox.cgi?action=getConfigInfo'},
+    {port:80, path:'/deviceinfo.xml'},
+    {port:8080, path:'/axis-cgi/jpg/image.cgi'},
+    {port:8080, path:'/snapshot.jpg'},
+    {port:81, path:'/snapshot.jpg'},
+    {port:8000, path:'/snapshot.jpg'},
+    {port:8081, path:'/snapshot.jpg'}
+  ];
+
+  const infoPaths = [
+    '/onvif/device_service',
+    '/ISAPI/System/deviceInfo',
+    '/cgi-bin/magicBox.cgi?action=getConfigInfo',
+    '/deviceinfo.xml',
+    '/config/get_system_info.cgi',
+    '/cgi-bin/admin/get_status.cgi'
+  ];
+
+  const concurrency = 30;
+  let running = false;
+  let activeTasks = 0;
+
+  // DOM
+  const subnetInput = document.getElementById('subnet');
+  const startInput = document.getElementById('start');
+  const endInput = document.getElementById('end');
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const progressSpan = document.getElementById('progress');
+  const tbody = document.getElementById('resultsBody');
+  const noResultsRow = document.getElementById('no-results-row');
+
+  // sort state: col index and dir (1 asc, -1 desc)
+  const sortState = { col: null, dir: 0 };
+
+  function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // Añade fila y atributos data- para CSV
+  function addRow({ip, model, modelSource, loginUrl, evidence}) {
+    // Ocultar fila de no resultados si está visible
+    if (noResultsRow && !noResultsRow.classList.contains('hidden')) {
+        noResultsRow.style.display = 'none';
+    }
+
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-gray-50 fade-in';
+    tr.dataset.ip = ip || '';
+    tr.dataset.model = model || '';
+    tr.dataset.modelSource = modelSource || '';
+    tr.dataset.loginUrl = loginUrl || '';
+    tr.dataset.evidence = evidence || '';
+
+    tr.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-color)]">${escapeHtml(ip)}</td>
+      <td class="px-6 py-4 text-sm text-[var(--text-color)]">${model ? `<span class="${modelSource==='extraído'?'exact':'est'}">${escapeHtml(model)}</span><div class="text-xs text-[var(--text-muted-color)] mt-1">${escapeHtml(modelSource)}</div>` : '<span class="text-[var(--text-muted-color)]">-</span>'}</td>
+      <td class="px-6 py-4 text-sm">${loginUrl ? `<a class="text-[var(--primary-color)] hover:text-[var(--accent-color)] hover:underline" href="${loginUrl}" target="_blank" rel="noopener">${escapeHtml(loginUrl)}</a>` : '<span class="text-[var(--text-muted-color)]">-</span>'}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-muted-color)]">${escapeHtml(evidence || '')}</td>
+    `;
+    tbody.appendChild(tr);
+    updateDownloadButtonState();
+  }
+
+  function clearResults(){ 
+    tbody.innerHTML = ''; 
+    // Volver a agregar la fila de no resultados
+    tbody.appendChild(noResultsRow);
+    noResultsRow.style.display = '';
+    updateDownloadButtonState(); 
+  }
+
+  function updateDownloadButtonState() {
+    const hasResults = tbody.children.length > 1 || (tbody.children.length === 1 && tbody.children[0] !== noResultsRow);
+    downloadBtn.disabled = !hasResults;
+  }
+
+  // descarga CSV (usa filas en el DOM en el orden actual)
+  function downloadCSV() {
+    const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row !== noResultsRow);
+    if (!rows.length) return;
+    const headers = ['IP','Modelo','Fuente','Login','Ruta/Puerto'];
+    const lines = [ headers.map(h => `"${h.replace(/"/g,'""')}"`).join(',') ];
+    for (const r of rows) {
+      const ip = r.dataset.ip || '';
+      const model = r.dataset.model || '';
+      const modelSource = r.dataset.modelSource || '';
+      const loginUrl = r.dataset.loginUrl || '';
+      const evidence = r.dataset.evidence || '';
+      const fields = [ip, model, modelSource, loginUrl, evidence];
+      lines.push(fields.map(f => `"${String(f).replace(/"/g,'""')}"`).join(','));
+    }
+    const csvContent = "\uFEFF" + lines.join("\r\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const now = new Date();
+    const ts = now.toISOString().slice(0,19).replace(/[:T]/g,'-');
+    a.download = `escaneo-camaras-${ts}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // probeImage (robusto ante CORS)
+  function probeImage(ip, port, path, timeoutMs=1500) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      let done = false;
+      const url = `http://${ip}:${port}${path}?_cb=${Date.now()}`;
+      const timer = setTimeout(() => { if(!done){ done=true; cleanup(); resolve({ok:false, reason:'timeout'}); } }, timeoutMs);
+
+      function cleanup(){ clearTimeout(timer); img.onload = img.onerror = null; try { img.src = 'about:blank'; } catch(e){} }
+      img.onload = () => { if (done) return; done = true; cleanup(); resolve({ok:true, url}); };
+      img.onerror = () => { if (done) return; done = true; cleanup(); resolve({ok:false, reason:'error'}); };
+      try { img.src = url; } catch (e) { if(!done){ done=true; cleanup(); resolve({ok:false, reason:'exception'}); } }
+    });
+  }
+
+  // fetch info con CORS
+  async function tryFetchInfo(ip, port) {
+    for (const p of infoPaths) {
+      const url = `http://${ip}:${port}${p}`;
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(()=>controller.abort(), 2500);
+        const resp = await fetch(url, {mode:'cors', signal: controller.signal});
+        clearTimeout(timer);
+        if (!resp.ok) continue;
+        const text = await resp.text();
+        const info = parseDeviceInfo(text);
+        if (info && (info.manufacturer || info.model)) return {url, info};
+      } catch (e) {
+        // timeout/CORS -> seguir
+      }
+    }
+    return null;
+  }
+
+  function parseDeviceInfo(text) {
+    if (!text) return null;
+    try {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const tags = ['Manufacturer','manufacturer','Model','model','ModelName','deviceName','product','ProductName','modelNumber'];
+      const out = {};
+      for (const t of tags) {
+        const el = xml.getElementsByTagName(t);
+        if (el && el.length) {
+          const v = (el[0] && el[0].textContent || '').trim();
+          if (!v) continue;
+          if (/manufacturer/i.test(t)) out.manufacturer = v;
+          if (/model/i.test(t) || /ModelName|product|ProductName/i.test(t)) out.model = out.model || v;
+        }
+      }
+      if ((!out.manufacturer && !out.model) && typeof text === 'string') {
+        const modelMatch = text.match(/<Model[^>]*>([^<]+)<\/Model>/i) || text.match(/"model"\s*:\s*"([^"]+)"/i);
+        if (modelMatch) out.model = modelMatch[1].trim();
+      }
+      if (out.manufacturer || out.model) return out;
+    } catch(e){ /* ignore */ }
+    const modelR = text.match(/Model[:<>"']*\s*([^<"\r\n]+)\s*/i);
+    const out2 = {};
+    if (modelR) out2.model = modelR[1].trim();
+    return out2.model ? out2 : null;
+  }
+
+  async function scanIp(ip) {
+    for (const p of probes) {
+      if (!running) return null;
+      try {
+        const res = await probeImage(ip, p.port, p.path, 1400);
+        if (res.ok) {
+          const evidence = `${p.port}${p.path}`;
+          const loginUrl = `http://${ip}:${p.port}/`;
+          const fetched = await tryFetchInfo(ip, p.port);
+          if (fetched && fetched.info) {
+            const model = fetched.info.model || '';
+            return { ip, model: model || '', modelSource: model ? 'extraído' : 'no disponible', loginUrl, evidence };
+          } else {
+            return { ip, model: '', modelSource: 'no disponible', loginUrl, evidence };
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    const portsToTry = [80,81,8080,8000,8081];
+    for (const port of portsToTry) {
+      if (!running) return null;
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(()=>controller.abort(), 1200);
+        await fetch(`http://${ip}:${port}/`, {mode:'no-cors', signal: controller.signal});
+        clearTimeout(timer);
+        return { ip, model: '', modelSource: 'no disponible', loginUrl:`http://${ip}:${port}/`, evidence:`port ${port}` };
+      } catch (e) { /* sigue */ }
+    }
+    return null;
+  }
+
+  async function scanRange(base, start, end) {
+    clearResults();
+    progressSpan.textContent = 'Iniciando escaneo...';
+    running = true;
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+
+    const ips = [];
+    for (let i = start; i <= end; i++) ips.push(`${base}.${i}`);
+
+    let index = 0;
+    let completed = 0;
+    const total = ips.length;
+    const queue = [];
+
+    function next() {
+      if (!running) return;
+      while (activeTasks < concurrency && index < ips.length) {
+        const ip = ips[index++];
+        activeTasks++;
+        const task = scanIp(ip).then(result => {
+          activeTasks--;
+          completed++;
+          if (result) {
+            addRow({
+              ip: result.ip,
+              model: result.model || '',
+              modelSource: result.modelSource || '',
+              loginUrl: result.loginUrl || `http://${result.ip}/`,
+              evidence: result.evidence || ''
+            });
+          }
+          progressSpan.textContent = `Escaneando ${completed}/${total} (${Math.round((completed/total)*100)}%) - Tareas activas: ${activeTasks}`;
+          next();
+        }).catch(err => {
+          activeTasks--;
+          completed++;
+          progressSpan.textContent = `Escaneando ${completed}/${total} (${Math.round((completed/total)*100)}%) - Tareas activas: ${activeTasks}`;
+          next();
+        });
+        queue.push(task);
+      }
+
+      if (index >= ips.length && activeTasks === 0) {
+        Promise.all(queue).finally(()=> {
+          running = false;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          const resultsCount = tbody.children.length - (noResultsRow.style.display === 'none' ? 0 : 1);
+          progressSpan.textContent = `✅ Finalizado: ${completed}/${total} (100%). Cámaras encontradas: ${resultsCount}`;
+        });
+      }
+    }
+    next();
+  }
+
+  // ORDENACIÓN: event listeners y lógica mejorada
+  function toggleSortDirection(currentDir) {
+    // si no hay dirección -> asc, si asc -> desc, si desc -> asc
+    return currentDir === 1 ? -1 : 1;
+  }
+
+  const headerCells = document.querySelectorAll('#resultsTable thead th.sortable');
+  headerCells.forEach(h => h.addEventListener('click', () => {
+    const col = Number(h.getAttribute('data-col'));
+    if (sortState.col === col) {
+      sortState.dir = toggleSortDirection(sortState.dir);
+    } else {
+      sortState.col = col;
+      sortState.dir = 1;
+    }
+    updateSortIndicators();
+    sortTable(sortState.col, sortState.dir);
+  }));
+
+  function updateSortIndicators() {
+    headerCells.forEach(h => {
+      const span = h.querySelector('.sort-indicator');
+      const col = Number(h.getAttribute('data-col'));
+      if (sortState.col === col) {
+        span.textContent = sortState.dir === 1 ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+        h.setAttribute('aria-sort', sortState.dir === 1 ? 'ascending' : 'descending');
+      } else {
+        span.textContent = 'unfold_more';
+        h.setAttribute('aria-sort', 'none');
+      }
+    });
+  }
+
+  function parseIP(str) {
+    if (!str) return [-1,-1,-1,-1];
+    const s = str.trim().replace(/['"]/g,'');
+    const parts = s.split('.').map(p => parseInt(p,10));
+    while (parts.length < 4) parts.push(0);
+    return parts.map(n => Number.isFinite(n) ? n : 0);
+  }
+
+  function getCellText(tr, col) {
+    const td = tr.children[col];
+    if (!td) return '';
+    const a = td.querySelector('a');
+    if (a) return a.getAttribute('href') || a.textContent || '';
+    return td.textContent || '';
+  }
+
+  function hostFromUrl(url) {
+    try {
+      const u = new URL(url);
+      return u.host || url;
+    } catch (e) {
+      return url;
+    }
+  }
+
+  function sortTable(colIndex, dir) {
+    const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row !== noResultsRow);
+    rows.sort((a,b) => {
+      const aText = getCellText(a, colIndex).trim();
+      const bText = getCellText(b, colIndex).trim();
+
+      if (colIndex === 0) {
+        const ao = parseIP(aText);
+        const bo = parseIP(bText);
+        for (let i=0;i<4;i++){
+          if (ao[i] !== bo[i]) return (ao[i] - bo[i]) * dir;
+        }
+        return 0;
+      }
+
+      if (colIndex === 2) {
+        const ah = hostFromUrl(aText).toLowerCase();
+        const bh = hostFromUrl(bText).toLowerCase();
+        if (ah < bh) return -1 * dir;
+        if (ah > bh) return 1 * dir;
+        return 0;
+      }
+
+      const aNorm = (aText === '-' ? '' : aText).toLowerCase();
+      const bNorm = (bText === '-' ? '' : bText).toLowerCase();
+      if (aNorm === '' && bNorm !== '') return 1 * dir;
+      if (aNorm !== '' && bNorm === '') return -1 * dir;
+      if (aNorm < bNorm) return -1 * dir;
+      if (aNorm > bNorm) return 1 * dir;
+      return 0;
+    });
+
+    // Limpiar tbody y volver a agregar las filas ordenadas
+    tbody.innerHTML = '';
+    rows.forEach(r => tbody.appendChild(r));
+    // Agregar fila de no resultados al final si no hay resultados
+    if (rows.length === 0) {
+      tbody.appendChild(noResultsRow);
+      noResultsRow.style.display = '';
+    }
+  }
+
+  // Eventos UI
+  startBtn.addEventListener('click', () => {
+    const base = subnetInput.value.trim();
+    const start = Math.max(1, parseInt(startInput.value,10) || 1);
+    const end = Math.min(254, parseInt(endInput.value,10) || 254);
+    if (!/^(\d{1,3}\.){2}\d{1,3}$/.test(base)) {
+      alert('Subred inválida. Ejemplo: 192.168.1');
+      return;
+    }
+    if (start > end) {
+      alert('El valor de inicio debe ser menor o igual al valor de fin.');
+      return;
+    }
+    clearResults();
+    sortState.col = null;
+    sortState.dir = 0;
+    updateSortIndicators();
+    scanRange(base, start, end);
+  });
+
+  stopBtn.addEventListener('click', () => {
+    running = false;
+    progressSpan.textContent = '⏹️ Deteniendo escaneo...';
+    stopBtn.disabled = true;
+  });
+
+  downloadBtn.addEventListener('click', downloadCSV);
+
+  // inicial
+  updateDownloadButtonState();
+})();
+</script>
+</body>
+</html>
