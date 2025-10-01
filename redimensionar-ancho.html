@@ -38,15 +38,7 @@
         <main class="w-full max-w-4xl flex-grow">
             <div class="bg-white rounded-2xl border p-6 md:p-8 shadow-sm">
                 
-                <!-- Selector de servidor -->
-                <div class="mb-6 p-4 bg-gray-50 rounded-lg border">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Servidor:</label>
-                    <select id="server-select" class="w-full p-2 border border-gray-300 rounded-md">
-                        <option value="local">Local (localhost:3002)</option>
-                        <option value="oficial">Oficial (aaleddyy.app)</option>
-                        <option value="nuestroservidor">Nuestro Servidor</option>
-                    </select>
-                </div>
+
 
                 <!-- Zona de subida -->
                 <div id="upload-zone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400">
@@ -122,15 +114,12 @@
     </div>
 
     <script>
-        // Configuración de servidor
-        const SERVER_OPTIONS = {
-            oficial: 'https://api-oculto-9k7s.aaleddy.app',
-            local: 'http://localhost:3002',
-            nuestroservidor: 'https://api.nuestroservidor.com'
-        };
+        // Configuración automática de API
+        const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3002' 
+            : 'https://api-oculto-9k7s.aaleddy.app';
 
         // Elementos DOM
-        const serverSelect = document.getElementById('server-select');
         const uploadZone = document.getElementById('upload-zone');
         const fileInput = document.getElementById('file-upload');
         const filesSection = document.getElementById('files-section');
@@ -142,10 +131,7 @@
         // Estado
         let uploadedFiles = [];
         let workspaceId = null;
-        let isProcessing = false;
-        let API = SERVER_OPTIONS.local;
-
-        // Utilidades
+        let isProcessing = false;        // Utilidades
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -409,12 +395,6 @@
 
         // Event listeners
         mainButton.addEventListener('click', resizePDFWidth);
-
-        serverSelect.addEventListener('change', (e) => {
-            API = SERVER_OPTIONS[e.target.value];
-            workspaceId = null;
-            console.log('Servidor cambiado a:', API);
-        });
 
         // Inicializar
         updateModeUI();
