@@ -148,6 +148,14 @@
     const downloadButton = document.getElementById('download-button');
     let workspaceId = null;
 
+    // Detectar Safari iOS
+    function isSafariIOS() {
+        const ua = navigator.userAgent;
+        const iOS = /iPad|iPhone|iPod/.test(ua);
+        const webkit = /WebKit/.test(ua);
+        return iOS && webkit && !/(CriOS|FxiOS|OPiOS|mercury)/i.test(ua);
+    }
+
     // Recuperar workspace ID de la sesión
     function loadSessionData() {
         workspaceId = sessionStorage.getItem('workspaceId');
@@ -217,21 +225,58 @@
             console.log('🔗 API base:', API);
             console.log('🔗 Workspace ID:', workspaceId);
             
-            // NO verificar con HEAD - nginx no lo permite, ir directo a la descarga
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = sessionStorage.getItem('filename') || 'PDFs-Unidos-PurrCrafter.pdf';
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // Manejo específico para Safari iOS
+            if (isSafariIOS()) {
+                console.log('📱 Safari iOS detectado - usando método especial');
+                
+                // En Safari iOS, mostrar instrucciones y abrir en nueva pestaña
+                const filename = sessionStorage.getItem('filename') || 'PDF-Redimensionado.pdf';
+                
+                // Actualizar botón con instrucciones
+                downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">open_in_new</span><span>Abrir PDF</span>';
+                
+                // Abrir en nueva pestaña
+                window.open(downloadUrl, '_blank');
+                
+                // Mostrar instrucciones para Safari iOS
+                setTimeout(() => {
+                    alert(`📱 Safari iOS:\n\n1. El PDF se abrió en una nueva pestaña\n2. Para guardarlo: toca el botón "Compartir" ↗️\n3. Selecciona "Guardar en Archivos" 💾\n\nNombre sugerido: ${filename}`);
+                }, 1000);
+                
+            } else {
+                console.log('💻 Navegador desktop/móvil compatible - descarga directa');
+                
+                // Método normal para otros navegadores
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = sessionStorage.getItem('filename') || 'PDFs-Unidos-PurrCrafter.pdf';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
 
             console.log('✅ Descarga iniciada exitosamente');
             
             // Restablecer botón después de un momento
             setTimeout(() => {
                 downloadButton.disabled = false;
-                downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
+                
+                // Texto del botón dependiendo del dispositivo y tipo de operación
+                const operationType = sessionStorage.getItem('operationType') || 'unir';
+                if (isSafariIOS()) {
+                    if (operationType === 'redimensionar') {
+                        downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">open_in_new</span><span>Abrir PDF Redimensionado</span>';
+                    } else {
+                        downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">open_in_new</span><span>Abrir PDF Unido</span>';
+                    }
+                } else {
+                    if (operationType === 'redimensionar') {
+                        downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Redimensionado</span>';
+                    } else {
+                        downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
+                    }
+                }
             }, 2000);
 
         } catch (error) {
@@ -239,7 +284,22 @@
             alert(`Error al descargar el archivo: ${error.message}. Por favor, inténtalo de nuevo.`);
             
             downloadButton.disabled = false;
-            downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
+            
+            // Restablecer texto del botón según dispositivo y operación
+            const operationType = sessionStorage.getItem('operationType') || 'unir';
+            if (isSafariIOS()) {
+                if (operationType === 'redimensionar') {
+                    downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">open_in_new</span><span>Abrir PDF Redimensionado</span>';
+                } else {
+                    downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">open_in_new</span><span>Abrir PDF Unido</span>';
+                }
+            } else {
+                if (operationType === 'redimensionar') {
+                    downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Redimensionado</span>';
+                } else {
+                    downloadButton.innerHTML = '<span class="material-symbols-outlined mr-2">download</span><span>Descargar PDF Unido</span>';
+                }
+            }
         }
     }
 
