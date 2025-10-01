@@ -1,0 +1,16 @@
+{
+    "name": "PurrCrafter - Herramientas PDF Online",
+    "short_name": "PurrCrafter",
+    "description": "Herramientas PDF online gratuitas: unir PDFs, redimensionar documentos, convertir EPUB y escáner de cámaras IP",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563EB",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}
