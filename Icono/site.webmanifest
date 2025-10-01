@@ -15,6 +15,18 @@
       "purpose": "any"
     },
     {
+      "src": "/Icono/web-app-manifest-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Icono/web-app-manifest-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
       "src": "/Icono/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
