@@ -356,19 +356,19 @@
         }
 
         function displayMetadata(metadata) {
+            const uniformeText = metadata.es_uniforme ? 
+                '✅ Todas las páginas tienen el mismo ancho' : 
+                `⚠️ ${metadata.anchos_diferentes} anchos diferentes detectados`;
+            
             metadataContent.innerHTML = `
                 <p><strong>Archivo:</strong> ${metadata.nombre_archivo}</p>
                 <p><strong>Total de páginas:</strong> ${metadata.total_paginas}</p>
-                <p><strong>📏 Ancho de referencia (Página 1):</strong> ${metadata.paginas[0].ancho_actual}mm</p>
-                <div class="mt-2">
-                    <strong>Dimensiones por página:</strong>
-                    <div class="max-h-32 overflow-y-auto mt-1">
-                        ${metadata.paginas.map((p, index) => 
-                            `<div class="text-xs bg-white p-1 rounded mt-1 ${index === 0 ? 'border-l-4 border-blue-500 bg-blue-50' : ''}">
-                                Página ${p.numero}: ${p.ancho_actual}mm × ${p.alto_actual}mm ${index === 0 ? '(🎯 Referencia)' : ''}
-                            </div>`
-                        ).join('')}
-                    </div>
+                <p><strong>📏 Ancho de referencia (Página 1):</strong> ${metadata.ancho_referencia}mm</p>
+                <p><strong>Estado:</strong> ${uniformeText}</p>
+                <div class="mt-2 p-2 bg-blue-50 rounded">
+                    <p class="text-sm text-blue-800">
+                        <strong>🎯 Redimensionado automático:</strong> Todas las páginas se ajustarán al ancho de ${metadata.ancho_referencia}mm
+                    </p>
                 </div>
             `;
             metadataInfo.style.display = 'block';
@@ -459,12 +459,12 @@
             mainButton.disabled = true;
 
             try {
-                if (!pdfMetadata || !pdfMetadata.paginas || pdfMetadata.paginas.length === 0) {
+                if (!pdfMetadata || !pdfMetadata.ancho_referencia) {
                     throw new Error('No hay información del PDF disponible');
                 }
 
-                // Usar automáticamente el ancho de la página 1 como referencia
-                const anchoReferencia = pdfMetadata.paginas[0].ancho_actual;
+                // Usar automáticamente el ancho de referencia (página 1)
+                const anchoReferencia = pdfMetadata.ancho_referencia;
                 
                 updateProgress(20, 'Iniciando redimensionado...');
 
@@ -493,42 +493,57 @@
                 }
 
                 const text = await response.text();
-                console.log('Respuesta del servidor:', text);
+                console.log('Respuesta del servidor:', text.substring(0, 500) + '...');
                 
-                // Procesar respuesta JSONP
-                const callbackMatch = text.match(/callback\\((.+)\\)/);
-                if (!callbackMatch) {
-                    throw new Error('Respuesta JSONP inválida: ' + text);
-                }
-
-                const data = JSON.parse(callbackMatch[1]);
-                
-                if (data.success) {
-                    updateProgress(100, '¡Completado!');
-                    setTimeout(() => {
-                        mainButton.classList.remove('loading');
-                        mainButton.classList.add('success');
-                        
-                        // Crear enlace de descarga
+                // Procesar respuesta JSONP de manera más robusta
+                try {
+                    // Extraer el JSON de la respuesta JSONP
+                    const jsonStart = text.indexOf('(') + 1;
+                    const jsonEnd = text.lastIndexOf(')');
+                    
+                    if (jsonStart <= 0 || jsonEnd <= jsonStart) {
+                        throw new Error('Formato JSONP inválido');
+                    }
+                    
+                    const jsonStr = text.substring(jsonStart, jsonEnd);
+                    const data = JSON.parse(jsonStr);
+                    
+                    if (data.success) {
+                        updateProgress(100, '¡Completado!');
                         setTimeout(() => {
-                            const downloadUrl = `${API}${data.data.pdf_url}`;
-                            const link = document.createElement('a');
-                            link.href = downloadUrl;
-                            link.download = data.data.output_filename;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                            mainButton.classList.remove('loading');
+                            mainButton.classList.add('success');
                             
-                            // Resetear botón después de un momento
+                            // Crear enlace de descarga inmediatamente
                             setTimeout(() => {
-                                mainButton.classList.remove('success');
-                                mainButton.disabled = false;
-                                isProcessing = false;
-                            }, 2000);
-                        }, 500);
-                    }, 400);
-                } else {
-                    throw new Error(data.error || 'Error en el redimensionado');
+                                const downloadUrl = `${API}${data.data.pdf_url}`;
+                                console.log('URL de descarga:', downloadUrl);
+                                
+                                // Crear y hacer clic en el enlace de descarga
+                                const link = document.createElement('a');
+                                link.href = downloadUrl;
+                                link.download = data.data.output_filename;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                
+                                // Mostrar mensaje de éxito
+                                alert(`¡PDF redimensionado exitosamente!\\n\\nArchivo: ${data.data.output_filename}\\nTipo: ${data.data.tipo_redimension}\\nNuevo ancho: ${data.data.nuevo_ancho_mm}mm\\nPáginas: ${data.data.metadata_resultado.total_paginas}`);
+                                
+                                // Resetear botón después de un momento
+                                setTimeout(() => {
+                                    mainButton.classList.remove('success');
+                                    mainButton.disabled = false;
+                                    isProcessing = false;
+                                }, 3000);
+                            }, 500);
+                        }, 400);
+                    } else {
+                        throw new Error(data.error || 'Error en el redimensionado');
+                    }
+                } catch (parseError) {
+                    console.error('Error parseando respuesta:', parseError);
+                    throw new Error('Error procesando respuesta del servidor: ' + parseError.message);
                 }
 
             } catch (error) {
