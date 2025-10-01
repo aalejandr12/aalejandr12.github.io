@@ -135,8 +135,8 @@
                     <label class="cursor-pointer purr-button text-white px-6 py-3 rounded-xl font-semibold text-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)]" for="file-upload">
                         Seleccionar PDF
                     </label>
-                    <input accept=".pdf" class="sr-only" id="file-upload" name="file-upload" type="file"/>
-                    <p class="text-xs text-[var(--text-muted-color)] mt-4">Solo se permite 1 archivo PDF.</p>
+                    <input accept=".pdf" class="sr-only" id="file-upload" name="file-upload" type="file" capture="environment"/>
+                    <p class="text-xs text-[var(--text-muted-color)] mt-4" id="file-size-info">Solo se permite 1 archivo PDF. Sin límite de tamaño.</p>
                 </div>
 
                 <!-- Sección de archivos subidos -->
@@ -232,6 +232,10 @@
         let pdfMetadata = null;
 
         // ========= FUNCIONES UTILITARIAS =========
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -305,6 +309,16 @@
             }
 
             const file = files[0];
+            
+            // Sin límite de tamaño - Permitir archivos muy grandes
+            console.log(`Archivo detectado: ${file.name} (${formatFileSize(file.size)})`);
+            
+            // Solo verificar que sea PDF
+            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                alert('Solo se permiten archivos PDF.');
+                return;
+            }
+            
             console.log(`Procesando archivo: ${file.name} (${file.size} bytes)`);
             
             const fileData = {
@@ -333,7 +347,13 @@
                     workspaceId = workspaceData.workspace_id;
                 }
 
-                updateProgress(30, 'Subiendo archivo...');
+                // Mensaje específico para archivos grandes
+                const isLargeFile = file.size > 100 * 1024 * 1024; // > 100MB
+                const uploadMessage = isLargeFile ? 
+                    `Subiendo archivo grande (${formatFileSize(file.size)})... Esto puede tardar varios minutos.` :
+                    'Subiendo archivo...';
+                
+                updateProgress(30, uploadMessage);
                 
                 // Subir archivo
                 const formData = new FormData();
@@ -571,6 +591,12 @@
 
         // Crear workspace al cargar la página
         window.addEventListener('load', async () => {
+            // Actualizar texto según dispositivo
+            const fileSizeInfo = document.getElementById('file-size-info');
+            if (isMobileDevice()) {
+                fileSizeInfo.innerHTML = 'Solo se permite 1 archivo PDF. Sin límite de tamaño.<br><span class="text-orange-600 font-medium">⚠️ Para archivos >100MB, recomendamos usar PC/Desktop</span>';
+            }
+            
             try {
                 const workspaceData = await jsonpRequest(`${API}/jsonp/workspaces`, 'callback');
                 if (workspaceData.workspace_id) {
