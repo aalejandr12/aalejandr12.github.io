@@ -3,114 +3,130 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Redimensionar Ancho de PDF - PDF Organizer</title>
+    <title>Redimensionar Ancho de PDF - PurrCrafter</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223"
+     crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .purr-button { transition: all 0.3s ease-in-out; background-color: #2563EB; }
-        .purr-button:hover:not(:disabled) { transform: scale(1.05); background-color: #3B82F6; }
-        .files-section { display: none; }
-        .files-section.show { display: block; }
-        #main-action-button .button-content { display: flex; align-items: center; justify-content: center; }
-        #main-action-button .progress-container { display: none; }
-        #main-action-button .success-icon { display: none; }
-        #main-action-button.loading .button-text { display: none; }
-        #main-action-button.loading .progress-container { display: block; }
-        #main-action-button.success .button-content, #main-action-button.success .progress-container { display: none; }
-        #main-action-button.success .success-icon { display: block; }
+    <style type="text/tailwindcss">
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #1F2937;
+            --primary-color: #2563EB;
+            --secondary-color: #F9FAFB;
+            --accent-color: #3B82F6;
+            --border-color: #E5E7EB;
+            --text-muted-color: #6B7280;
+            --success-color: #10B981;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .purr-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+        }
+        .purr-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-color);
+        }
+        .purr-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: var(--primary-color);
+        }
+        .purr-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+        .drag-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            background-color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+        .drag-area.dragover {
+            border-color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        .processing {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .progress-bar {
+            width: 0%;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="antialiased">
     <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
         <header class="text-center w-full max-w-4xl mb-8">
-            <a href="index.html" class="inline-block mb-6 text-blue-600 hover:text-blue-800">
+            <a href="index.html" class="inline-block mb-6 text-[var(--accent-color)] hover:text-[var(--primary-color)]">
                 <div class="flex items-center space-x-2 justify-center">
                     <span class="material-symbols-outlined text-4xl">description</span>
-                    <span class="font-bold text-2xl">PDF Organizer</span>
+                    <span class="font-bold text-2xl">PurrCrafter</span>
                 </div>
             </a>
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Redimensionar Ancho de PDF</h1>
-            <p class="text-lg text-gray-600 mt-2">Ajusta el ancho de todas las páginas de tu PDF manteniendo las proporciones.</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)]">Redimensionar Ancho de PDF</h1>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Ajusta el ancho de tu PDF automáticamente usando el tamaño más común.</p>
         </header>
 
         <main class="w-full max-w-4xl flex-grow">
-            <div class="bg-white rounded-2xl border p-6 md:p-8 shadow-sm">
+            <div class="bg-white rounded-2xl border border-[var(--border-color)] p-6 md:p-8 shadow-sm">
                 
-
-
                 <!-- Zona de subida -->
-                <div id="upload-zone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400">
-                    <span class="material-symbols-outlined text-6xl text-gray-400 mb-4">cloud_upload</span>
-                    <p class="text-lg font-medium text-gray-600 mb-2">Sube tu archivo PDF</p>
+                <div id="upload-zone" class="drag-area p-8 text-center cursor-pointer min-h-[200px] flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined text-6xl text-[var(--text-muted-color)] mb-4">cloud_upload</span>
+                    <p class="text-lg font-medium text-[var(--text-color)] mb-2">Sube tu archivo PDF</p>
+                    <p class="text-sm text-[var(--text-muted-color)] mb-4">Arrastra y suelta o haz click para seleccionar</p>
                     <input type="file" id="file-upload" class="hidden" accept=".pdf" />
-                    <button type="button" onclick="document.getElementById('file-upload').click()" class="purr-button text-white px-6 py-2 rounded-lg">
+                    <button type="button" onclick="document.getElementById('file-upload').click()" class="purr-button text-white px-6 py-3 rounded-lg font-medium">
                         Seleccionar PDF
                     </button>
                 </div>
 
-                <!-- Archivos subidos -->
-                <div id="files-section" class="files-section mt-8">
-                    <h3 id="files-count" class="text-lg font-semibold mb-4">Archivos Subidos (0)</h3>
-                    <div id="files-list" class="space-y-3"></div>
-                </div>
-
-                <!-- Configuración -->
-                <div id="resize-config" class="mt-8 p-6 bg-gray-50 rounded-lg" style="display: none;">
-                    <h3 class="text-lg font-semibold mb-4">Configuración de Redimensionado</h3>
-                    
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Modo:</label>
-                        <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="radio" name="mode" value="by_width" class="mr-2" checked>
-                                <span>Por ancho específico</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="mode" value="by_page" class="mr-2">
-                                <span>Basado en página de referencia</span>
-                            </label>
+                <!-- Progreso -->
+                <div id="progress-section" class="hidden mt-6">
+                    <div class="bg-[var(--secondary-color)] rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span id="progress-text" class="text-sm font-medium text-[var(--text-color)]">Procesando...</span>
+                            <span id="progress-percent" class="text-sm text-[var(--text-muted-color)]">0%</span>
                         </div>
-                    </div>
-
-                    <div id="width-config" class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Ancho objetivo:</label>
-                        <div class="flex space-x-2">
-                            <input type="number" id="target-width" class="flex-1 p-2 border rounded-md" placeholder="210" value="210">
-                            <select id="unit" class="p-2 border rounded-md">
-                                <option value="mm">mm</option>
-                                <option value="pt">puntos</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="page-config" class="mb-6" style="display: none;">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Página de referencia:</label>
-                        <div class="flex space-x-2">
-                            <input type="number" id="ref-page" class="p-2 border rounded-md" placeholder="1" min="1" value="1">
-                            <span class="p-2 text-gray-600">de <span id="total-pages">0</span> páginas</span>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="progress-bar" class="progress-bar bg-[var(--accent-color)] h-2 rounded-full"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Botón principal -->
-                <div class="mt-8 text-center">
-                    <button id="main-action-button" class="purr-button text-white px-8 py-4 rounded-xl text-lg font-semibold disabled:opacity-50 w-full md:w-auto" disabled>
-                        <div class="button-content">
-                            <span class="material-symbols-outlined mr-2">transform</span>
-                            <span class="button-text">Redimensionar PDF</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-text">Procesando...</div>
-                        </div>
-                        <div class="success-icon">
-                            <span class="material-symbols-outlined text-4xl">check_circle</span>
-                        </div>
-                    </button>
+                <!-- Resultado -->
+                <div id="result-section" class="hidden mt-6">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                        <span class="material-symbols-outlined text-4xl text-green-600 mb-2">check_circle</span>
+                        <h3 class="text-lg font-semibold text-green-800 mb-2">¡PDF Redimensionado Exitosamente!</h3>
+                        <button id="download-btn" class="purr-button text-white px-6 py-3 rounded-lg font-medium">
+                            <span class="material-symbols-outlined mr-2">download</span>
+                            Descargar PDF Redimensionado
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </main>
+
+        <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="#contacto">Contacto</a>
+            </div>
+            <p>© 2024 PurrCrafter. Todos los derechos reservados.</p>
+        </footer>
     </div>
 
     <script>
@@ -122,282 +138,161 @@
         // Elementos DOM
         const uploadZone = document.getElementById('upload-zone');
         const fileInput = document.getElementById('file-upload');
-        const filesSection = document.getElementById('files-section');
-        const filesCount = document.getElementById('files-count');
-        const filesList = document.getElementById('files-list');
-        const resizeConfig = document.getElementById('resize-config');
-        const mainButton = document.getElementById('main-action-button');
+        const progressSection = document.getElementById('progress-section');
+        const progressText = document.getElementById('progress-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressBar = document.getElementById('progress-bar');
+        const resultSection = document.getElementById('result-section');
+        const downloadBtn = document.getElementById('download-btn');
 
-        // Estado
-        let uploadedFiles = [];
-        let workspaceId = null;
-        let isProcessing = false;        // Utilidades
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
+        let currentWorkspaceId = null;
+        let downloadUrl = null;
 
-        function jsonpRequest(url, callbackName) {
+        // Utilidades JSONP
+        function makeJSONPRequest(url) {
             return new Promise((resolve, reject) => {
+                const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
                 const script = document.createElement('script');
-                const timeout = setTimeout(() => {
-                    cleanup();
-                    reject(new Error('Request timeout'));
-                }, 10000);
-
-                function cleanup() {
-                    clearTimeout(timeout);
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    delete window[callbackName];
-                }
-
+                
                 window[callbackName] = function(data) {
-                    cleanup();
+                    delete window[callbackName];
+                    document.head.removeChild(script);
                     resolve(data);
                 };
-
-                script.src = url;
-                script.onerror = () => {
-                    cleanup();
-                    reject(new Error('Script load error'));
+                
+                script.onerror = function() {
+                    delete window[callbackName];
+                    document.head.removeChild(script);
+                    reject(new Error('JSONP request failed'));
                 };
-
+                
+                script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
                 document.head.appendChild(script);
             });
         }
 
-        // Eventos de archivos
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('border-blue-400', 'bg-blue-50');
-        });
-
-        uploadZone.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('border-blue-400', 'bg-blue-50');
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('border-blue-400', 'bg-blue-50');
-            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
-            handleFiles(files);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
-            handleFiles(files);
-        });
-
-        async function handleFiles(files) {
-            if (files.length === 0) {
-                alert('Por favor selecciona al menos un archivo PDF.');
-                return;
-            }
-
-            for (const file of files) {
-                uploadedFiles.push({
-                    file: file,
-                    name: file.name,
-                    size: file.size,
-                    id: Date.now() + Math.random()
-                });
-            }
-
-            updateFilesList();
-            await uploadFilesToServer();
-            updateButtonState();
+        // Actualizar progreso
+        function updateProgress(text, percent) {
+            progressText.textContent = text;
+            progressPercent.textContent = percent + '%';
+            progressBar.style.width = percent + '%';
         }
 
-        function updateFilesList() {
-            filesCount.textContent = `Archivos Subidos (${uploadedFiles.length})`;
-            
-            if (uploadedFiles.length > 0) {
-                filesSection.classList.add('show');
-                resizeConfig.style.display = 'block';
-            }
-
-            filesList.innerHTML = '';
-
-            uploadedFiles.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'bg-white border rounded-lg p-4 flex items-center justify-between';
-                fileItem.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="material-symbols-outlined text-red-500">picture_as_pdf</span>
-                        <div>
-                            <p class="font-medium">${file.name}</p>
-                            <p class="text-sm text-gray-500">${formatFileSize(file.size)}</p>
-                        </div>
-                    </div>
-                    <button onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
-                `;
-                filesList.appendChild(fileItem);
-            });
+        // Mostrar resultado
+        function showResult() {
+            progressSection.classList.add('hidden');
+            resultSection.classList.remove('hidden');
         }
 
-        function removeFile(index) {
-            uploadedFiles.splice(index, 1);
-            updateFilesList();
-            updateButtonState();
-            
-            if (uploadedFiles.length === 0) {
-                resizeConfig.style.display = 'none';
-            }
-        }
-
-        function updateButtonState() {
-            if (uploadedFiles.length > 0) {
-                mainButton.disabled = false;
-            } else {
-                mainButton.disabled = true;
-                filesSection.classList.remove('show');
-            }
-        }
-
-        async function uploadFilesToServer() {
-            if (!workspaceId) {
-                console.log('Creando workspace...');
-                const response = await fetch(`${API}/workspaces`, { method: 'POST' });
-                const data = await response.json();
-                workspaceId = data.workspace_id;
-                console.log('Workspace creado:', workspaceId);
-            }
-
-            for (let i = 0; i < uploadedFiles.length; i++) {
-                const file = uploadedFiles[i];
-                const formData = new FormData();
-                formData.append('file', file.file);
-
-                try {
-                    const uploadResponse = await fetch(`${API}/workspaces/${workspaceId}/upload`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!uploadResponse.ok) {
-                        throw new Error(`Error subiendo ${file.name}`);
-                    }
-                    console.log(`✓ ${file.name} subido`);
-                } catch (error) {
-                    console.error(`Error subiendo ${file.name}:`, error);
-                    alert(`Error subiendo ${file.name}`);
-                }
-            }
-
-            await fetchPdfMetadata();
-        }
-
-        async function fetchPdfMetadata() {
-            if (!workspaceId) return;
-            
+        // Procesar archivo
+        async function processFile(file) {
             try {
-                const callbackName = 'metadata_' + Date.now();
-                const url = `${API}/jsonp/workspaces/${workspaceId}/pdf-metadata?callback=${callbackName}`;
-                const response = await jsonpRequest(url, callbackName);
+                progressSection.classList.remove('hidden');
+                uploadZone.classList.add('processing');
                 
-                if (response.success && response.data) {
-                    document.getElementById('total-pages').textContent = response.data.page_count;
-                    console.log('Metadatos PDF:', response.data);
-                }
-            } catch (error) {
-                console.warn('No se pudo obtener metadata:', error);
-            }
-        }
-
-        // Configuración de modo
-        const modeInputs = document.querySelectorAll('input[name="mode"]');
-        const widthConfig = document.getElementById('width-config');
-        const pageConfig = document.getElementById('page-config');
-
-        function updateModeUI() {
-            const selectedMode = document.querySelector('input[name="mode"]:checked').value;
-            if (selectedMode === 'by_width') {
-                widthConfig.style.display = 'block';
-                pageConfig.style.display = 'none';
-            } else {
-                widthConfig.style.display = 'none';
-                pageConfig.style.display = 'block';
-            }
-        }
-
-        modeInputs.forEach(input => {
-            input.addEventListener('change', updateModeUI);
-        });
-
-        // Procesamiento principal
-        async function resizePDFWidth() {
-            if (isProcessing) return;
-            if (uploadedFiles.length === 0) {
-                alert('Por favor sube al menos un archivo PDF.');
-                return;
-            }
-
-            isProcessing = true;
-            mainButton.classList.add('loading');
-            mainButton.disabled = true;
-
-            try {
-                const mode = document.querySelector('input[name="mode"]:checked').value;
-                const params = new URLSearchParams({
-                    mode: mode,
-                    callback: 'resize_' + Date.now()
+                updateProgress('Creando workspace...', 10);
+                
+                // Crear workspace
+                const workspaceData = await makeJSONPRequest(`${API}/jsonp/workspaces`);
+                currentWorkspaceId = workspaceData.workspace_id;
+                
+                updateProgress('Subiendo archivo...', 30);
+                
+                // Subir archivo como base64
+                const base64Data = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+                    reader.readAsDataURL(file);
                 });
-
-                if (mode === 'by_width') {
-                    const targetWidth = document.getElementById('target-width').value;
-                    const unit = document.getElementById('unit').value;
-                    if (!targetWidth) throw new Error('Especifica el ancho objetivo');
-                    params.append('target_width', targetWidth);
-                    params.append('unit', unit);
-                } else {
-                    const refPage = document.getElementById('ref-page').value;
-                    if (!refPage) throw new Error('Especifica la página de referencia');
-                    params.append('ref_page', refPage);
-                }
-
-                const url = `${API}/jsonp/workspaces/${workspaceId}/resize-width?${params}`;
-                const response = await jsonpRequest(url, params.get('callback'));
-
-                if (!response.success) {
-                    throw new Error(response.error || 'Error desconocido');
-                }
-
-                mainButton.classList.remove('loading');
-                mainButton.classList.add('success');
                 
-                const message = `PDF redimensionado exitosamente!\\n\\nPáginas procesadas: ${response.data.pages_processed}/${response.data.total_pages}\\n\\n¿Deseas descargar el archivo?`;
+                const uploadUrl = `${API}/jsonp/workspaces/${currentWorkspaceId}/upload-base64?filename=${encodeURIComponent(file.name)}&data=${encodeURIComponent(base64Data)}`;
+                await makeJSONPRequest(uploadUrl);
                 
-                if (confirm(message)) {
-                    window.open(`${API}${response.data.download_url}`, '_blank');
-                }
-
+                updateProgress('Analizando PDF...', 50);
+                
+                // Obtener metadatos para detectar ancho más común
+                const metadataUrl = `${API}/jsonp/workspaces/${currentWorkspaceId}/pdf-metadata?filename=${encodeURIComponent(file.name)}`;
+                const metadata = await makeJSONPRequest(metadataUrl);
+                
+                updateProgress('Calculando ancho óptimo...', 70);
+                
+                // Encontrar el ancho más común (como en tu ejemplo)
+                const widths = metadata.pages.map(page => Math.round(page.width));
+                const widthCounts = {};
+                widths.forEach(width => {
+                    widthCounts[width] = (widthCounts[width] || 0) + 1;
+                });
+                
+                const mostCommonWidth = Object.keys(widthCounts).reduce((a, b) => 
+                    widthCounts[a] > widthCounts[b] ? a : b
+                );
+                
+                updateProgress('Redimensionando PDF...', 90);
+                
+                // Redimensionar usando el ancho más común
+                const resizeUrl = `${API}/jsonp/workspaces/${currentWorkspaceId}/resize-width?filename=${encodeURIComponent(file.name)}&target_width=${mostCommonWidth}&mode=by_width`;
+                const resizeResult = await makeJSONPRequest(resizeUrl);
+                
+                downloadUrl = resizeResult.download_url;
+                
+                updateProgress('¡Completado!', 100);
+                
                 setTimeout(() => {
-                    mainButton.classList.remove('success');
-                    isProcessing = false;
-                    mainButton.disabled = false;
-                }, 3000);
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert(`Error: ${error.message}`);
+                    showResult();
+                }, 500);
                 
-                mainButton.classList.remove('loading');
-                isProcessing = false;
-                mainButton.disabled = false;
+            } catch (error) {
+                console.error('Error procesando archivo:', error);
+                alert('Error procesando el archivo: ' + error.message);
+                uploadZone.classList.remove('processing');
+                progressSection.classList.add('hidden');
             }
         }
 
         // Event listeners
-        mainButton.addEventListener('click', resizePDFWidth);
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                processFile(file);
+            } else {
+                alert('Por favor selecciona un archivo PDF válido.');
+            }
+        });
 
-        // Inicializar
-        updateModeUI();
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                processFile(file);
+            } else {
+                alert('Por favor selecciona un archivo PDF válido.');
+            }
+        });
+
+        // Descargar resultado
+        downloadBtn.addEventListener('click', () => {
+            if (downloadUrl) {
+                const link = document.createElement('a');
+                link.href = `${API}${downloadUrl}`;
+                link.download = 'pdf-redimensionado.pdf';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
     </script>
 </body>
 </html>
