@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdBlock detectado - PurrCrafter</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-color: #FFFFFF;
+      --text-color: #1F2937;
+      --primary-color: #2563EB;
+      --secondary-color: #F9FAFB;
+      --accent-color: #3B82F6;
+      --border-color: #E5E7EB;
+      --text-muted-color: #6B7280;
+    }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg-color); color: var(--text-color); }
+    .purr-button { background: var(--primary-color); transition: transform .15s ease; }
+    .purr-button:hover { transform: translateY(-1px); background: var(--accent-color); }
+  </style>
+</head>
+<body class="antialiased">
+  <div class="container mx-auto px-4 min-h-screen flex items-center justify-center">
+    <main class="w-full max-w-2xl bg-[var(--secondary-color)] border border-[var(--border-color)] rounded-2xl shadow-sm p-8 text-center">
+      <div class="mx-auto mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-16 h-16 text-red-500 mx-auto">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 6h.01" />
+        </svg>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-bold mb-3">Hemos detectado un bloqueador de anuncios</h1>
+      <p class="text-[var(--text-muted-color)] mb-6">Para mantener PurrCrafter gratuito, mostramos anuncios discretos. Por favor desactiva tu bloqueador de anuncios o añade nuestro sitio a la lista de permitidos.</p>
+      <div class="space-y-3">
+        <button id="retryBtn" class="purr-button text-white px-6 py-3 rounded-xl font-semibold w-full md:w-auto">Ya lo desactivé, continuar</button>
+        <button id="skipBtn" class="px-6 py-3 rounded-xl font-semibold border border-[var(--border-color)] w-full md:w-auto">Omitir por 24 horas</button>
+      </div>
+      <p class="text-xs text-[var(--text-muted-color)] mt-4">Solo te redirigiremos aquí si el bloqueador impide mostrar la página correctamente.</p>
+    </main>
+  </div>
+  <script>
+    function getOriginal() {
+      const url = sessionStorage.getItem('originalPage') || 'index.html';
+      try { new URL(url); return url; } catch { return 'index.html'; }
+    }
+    document.getElementById('retryBtn').addEventListener('click', () => {
+      // Reintentar regresar a la página original
+      window.location.href = getOriginal();
+    });
+    document.getElementById('skipBtn').addEventListener('click', () => {
+      // Guardar omisión por 24 horas para no volver a interrumpir
+      const expire = Date.now() + 24 * 60 * 60 * 1000;
+      localStorage.setItem('adblock_skip', String(expire));
+      window.location.href = getOriginal();
+    });
+  </script>
+</body>
+</html>
