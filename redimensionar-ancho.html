@@ -130,7 +130,7 @@
     </div>
 
     <script>
-        // Configuración automática de API
+        // Configuración automática de API (sin selector de servidor)
         const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:3002' 
             : 'https://api-oculto-9k7s.aaleddy.app';
@@ -148,11 +148,10 @@
         let currentWorkspaceId = null;
         let downloadUrl = null;
 
-        // Utilidades JSONP
-        function makeJSONPRequest(url) {
+        // ========= UTILIDADES JSONP =========
+        function jsonpRequest(url, callbackParam = 'callback') {
             return new Promise((resolve, reject) => {
                 const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-                const script = document.createElement('script');
                 
                 window[callbackName] = function(data) {
                     delete window[callbackName];
@@ -160,19 +159,21 @@
                     resolve(data);
                 };
                 
+                const script = document.createElement('script');
                 script.onerror = function() {
                     delete window[callbackName];
                     document.head.removeChild(script);
-                    reject(new Error('JSONP request failed'));
+                    reject(new Error('JSONP request failed for: ' + url));
                 };
                 
-                script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+                const separator = url.includes('?') ? '&' : '?';
+                script.src = url + separator + callbackParam + '=' + callbackName;
                 document.head.appendChild(script);
             });
         }
 
         // Actualizar progreso
-        function updateProgress(text, percent) {
+        function updateProgress(percent, text) {
             progressText.textContent = text;
             progressPercent.textContent = percent + '%';
             progressBar.style.width = percent + '%';
@@ -190,15 +191,16 @@
                 progressSection.classList.remove('hidden');
                 uploadZone.classList.add('processing');
                 
-                updateProgress('Creando workspace...', 10);
+                updateProgress(10, 'Creando workspace...');
                 
-                // Crear workspace
-                const workspaceData = await makeJSONPRequest(`${API}/jsonp/workspaces`);
+                // PASO 1: Crear workspace
+                const workspaceData = await jsonpRequest(`${API}/jsonp/workspaces`, 'callback');
                 currentWorkspaceId = workspaceData.workspace_id;
+                console.log('✅ Workspace creado:', currentWorkspaceId);
                 
-                updateProgress('Subiendo archivo...', 30);
+                updateProgress(30, 'Subiendo archivo...');
                 
-                // Subir archivo como base64
+                // PASO 2: Subir archivo como base64
                 const base64Data = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onload = (e) => resolve(e.target.result.split(',')[1]);
@@ -206,17 +208,19 @@
                 });
                 
                 const uploadUrl = `${API}/jsonp/workspaces/${currentWorkspaceId}/upload-base64?filename=${encodeURIComponent(file.name)}&data=${encodeURIComponent(base64Data)}`;
-                await makeJSONPRequest(uploadUrl);
+                await jsonpRequest(uploadUrl, 'callback');
+                console.log('✅ Archivo subido');
                 
-                updateProgress('Analizando PDF...', 50);
+                updateProgress(50, 'Analizando PDF...');
                 
-                // Obtener metadatos para detectar ancho más común
+                // PASO 3: Obtener metadatos para detectar ancho más común
                 const metadataUrl = `${API}/jsonp/workspaces/${currentWorkspaceId}/pdf-metadata?filename=${encodeURIComponent(file.name)}`;
-                const metadata = await makeJSONPRequest(metadataUrl);
+                const metadata = await jsonpRequest(metadataUrl, 'callback');
+                console.log('✅ Metadatos obtenidos:', metadata);
                 
-                updateProgress('Calculando ancho óptimo...', 70);
+                updateProgress(70, 'Calculando ancho óptimo...');
                 
-                // Encontrar el ancho más común (como en tu ejemplo)
+                // PASO 4: Encontrar el ancho más común (como en tu ejemplo)
                 const widths = metadata.pages.map(page => Math.round(page.width));
                 const widthCounts = {};
                 widths.forEach(width => {
@@ -227,22 +231,26 @@
                     widthCounts[a] > widthCounts[b] ? a : b
                 );
                 
-                updateProgress('Redimensionando PDF...', 90);
+                console.log('🎯 Ancho más común encontrado:', mostCommonWidth, 'puntos');
+                console.log('📊 Distribución de anchos:', widthCounts);
                 
-                // Redimensionar usando el ancho más común
+                updateProgress(90, 'Redimensionando PDF...');
+                
+                // PASO 5: Redimensionar usando el ancho más común
                 const resizeUrl = `${API}/jsonp/workspaces/${currentWorkspaceId}/resize-width?filename=${encodeURIComponent(file.name)}&target_width=${mostCommonWidth}&mode=by_width`;
-                const resizeResult = await makeJSONPRequest(resizeUrl);
+                const resizeResult = await jsonpRequest(resizeUrl, 'callback');
+                console.log('✅ PDF redimensionado:', resizeResult);
                 
                 downloadUrl = resizeResult.download_url;
                 
-                updateProgress('¡Completado!', 100);
+                updateProgress(100, '¡Completado!');
                 
                 setTimeout(() => {
                     showResult();
                 }, 500);
                 
             } catch (error) {
-                console.error('Error procesando archivo:', error);
+                console.error('❌ Error procesando archivo:', error);
                 alert('Error procesando el archivo: ' + error.message);
                 uploadZone.classList.remove('processing');
                 progressSection.classList.add('hidden');
