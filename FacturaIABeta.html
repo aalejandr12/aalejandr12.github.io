@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Generador de Factura desde JSON - PurrCrafter</title>
+    
+    <!-- PWA metas -->
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <meta name="apple-mobile-web-app-title" content="PurrCrafter"/>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style type="text/tailwindcss">
+        :root {
+            --bg-color: #F9FAFB;
+            --text-color: #1F2937;
+            --primary-color: #2563EB;
+            --secondary-color: #FFFFFF;
+            --accent-color: #3B82F6;
+            --border-color: #E5E7EB;
+            --text-muted-color: #6B7280;
+            --primary-blue: #232F3E;
+            --primary-orange: #FF9900;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 2px var(--accent-color);
+            border-color: transparent;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted-color);
+            margin-bottom: 4px;
+        }
+        
+        .primary-button {
+            background: linear-gradient(to bottom, #3b82f6, #2563eb);
+            border: 1px solid #1d4ed8;
+            border-radius: 8px;
+            transition: all 0.15s ease-in-out;
+            color: white;
+            font-weight: 500;
+            padding: 12px 24px;
+        }
+        
+        .primary-button:hover {
+            background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+        
+        .secondary-button {
+            background: #ffffff;
+            border: 1px solid #d5d9d9;
+            border-radius: 8px;
+            transition: all 0.15s ease-in-out;
+            color: #0f1111;
+            padding: 12px 24px;
+        }
+        
+        .secondary-button:hover {
+            background: #f7f8f8;
+            border-color: #c7c7c7;
+            transform: translateY(-2px);
+        }
+        
+        .form-container {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ddd;
+        }
+        
+        .print-hidden {
+            display: block;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .invoice-preview, .invoice-preview * {
+                visibility: visible;
+            }
+            
+            .invoice-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            
+            .print-hidden {
+                display: none !important;
+            }
+            
+            .invoice-container {
+                border: none;
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center w-full max-w-4xl mb-6 mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">Generador de Factura desde JSON</h1>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Pega tu JSON y genera facturas profesionales automáticamente</p>
+        </header>
+
+        <main class="max-w-4xl mx-auto">
+            <!-- Formulario de entrada -->
+            <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8 md:p-10 form-container print-hidden">
+                <div id="status"></div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <label for="jsonInput" style="font-weight: 600; color: #4a5568;">
+                        JSON de la Factura:
+                    </label>
+                    <button onclick="copyJsonToClipboard()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500;">
+                        📋 Copiar Prompt
+                    </button>
+                </div>
+                <textarea id="jsonInput" placeholder="Pega aquí el JSON de tu factura..."></textarea>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="generateInvoice()" class="primary-button">📄 Generar Factura</button>
+                    <button onclick="downloadPDF()" class="secondary-button">📁 Descargar PDF</button>
+                    <button onclick="printInvoice()" class="secondary-button">🖨️ Imprimir</button>
+                </div>
+            </div>
+
+            <!-- Vista previa de la factura -->
+            <div class="mt-8 hidden invoice-preview" id="invoice-preview">
+                <div class="invoice-container bg-white shadow-lg">
+                    <!-- Header de la factura -->
+                    <div class="border-b-2 border-orange-500 p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h1 class="text-2xl font-bold text-orange-600">invoice</h1>
+                                <p class="text-sm text-gray-600 mt-1">Detalles finales del pedido <span id="preview-order-number">#111-0592955-2893840</span></p>
+                                <a href="#" class="text-blue-600 text-sm underline">Imprima esta página para sus registros.</a>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">Pedido realizado: <span id="preview-order-date">23 de mayo de 2020</span></p>
+                                <p class="text-sm text-gray-600">Número de pedido: <span id="preview-order-number-2">#111-0592955-2893840</span></p>
+                                <p class="text-sm font-semibold">Total del pedido: <span id="preview-total">$65.99</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de envío -->
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="grid grid-cols-1 gap-8">
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-2">Enviado el <span id="preview-ship-date">26 de mayo de 2020</span></h3>
+                                <h4 class="font-semibold text-gray-900 mb-3">Productos comprados:</h4>
+                                <div id="preview-products" class="space-y-3">
+                                    <!-- Los productos se insertarán aquí dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de pago -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="font-semibold text-gray-900 mb-4">Información de pago</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Método de pago:</h4>
+                                <p class="text-sm text-gray-700">Visa | Últimos dígitos: 6571</p>
+                                
+                                <h4 class="font-semibold text-gray-900 mb-2 mt-6">Dirección de envío:</h4>
+                                <div id="preview-shipping-address" class="text-sm text-gray-700 space-y-1">
+                                    <p id="preview-customer-name">Cliente</p>
+                                    <p id="preview-address-line">Dirección</p>
+                                    <p id="preview-city-state-zip">Ciudad, Estado CP</p>
+                                    <p id="preview-country">País</p>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h4 class="font-semibold text-gray-900 mb-2">Velocidad de envío:</h4>
+                                    <p class="text-sm text-gray-700" id="preview-shipping-method">Envío GRATIS</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Resumen del pedido:</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Productos:</span>
+                                        <span id="preview-subtotal">$65.99</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Envío:</span>
+                                        <span id="preview-shipping-total">$10.60</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Envío gratis:</span>
+                                        <span id="preview-shipping-discount">-$10.60</span>
+                                    </div>
+                                    <div class="border-t border-gray-300 pt-2 flex justify-between font-semibold">
+                                        <span>Total antes de impuestos:</span>
+                                        <span id="preview-pre-tax">$65.99</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Impuestos:</span>
+                                        <span id="preview-tax">$0.00</span>
+                                    </div>
+                                    <div class="border-t border-gray-300 pt-2 flex justify-between font-bold text-lg text-red-600">
+                                        <span>Total (I.V.A. Incluido):</span>
+                                        <span id="preview-final-total">$65.99</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transacciones -->
+                    <div class="p-6">
+                        <h3 class="font-semibold text-gray-900 mb-2">Transacciones con la tarjeta de crédito</h3>
+                        <p class="text-sm text-gray-700">Visa que termina en 6571: <span id="preview-transaction-date">26 de mayo de 2020</span>: <span id="preview-transaction-amount">$65.99</span></p>
+                        
+                        <div class="mt-6 text-center">
+                            <p class="text-sm text-gray-600">Gracias por su compra.</p>
+                        </div>
+                        
+                        <div id="notesSection" class="mt-6 hidden">
+                            <h4 class="font-semibold text-gray-900 mb-2">Notas Adicionales:</h4>
+                            <p class="text-sm text-gray-700" id="notesContent"></p>
+                        </div>
+                    </div>
+
+                    <!-- Botón de descarga -->
+                    <div class="p-6 bg-gray-50 text-center print-hidden">
+                        <button id="download-pdf" class="primary-button rounded font-medium flex items-center justify-center gap-2 mx-auto">
+                            <span class="material-symbols-outlined">download</span>
+                            <span>Descargar PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const jsonInput = document.getElementById('jsonInput');
+        const invoicePreview = document.getElementById('invoice-preview');
+
+        function showStatus(message, type = 'success') {
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            setTimeout(() => {
+                if (type === 'success') {
+                    statusDiv.style.display = 'none';
+                }
+            }, 3000);
+        }
+
+        function copyJsonToClipboard() {
+            // Generar el prompt para la IA
+            const aiPrompt = `Genera un JSON de factura con la siguiente estructura exacta:
+
+{
+  "numero_pedido": "#XXX-XXXXXXX-XXXXXXX",
+  "fecha_pedido_iso": "YYYY-MM-DD",
+  "fecha_envio_iso": "YYYY-MM-DD",
+  "datos_cliente": {
+    "nombre": "NOMBRE DEL CLIENTE",
+    "direccion": "DIRECCIÓN COMPLETA",
+    "ciudad": "CIUDAD",
+    "estado": "ESTADO/PROVINCIA",
+    "codigo_postal": "CÓDIGO POSTAL",
+    "pais": "PAÍS"
+  },
+  "metodo_envio": "MÉTODO DE ENVÍO",
+  "productos": [
+    {
+      "descripcion": "DESCRIPCIÓN DETALLADA DEL PRODUCTO",
+      "cantidad": NÚMERO,
+      "precio_unitario": PRECIO,
+      "moneda": "USD",
+      "subtotal": CANTIDAD * PRECIO_UNITARIO
+    }
+  ],
+  "totales": {
+    "subtotal": SUMA_DE_TODOS_LOS_SUBTOTALES,
+    "envio": COSTO_ENVÍO,
+    "descuento_envio": DESCUENTO_APLICADO,
+    "impuestos": IMPUESTOS_APLICADOS,
+    "total": SUBTOTAL + ENVÍO - DESCUENTO + IMPUESTOS,
+    "moneda": "USD"
+  },
+  "notas": "NOTAS ADICIONALES SOBRE LA COMPRA, MÉTODOS DE PAGO, FECHAS DE ENTREGA, ETC."
+}
+
+Instrucciones:
+- Usa datos realistas y coherentes
+- El número de pedido debe seguir el formato #XXX-XXXXXXX-XXXXXXX
+- Las fechas deben ser en formato ISO (YYYY-MM-DD)
+- Los precios deben ser números decimales
+- Calcula correctamente los subtotales y totales
+- Incluye información detallada en las notas
+- Puedes agregar múltiples productos si es necesario
+
+Genera el JSON completo y válido:`;
+            
+            navigator.clipboard.writeText(aiPrompt).then(() => {
+                showStatus('✅ Prompt para IA copiado al portapapeles', 'success');
+            }).catch(() => {
+                // Fallback para navegadores sin soporte clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = aiPrompt;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showStatus('✅ Prompt para IA copiado al portapapeles', 'success');
+            });
+        }
+
+        function formatCurrency(amount, currency = 'USD') {
+            const symbol = currency === 'USD' ? '$' : currency;
+            return `${symbol}${parseFloat(amount || 0).toFixed(2)}`;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function generateInvoice() {
+            try {
+                const jsonData = JSON.parse(jsonInput.value.trim());
+                
+                // Llenar información del pedido
+                document.getElementById('preview-order-number').textContent = jsonData.numero_pedido || '-';
+                document.getElementById('preview-order-number-2').textContent = jsonData.numero_pedido || '-';
+                document.getElementById('preview-order-date').textContent = formatDate(jsonData.fecha_pedido_iso);
+                document.getElementById('preview-ship-date').textContent = formatDate(jsonData.fecha_envio_iso);
+                document.getElementById('preview-transaction-date').textContent = formatDate(jsonData.fecha_envio_iso);
+                
+                // Método de envío
+                const shippingMethods = {
+                    'Standard (Amazon - Elefama)': 'Envío Estándar',
+                    'gratis': 'Envío GRATIS',
+                    'standard': 'Envío Estándar', 
+                    'express': 'Envío Express'
+                };
+                document.getElementById('preview-shipping-method').textContent = 
+                    shippingMethods[jsonData.metodo_envio] || jsonData.metodo_envio || 'Envío GRATIS';
+                
+                // Llenar datos del cliente
+                const cliente = jsonData.datos_cliente || {};
+                document.getElementById('preview-customer-name').textContent = cliente.nombre || '-';
+                document.getElementById('preview-address-line').textContent = cliente.direccion || '-';
+                document.getElementById('preview-city-state-zip').textContent = 
+                    [cliente.ciudad, cliente.estado, cliente.codigo_postal].filter(Boolean).join(', ');
+                document.getElementById('preview-country').textContent = cliente.pais || '-';
+                
+                // Llenar productos 
+                const productsContainer = document.getElementById('preview-products');
+                productsContainer.innerHTML = '';
+                
+                if (jsonData.productos && jsonData.productos.length > 0) {
+                    jsonData.productos.forEach(producto => {
+                        const productDiv = document.createElement('div');
+                        productDiv.className = 'border-b border-gray-200 pb-2 mb-2 last:border-b-0';
+                        productDiv.innerHTML = `
+                            <p class="text-sm"><strong>${producto.cantidad || 1}</strong> de: <strong>${producto.descripcion || 'Producto'}</strong></p>
+                            <p class="text-sm font-semibold text-right">${formatCurrency(producto.subtotal || (producto.cantidad * producto.precio_unitario), producto.moneda)}</p>
+                            <p class="text-xs text-gray-500">Estado: Nuevo</p>
+                        `;
+                        productsContainer.appendChild(productDiv);
+                    });
+                } else {
+                    productsContainer.innerHTML = '<div class="text-center text-gray-500">No hay productos</div>';
+                }
+                
+                // Llenar totales
+                const totales = jsonData.totales || {};
+                const currency = totales.moneda || 'USD';
+                
+                document.getElementById('preview-subtotal').textContent = formatCurrency(totales.subtotal, currency);
+                document.getElementById('preview-shipping-total').textContent = totales.envio > 0 ? 
+                    formatCurrency(totales.envio, currency) : '$10.60';
+                document.getElementById('preview-shipping-discount').textContent = totales.descuento_envio > 0 ? 
+                    `-${formatCurrency(totales.descuento_envio, currency)}` : (totales.envio > 0 ? '$0.00' : '-$10.60');
+                document.getElementById('preview-pre-tax').textContent = formatCurrency(totales.subtotal, currency);
+                document.getElementById('preview-tax').textContent = formatCurrency(totales.impuestos, currency);
+                document.getElementById('preview-total').textContent = formatCurrency(totales.total, currency);
+                document.getElementById('preview-final-total').textContent = formatCurrency(totales.total, currency);
+                document.getElementById('preview-transaction-amount').textContent = formatCurrency(totales.total, currency);
+                
+                // Llenar notas si existen
+                const notesSection = document.getElementById('notesSection');
+                const notesContent = document.getElementById('notesContent');
+                
+                if (jsonData.notas && jsonData.notas.trim()) {
+                    notesContent.textContent = jsonData.notas;
+                    notesSection.classList.remove('hidden');
+                } else {
+                    notesSection.classList.add('hidden');
+                }
+                
+                // Mostrar la factura
+                invoicePreview.classList.remove('hidden');
+                showStatus('✅ Factura generada exitosamente', 'success');
+                
+                // Scroll a la factura
+                setTimeout(() => {
+                    invoicePreview.scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+                
+            } catch (error) {
+                showStatus(`❌ Error: JSON inválido - ${error.message}`, 'error');
+                console.error('Error al procesar JSON:', error);
+            }
+        }
+
+        function downloadPDF() {
+            if (invoicePreview.classList.contains('hidden')) {
+                showStatus('❌ Primero genera la factura', 'error');
+                return;
+            }
+
+            if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+                showStatus('❌ Librería PDF no disponible', 'error');
+                return;
+            }
+
+            if (typeof html2canvas === 'undefined') {
+                showStatus('❌ Librería html2canvas no disponible', 'error');
+                return;
+            }
+
+            try {
+                const { jsPDF } = window.jspdf || window;
+                const invoiceElement = document.querySelector('.invoice-container');
+                
+                html2canvas(invoiceElement, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 210; // A4 width in mm
+                    const pageHeight = 295; // A4 height in mm
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    
+                    let position = 0;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    
+                    const orderNumber = document.getElementById('preview-order-number').textContent.replace(/[^a-zA-Z0-9]/g, '') || 'factura';
+                    const fileName = `factura-${orderNumber}-${new Date().toISOString().slice(0, 10)}.pdf`;
+                    pdf.save(fileName);
+                    
+                    showStatus('✅ PDF descargado exitosamente', 'success');
+                }).catch(error => {
+                    console.error('Error al generar PDF:', error);
+                    showStatus(`❌ Error al generar PDF: ${error.message}`, 'error');
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function printInvoice() {
+            if (invoicePreview.classList.contains('hidden')) {
+                showStatus('❌ Primero genera la factura', 'error');
+                return;
+            }
+            
+            window.print();
+        }
+
+        // Animación inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.to('.form-container', { duration: 0.8, opacity: 1, y: 0, ease: 'power3.out', delay: 0.2 });
+            
+            // Auto-generar al cargar si hay JSON válido
+            try {
+                if (jsonInput.value.trim()) {
+                    JSON.parse(jsonInput.value.trim());
+                    generateInvoice();
+                }
+            } catch (e) {
+                // JSON no válido, no hacer nada
+            }
+        });
+
+        // Auto-generar cuando cambie el JSON
+        jsonInput.addEventListener('input', function() {
+            try {
+                const jsonData = JSON.parse(this.value.trim());
+                if (jsonData && Object.keys(jsonData).length > 0) {
+                    generateInvoice();
+                }
+            } catch (e) {
+                // JSON no válido aún
+            }
+        });
+
+        // Event listener para descarga de PDF
+        document.getElementById('download-pdf').addEventListener('click', downloadPDF);
+    </script>
+</body>
+</html>
