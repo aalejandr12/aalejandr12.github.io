@@ -326,19 +326,19 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label class="input-label" for="city">Ciudad</label>
-                                <input class="input-field bg-gray-100" id="city" name="city" placeholder="Ej: Madrid" type="text" autocomplete="address-level2" readonly/>
+                                <input class="input-field" id="city" name="city" placeholder="MIAMI" type="text" autocomplete="address-level2"/>
                             </div>
                             <div>
-                                <label class="input-label" for="state">Estado/Provincia</label>
-                                <input class="input-field bg-gray-100" id="state" name="state" placeholder="Ej: Madrid" type="text" autocomplete="address-level1" readonly/>
+                                <label class="input-label" for="state">Estado</label>
+                                <input class="input-field" id="state" name="state" placeholder="FL" type="text" autocomplete="address-level1"/>
                             </div>
                             <div>
                                 <label class="input-label" for="zip">Código Postal</label>
-                                <input class="input-field bg-gray-100" id="zip" name="zip" placeholder="Ej: 28001" type="text" autocomplete="postal-code" readonly/>
+                                <input class="input-field" id="zip" name="zip" placeholder="33122-1310" type="text" autocomplete="postal-code"/>
                             </div>
                             <div>
                                 <label class="input-label" for="country">País</label>
-                                <input class="input-field bg-gray-100" id="country" name="country" placeholder="Ej: España" type="text" autocomplete="country-name" readonly/>
+                                <input class="input-field" id="country" name="country" placeholder="Estados Unidos" type="text" autocomplete="country-name"/>
                             </div>
                         </div>
                     </div>
@@ -410,13 +410,14 @@
                     <div class="border-b-2 border-blue-500 p-6">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h1 class="text-2xl font-bold text-gray-900">PurrCrafter</h1>
-                                <p class="text-gray-600">Generador de Facturas</p>
-                                <p class="text-sm text-gray-500 mt-2">Factura Nº: <span id="preview-order-number">#111-0592955-2893840</span></p>
+                                <h1 class="text-2xl font-bold text-blue-600">invoice</h1>
+                                <p class="text-sm text-gray-600 mt-1">Detalles finales del pedido <span id="preview-order-number">#111-0592955-2893840</span></p>
+                                <a href="#" class="text-blue-600 text-sm underline">Imprima esta página para sus registros.</a>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm text-gray-600">Fecha de pedido</p>
-                                <p class="font-semibold" id="preview-order-date">25 de mayo de 2020</p>
+                                <p class="text-sm text-gray-600">Pedido realizado: <span id="preview-order-date">23 de mayo de 2020</span></p>
+                                <p class="text-sm text-gray-600">Número de pedido: <span id="preview-order-number-2">#111-0592955-2893840</span></p>
+                                <p class="text-sm font-semibold">Total del pedido: <span id="preview-total">$65.99</span></p>
                             </div>
                         </div>
                     </div>
@@ -425,12 +426,10 @@
                     <div class="p-6 border-b border-gray-200">
                         <div class="grid grid-cols-1 gap-8">
                             <div>
-                                <h3 class="font-semibold text-gray-900 mb-4">Dirección de envío</h3>
-                                <div class="text-sm text-gray-700">
-                                    <p class="font-medium" id="preview-customer-name">Cliente</p>
-                                    <p id="preview-address-line">Dirección</p>
-                                    <p id="preview-city-state-zip">Ciudad, Estado, CP</p>
-                                    <p id="preview-country">País</p>
+                                <h3 class="font-semibold text-gray-900 mb-2">Enviado el <span id="preview-ship-date">26 de mayo de 2020</span></h3>
+                                <h4 class="font-semibold text-gray-900 mb-3">Productos comprados:</h4>
+                                <div id="preview-products" class="space-y-3">
+                                    <!-- Los productos se insertarán aquí dinámicamente -->
                                 </div>
                             </div>
                         </div>
@@ -441,37 +440,39 @@
                         <h3 class="font-semibold text-gray-900 mb-4">Información de pago</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h4 class="text-sm font-medium text-gray-900 mb-2">Método de pago</h4>
-                                <p class="text-sm text-gray-700">Visa que termina en 6571</p>
+                                <h4 class="font-semibold text-gray-900 mb-2">Método de pago:</h4>
+                                <p class="text-sm text-gray-700">Visa | Últimos dígitos: 6571</p>
                                 
-                                <h4 class="text-sm font-medium text-gray-900 mb-2 mt-4">Dirección de facturación</h4>
-                                <div class="text-sm text-gray-700">
-                                    <p class="font-medium" id="preview-billing-name">Cliente</p>
-                                    <p id="preview-billing-address">Dirección</p>
-                                    <p id="preview-billing-city">Ciudad, Estado, CP</p>
-                                    <p id="preview-billing-country">País</p>
+                                <h4 class="font-semibold text-gray-900 mb-2 mt-6">Dirección de envío:</h4>
+                                <div id="preview-shipping-address" class="text-sm text-gray-700 space-y-1">
+                                    <p id="preview-customer-name">Cliente</p>
+                                    <p id="preview-address-line">Dirección</p>
+                                    <p id="preview-city-state-zip">Ciudad, Estado CP</p>
+                                    <p id="preview-country">País</p>
                                 </div>
                                 
-                                <h4 class="text-sm font-medium text-gray-900 mb-2 mt-4">Pedido nº</h4>
-                                <p class="text-sm text-gray-700" id="preview-order-number-2">#111-0592955-2893840</p>
+                                <div class="mt-4">
+                                    <h4 class="font-semibold text-gray-900 mb-2">Velocidad de envío:</h4>
+                                    <p class="text-sm text-gray-700" id="preview-shipping-method">Envío GRATIS</p>
+                                </div>
                             </div>
                             
                             <div>
-                                <h4 class="text-sm font-medium text-gray-900 mb-2">Resumen del pedido</h4>
-                                <div class="space-y-1 text-sm">
+                                <h4 class="font-semibold text-gray-900 mb-2">Resumen del pedido:</h4>
+                                <div class="space-y-2 text-sm">
                                     <div class="flex justify-between">
-                                        <span>Subtotal de artículos:</span>
+                                        <span>Productos:</span>
                                         <span id="preview-subtotal">$65.99</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span>Gastos de envío y gestión:</span>
+                                        <span>Envío:</span>
                                         <span id="preview-shipping-total">$10.60</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span>Descuento en envío promocional:</span>
-                                        <span class="text-red-600" id="preview-shipping-discount">-$10.60</span>
+                                        <span>Envío gratis:</span>
+                                        <span id="preview-shipping-discount">-$10.60</span>
                                     </div>
-                                    <div class="flex justify-between">
+                                    <div class="border-t border-gray-300 pt-2 flex justify-between font-semibold">
                                         <span>Total antes de impuestos:</span>
                                         <span id="preview-pre-tax">$65.99</span>
                                     </div>
@@ -479,21 +480,9 @@
                                         <span>Impuestos:</span>
                                         <span id="preview-tax">$0.00</span>
                                     </div>
-                                    <div class="flex justify-between border-t border-gray-200 pt-1 font-semibold">
-                                        <span>Total del pedido:</span>
-                                        <span class="text-red-600" id="preview-total">$65.99</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
-                                    <h4 class="text-sm font-medium text-gray-900 mb-2">Su pedido</h4>
-                                    <div class="text-sm text-gray-700">
-                                        <p>Fecha de envío: <span id="preview-ship-date">28 de mayo de 2020</span></p>
-                                        <p id="preview-products">
-                                            <!-- Los productos se cargarán aquí dinámicamente -->
-                                        </p>
-                                        <p class="mt-2">Vendido por: PurrCrafter</p>
-                                        <p>Total del pedido: <span class="font-semibold text-red-600" id="preview-final-total">$65.99</span></p>
+                                    <div class="border-t border-gray-300 pt-2 flex justify-between font-bold text-lg text-red-600">
+                                        <span>Total (I.V.A. Incluido):</span>
+                                        <span id="preview-final-total">$65.99</span>
                                     </div>
                                 </div>
                             </div>
@@ -782,15 +771,10 @@
                 
                 // Dirección
                 document.getElementById('preview-customer-name').textContent = data.customerName || 'Cliente';
-                document.getElementById('preview-billing-name').textContent = data.customerName || 'Cliente';
                 document.getElementById('preview-address-line').textContent = data.address || '';
-                document.getElementById('preview-billing-address').textContent = data.address || '';
                 document.getElementById('preview-city-state-zip').textContent = 
                     [data.city, data.state, data.zip].filter(Boolean).join(', ');
-                document.getElementById('preview-billing-city').textContent = 
-                    [data.city, data.state, data.zip].filter(Boolean).join(', ');
                 document.getElementById('preview-country').textContent = data.country || '';
-                document.getElementById('preview-billing-country').textContent = data.country || '';
                 
                 // Productos
                 const productsContainer = document.getElementById('preview-products');
@@ -807,15 +791,24 @@
                     productsContainer.appendChild(productDiv);
                 });
                 
+                // Método de envío
+                const shippingMethods = {
+                    'gratis': 'Envío GRATIS',
+                    'standard': 'Envío Estándar',
+                    'express': 'Envío Express'
+                };
+                document.getElementById('preview-shipping-method').textContent = 
+                    shippingMethods[data.shippingMethod] || 'Envío GRATIS';
+                
                 // Totales
                 document.getElementById('preview-subtotal').textContent = `$${data.subtotal.toFixed(2)}`;
-                document.getElementById('preview-shipping-total').textContent = data.shipping > 0 ? `$${data.shipping.toFixed(2)}` : '$0.00';
-                document.getElementById('preview-shipping-discount').textContent = data.shipping > 0 ? '$0.00' : '$0.00';
-                document.getElementById('preview-pre-tax').textContent = `$${(data.subtotal + data.shipping).toFixed(2)}`;
+                document.getElementById('preview-shipping-total').textContent = data.shipping > 0 ? `$${data.shipping.toFixed(2)}` : '$10.60';
+                document.getElementById('preview-shipping-discount').textContent = data.shipping > 0 ? '$0.00' : '-$10.60';
+                document.getElementById('preview-pre-tax').textContent = `$${data.subtotal.toFixed(2)}`;
                 document.getElementById('preview-tax').textContent = '$0.00';
-                document.getElementById('preview-total').textContent = `$${(data.subtotal + data.shipping).toFixed(2)}`;
-                document.getElementById('preview-final-total').textContent = `$${(data.subtotal + data.shipping).toFixed(2)}`;
-                document.getElementById('preview-transaction-amount').textContent = `$${(data.subtotal + data.shipping).toFixed(2)}`;
+                document.getElementById('preview-total').textContent = `$${data.subtotal.toFixed(2)}`;
+                document.getElementById('preview-final-total').textContent = `$${data.subtotal.toFixed(2)}`;
+                document.getElementById('preview-transaction-amount').textContent = `$${data.subtotal.toFixed(2)}`;
                 
                 // Mostrar vista previa
                 previewSection.classList.remove('hidden');
