@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Crear Factura - PurrCrafter</title>
+    
+    <!-- PWA metas -->
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <meta name="apple-mobile-web-app-title" content="PurrCrafter"/>
+
+    <!-- Meta SEO Básicas -->
+    <meta name="description" content="Genera facturas profesionales de forma rápida y sencilla con PurrCrafter. Herramienta gratuita de facturación online. ¡Crea tu factura ahora!"/>
+    <meta name="keywords" content="crear factura online gratis, generar factura, facturación online, invoices español, herramientas facturas, PurrCrafter facturas"/>
+    <meta name="author" content="PurrCrafter"/>
+    <meta name="robots" content="index, follow"/>
+    <meta name="language" content="Spanish"/>
+    <meta name="revisit-after" content="7 days"/>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://aalejandr12.github.io/factura.html"/>
+    <meta property="og:title" content="Crear Factura - PurrCrafter"/>
+    <meta property="og:description" content="🐱 Genera facturas profesionales de forma rápida y sencilla. Herramienta gratuita de facturación online."/>
+    <meta property="og:site_name" content="PurrCrafter"/>
+    <meta property="og:locale" content="es_ES"/>
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image"/>
+    <meta property="twitter:url" content="https://aalejandr12.github.io/factura.html"/>
+    <meta property="twitter:title" content="Crear Factura - PurrCrafter"/>
+    <meta property="twitter:description" content="🐱 Genera facturas profesionales de forma rápida y sencilla. Herramienta gratuita de facturación online."/>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://aalejandr12.github.io/factura.html"/>
+
+    <!-- Favicon / PWA -->
+    <link rel="icon" href="/Icono/favicon.ico" sizes="any"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="/Icono/favicon-96x96.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/Icono/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" href="/Icono/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon-precomposed" href="/Icono/apple-touch-icon.png"/>
+    <link rel="manifest" href="/Icono/site.webmanifest"/>
+    
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 768px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/>
+    <link rel="apple-touch-startup-image" href="/Icono/apple-splash-1668x2388.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"/>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
+
+    <!-- Datos Estructurados JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "PurrCrafter - Crear Factura",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "description": "Generador de facturas profesionales online gratuito. Crea facturas personalizadas de forma rápida y sencilla.",
+      "url": "https://aalejandr12.github.io/factura.html",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Generación de facturas profesionales",
+        "Autocompletado de direcciones",
+        "Múltiples productos por factura",
+        "Cálculo automático de totales",
+        "Exportación a PDF",
+        "Interfaz en español"
+      ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style type="text/tailwindcss">
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #1F2937;
+            --primary-color: #2563EB;
+            --secondary-color: #F9FAFB;
+            --accent-color: #3B82F6;
+            --border-color: #E5E7EB;
+            --text-muted-color: #6B7280;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .input-field {
+            @apply w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent transition-all duration-300 ease-in-out;
+        }
+        
+        .input-label {
+            @apply block text-sm font-medium text-[var(--text-muted-color)] mb-1;
+        }
+        
+        .purr-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .purr-button:hover {
+            transform: translateY(-2px);
+            background-color: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+        
+        .secondary-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: var(--secondary-color);
+            color: var(--text-muted-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .secondary-button:hover {
+            transform: translateY(-2px);
+            background-color: #F3F4F6;
+            color: var(--text-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-container {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .item-row.new-item {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        
+        .header-section {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ddd;
+        }
+        
+        .print-hidden {
+            display: block;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .invoice-preview, .invoice-preview * {
+                visibility: visible;
+            }
+            
+            .invoice-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            
+            .print-hidden {
+                display: none !important;
+            }
+            
+            .invoice-container {
+                border: none;
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err){
+                    console.log('SW registration failed:', err);
+                });
+            });
+        }
+    </script>
+</head>
+
+<body class="antialiased">
+<script>
+    // Detector de AdBlock - Redirige a página dedicada
+    function detectAdBlock() {
+        const skipExpiration = localStorage.getItem('adblock_skip');
+        if (skipExpiration && new Date().getTime() < parseInt(skipExpiration)) {
+            return;
+        }
+        const testAd = document.createElement('div');
+        testAd.innerHTML = '&nbsp;';
+        testAd.className = 'adsbox';
+        testAd.style.position = 'absolute';
+        testAd.style.left = '-10000px';
+        document.body.appendChild(testAd);
+        setTimeout(() => {
+            const adBlockDetected = testAd.offsetHeight === 0 || 
+                                  window.getComputedStyle(testAd).display === 'none' ||
+                                  !document.querySelector('.adsbygoogle');
+            document.body.removeChild(testAd);
+            if (adBlockDetected) {
+                sessionStorage.setItem('originalPage', window.location.href);
+                window.location.href = 'adblock.html';
+            }
+        }, 100);
+    }
+    window.addEventListener('load', () => {
+        setTimeout(detectAdBlock, 2000);
+    });
+</script>
+
+    <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
+        <header class="text-center w-full max-w-4xl mb-6">
+            <a class="inline-block mb-4 text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors" href="index.html" aria-label="Volver a inicio">
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    <span>Volver a Inicio</span>
+                </div>
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">Crear Factura</h1>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Genera facturas profesionales de forma rápida y sencilla</p>
+        </header>
+
+        <!-- Bloque de anuncios AdSense superior -->
+        <div class="w-full max-w-4xl mb-8 flex justify-center print-hidden">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1897264775520223"
+                 data-ad-slot="2473509960"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <main class="max-w-4xl mx-auto w-full">
+            <div class="lg:col-span-2">
+                <div class="bg-[var(--secondary-color)] rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 form-container print-hidden border border-[var(--border-color)]">
+                
+                <form class="space-y-8" id="invoice-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="input-label" for="order-number">Número de Pedido</label>
+                            <input class="input-field" id="order-number" name="order-number" placeholder="#111-0592955-2893840" type="text"/>
+                        </div>
+                        <div>
+                            <label class="input-label" for="order-date">Fecha de Pedido</label>
+                            <input class="input-field bg-gray-100" id="order-date" name="order-date" readonly type="date" value=""/>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-[var(--border-color)] pt-8">
+                        <h3 class="text-xl font-semibold text-[var(--text-color)] mb-4">Información del cliente</h3>
+                        <div>
+                            <label class="input-label" for="customer-name">Nombre del Cliente</label>
+                            <input class="input-field" id="customer-name" name="customer-name" placeholder="Ej: Juan Pérez" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-[var(--border-color)] pt-8">
+                        <h3 class="text-xl font-semibold text-[var(--text-color)] mb-4">Dirección de envío</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="input-label" for="shipping-address">Dirección</label>
+                                <input class="input-field" id="shipping-address" name="shipping-address" placeholder="Comience a escribir su dirección..." type="text"/>
+                                <div id="address-suggestions" class="mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-60 overflow-y-auto"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="input-label" for="city">Ciudad</label>
+                                    <input class="input-field bg-gray-100" id="city" name="city" placeholder="Ej: Springfield" readonly type="text"/>
+                                </div>
+                                <div>
+                                    <label class="input-label" for="state">Estado/Provincia</label>
+                                    <input class="input-field bg-gray-100" id="state" name="state" placeholder="Ej: Illinois" readonly type="text"/>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="input-label" for="zip-code">Código Postal</label>
+                                    <input class="input-field bg-gray-100" id="zip-code" name="zip-code" placeholder="Ej: 62704" readonly type="text"/>
+                                </div>
+                                <div>
+                                    <label class="input-label" for="country">País</label>
+                                    <input class="input-field bg-gray-100" id="country" name="country" placeholder="Ej: Estados Unidos" readonly type="text"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-[var(--border-color)] pt-8">
+                        <h3 class="text-xl font-semibold text-[var(--text-color)] mb-4">Productos comprados</h3>
+                        <div class="space-y-4" id="items-list">
+                            <div class="grid grid-cols-12 gap-x-4 gap-y-2 items-end item-row">
+                                <div class="col-span-12 md:col-span-5">
+                                    <label class="input-label" for="product-description-1">Descripción del Producto</label>
+                                    <input class="input-field" id="product-description-1" name="product-description" placeholder="Ej: Gatito de peluche" type="text"/>
+                                </div>
+                                <div class="col-span-6 md:col-span-2">
+                                    <label class="input-label" for="quantity-1">Cantidad</label>
+                                    <input class="input-field" id="quantity-1" min="1" name="quantity" placeholder="1" type="number" value="1"/>
+                                </div>
+                                <div class="col-span-6 md:col-span-3">
+                                    <label class="input-label" for="price-1">Precio ($)</label>
+                                    <input class="input-field" id="price-1" min="0" name="price" placeholder="19.99" step="0.01" type="number"/>
+                                </div>
+                                <div class="col-span-12 md:col-span-2 flex justify-end">
+                                    <button class="text-[var(--text-muted-color)] hover:text-red-500 transition-colors duration-200 remove-item-btn hidden" type="button">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="mt-4 flex items-center space-x-2 text-[var(--primary-color)] hover:text-[var(--accent-color)] font-medium transition-colors duration-300" id="add-item" type="button">
+                            <span class="material-symbols-outlined">add_circle</span>
+                            <span>Agregar más productos</span>
+                        </button>
+                    </div>
+
+                    <div class="border-t border-[var(--border-color)] pt-8">
+                        <h3 class="text-xl font-semibold text-[var(--text-color)] mb-4">Información de envío</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="input-label" for="shipping-cost">Costo de Envío ($)</label>
+                                <input class="input-field" id="shipping-cost" min="0" name="shipping-cost" placeholder="0.00" step="0.01" type="number" value="0.00"/>
+                            </div>
+                            <div>
+                                <label class="input-label" for="shipping-method">Método de Envío</label>
+                                <select class="input-field" id="shipping-method" name="shipping-method">
+                                    <option>Envío GRATIS</option>
+                                    <option>Envío Estándar</option>
+                                    <option>Envío Express</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-8 border-t border-[var(--border-color)] mt-8">
+                        <button class="px-6 py-3 rounded-xl font-semibold secondary-button w-full sm:w-auto" id="clear-all" type="button">Limpiar Todo</button>
+                        <button class="px-8 py-3 rounded-xl font-semibold text-white purr-button w-full sm:w-auto flex items-center justify-center gap-2" id="generate-invoice" type="submit">
+                            <span class="material-symbols-outlined">receipt_long</span>
+                            <span>Generar Factura</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </main>
+
+        <!-- Bloque de anuncios AdSense central -->
+        <div class="w-full max-w-4xl my-12 flex justify-center print-hidden">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1897264775520223"
+                 data-ad-slot="2473509960"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        
+        <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="index.html">Inicio</a>
+            </div>
+            <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.to('.form-container', {
+                duration: 0.8,
+                opacity: 1,
+                y: 0,
+                ease: 'power3.out',
+                delay: 0.2
+            });
+            
+            const itemsList = document.getElementById('items-list');
+            const addItemBtn = document.getElementById('add-item');
+            let itemCounter = 1;
+            
+            function createItemRow() {
+                itemCounter++;
+                const itemRow = document.createElement('div');
+                itemRow.classList.add('grid', 'grid-cols-12', 'gap-x-4', 'gap-y-2', 'items-end', 'item-row', 'new-item');
+                itemRow.innerHTML = `
+                    <div class="col-span-12 md:col-span-5">
+                        <label for="product-description-${itemCounter}" class="input-label sr-only">Descripción del Producto</label>
+                        <input type="text" id="product-description-${itemCounter}" name="product-description" class="input-field" placeholder="Otro producto">
+                    </div>
+                    <div class="col-span-6 md:col-span-2">
+                        <label for="quantity-${itemCounter}" class="input-label sr-only">Cantidad</label>
+                        <input type="number" id="quantity-${itemCounter}" name="quantity" class="input-field" placeholder="1" min="1">
+                    </div>
+                    <div class="col-span-6 md:col-span-3">
+                        <label for="price-${itemCounter}" class="input-label sr-only">Precio ($)</label>
+                        <input type="number" id="price-${itemCounter}" name="price" class="input-field" placeholder="0.00" step="0.01" min="0">
+                    </div>
+                    <div class="col-span-12 md:col-span-2 flex justify-end">
+                        <button type="button" class="text-[var(--text-muted-color)] hover:text-red-500 transition-colors duration-200 remove-item-btn">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                `;
+                return itemRow;
+            }
+            
+            function updateRemoveButtons() {
+                const itemRows = itemsList.querySelectorAll('.item-row');
+                itemRows.forEach((row) => {
+                    const removeBtn = row.querySelector('.remove-item-btn');
+                    if (itemRows.length > 1) {
+                        removeBtn.classList.remove('hidden');
+                    } else {
+                        removeBtn.classList.add('hidden');
+                    }
+                });
+            }
+            
+            addItemBtn.addEventListener('click', () => {
+                const newItem = createItemRow();
+                itemsList.appendChild(newItem);
+                gsap.from(newItem, {
+                    duration: 0.5,
+                    opacity: 0,
+                    y: -20,
+                    ease: 'power2.out',
+                    onComplete: () => newItem.classList.remove('new-item')
+                });
+                updateRemoveButtons();
+            });
+            
+            itemsList.addEventListener('click', (e) => {
+                if (e.target.closest('.remove-item-btn')) {
+                    const row = e.target.closest('.item-row');
+                    gsap.to(row, {
+                        duration: 0.3,
+                        opacity: 0,
+                        x: -20,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            row.remove();
+                            updateRemoveButtons();
+                        }
+                    });
+                }
+            });
+            
+            document.getElementById('clear-all').addEventListener('click', () => {
+                const form = document.getElementById('invoice-form');
+                form.reset();
+                const itemRows = itemsList.querySelectorAll('.item-row:not(:first-child)');
+                itemRows.forEach(row => row.remove());
+                updateRemoveButtons();
+                
+                setDate();
+                gsap.from('.form-container', {
+                    duration: 0.5,
+                    scale: 0.98,
+                    opacity: 0.8,
+                    ease: 'power2.out'
+                });
+            });
+            
+            function setDate() {
+                const dateInput = document.getElementById('order-date');
+                if (!dateInput.value) {
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    dateInput.value = `${yyyy}-${mm}-${dd}`;
+                }
+            }
+            
+            setDate();
+            
+            // Autocompletado de direcciones (simplificado)
+            document.getElementById('shipping-address').addEventListener('input', async (e) => {
+                const value = e.target.value;
+                if (value.length > 5) {
+                    // Simulación de autocompletado
+                    document.getElementById('city').value = "Springfield";
+                    document.getElementById('state').value = "Illinois";
+                    document.getElementById('zip-code').value = "62704";
+                    document.getElementById('country').value = "Estados Unidos";
+                    
+                    // Autocompletado real con API
+                    try {
+                        const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(value)}&lang=es&limit=5`);
+                        const data = await response.json();
+                        if (data.features && data.features.length > 0) {
+                            const props = data.features[0].properties;
+                            document.getElementById('city').value = props.city || props.town || props.village || "";
+                            document.getElementById('state').value = props.state || "";
+                            document.getElementById('zip-code').value = props.postcode || "";
+                            document.getElementById('country').value = props.country || "";
+                        }
+                    } catch (error) {
+                        console.log('Error en autocompletado:', error);
+                    }
+                }
+            });
+            
+            // Manejo del formulario
+            const form = document.getElementById('invoice-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Recopilar datos del formulario
+                const formData = new FormData(form);
+                const items = [];
+                
+                document.querySelectorAll('.item-row').forEach(row => {
+                    const description = row.querySelector('input[name="product-description"]').value.trim();
+                    const quantity = parseFloat(row.querySelector('input[name="quantity"]').value) || 0;
+                    const price = parseFloat(row.querySelector('input[name="price"]').value) || 0;
+                    
+                    if (description && quantity > 0 && price > 0) {
+                        items.push({ description, quantity, price });
+                    }
+                });
+                
+                if (items.length === 0) {
+                    alert('Por favor, agregue al menos un producto');
+                    return;
+                }
+                
+                // Generar factura (aquí puedes agregar la lógica de generación PDF)
+                generateInvoice({
+                    orderNumber: formData.get('order-number') || '#' + Date.now(),
+                    orderDate: formData.get('order-date'),
+                    customerName: formData.get('customer-name'),
+                    address: formData.get('shipping-address'),
+                    city: formData.get('city'),
+                    state: formData.get('state'),
+                    zipCode: formData.get('zip-code'),
+                    country: formData.get('country'),
+                    shippingCost: parseFloat(formData.get('shipping-cost')) || 0,
+                    shippingMethod: formData.get('shipping-method'),
+                    items
+                });
+            });
+            
+            function generateInvoice(data) {
+                // Calcular total
+                const subtotal = data.items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+                const total = subtotal + data.shippingCost;
+                
+                // Mostrar resumen de la factura
+                alert('✅ Factura generada exitosamente\n\n' + 
+                      '📋 Cliente: ' + data.customerName + '\n' +
+                      '📦 Productos: ' + data.items.length + '\n' +
+                      '💰 Subtotal: $' + subtotal.toFixed(2) + '\n' +
+                      '🚚 Envío: $' + data.shippingCost.toFixed(2) + '\n' +
+                      '💵 Total: $' + total.toFixed(2) + '\n\n' +
+                      '🎉 ¡Su factura ha sido creada con éxito!');
+            }
+            
+            updateRemoveButtons();
+        });
+    </script>
+
+</body>
+</html>

@@ -2,7 +2,10 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, in    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>al-scale=1.0" name="viewport"/>
 <title>PurrCrafter</title>
 <!-- PWA metas -->
 <meta name="theme-color" content="#ffffff"/>
@@ -210,10 +213,26 @@
 <button class="filter-button px-6 py-2 rounded-full text-md" data-filter="pdf">PDF</button>
 <button class="filter-button px-6 py-2 rounded-full text-md" data-filter="video">Video</button>
 <button class="filter-button px-6 py-2 rounded-full text-md" data-filter="epub">EPUB</button>
+<button class="filter-button px-6 py-2 rounded-full text-md" data-filter="otros">Otros</button>
 </div>
 </div>
 <main class="w-full max-w-5xl flex-grow">
 <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="card-container">
+<!-- Tarjeta: Crear Factura -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="otros">
+<div class="mb-6 flex-shrink-0">
+<span class="material-symbols-outlined text-[var(--primary-color)]" style="font-size: 5rem;">receipt_long</span>
+</div>
+<div class="flex flex-col flex-grow justify-between">
+<div>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Crear Factura</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Genera facturas profesionales de forma rápida y sencilla.</p>
+</div>
+<button onclick="window.location.href='factura.html'" class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
+                        Crear Ahora
+                    </button>
+</div>
+</div>
 <!-- Tarjeta: Unir por Nombre -->
 <div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="pdf">
 <div class="mb-6 flex-shrink-0">
@@ -318,8 +337,8 @@
                     </button>
 </div>
 </div>
-<!-- Tarjeta: Escáner de Cámara -->
-<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="video">
+<!-- Tarjeta: Escáner de Cámaras en Red -->
+<div class="p-8 rounded-2xl shadow-md flex-col items-center justify-center text-center purr-card card-item flex" data-category="otros">
 <div class="mb-6 flex-shrink-0">
 <svg class="w-20 h-20 text-[var(--primary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
@@ -327,8 +346,8 @@
 </div>
 <div class="flex flex-col flex-grow justify-between">
 <div>
-<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Escáner de Cámara</h2>
-<p class="text-[var(--text-muted-color)] mb-8">Digitaliza documentos directamente desde tu cámara web.</p>
+<h2 class="text-2xl font-semibold text-[var(--text-color)] mb-3">Escáner de Cámaras en Red</h2>
+<p class="text-[var(--text-muted-color)] mb-8">Detecta y encuentra cámaras de seguridad en tu red local.</p>
 </div>
 <button onclick="window.location.href='camara.html'" class="w-full max-w-xs px-6 py-3 text-lg font-semibold text-white rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[var(--accent-color)] purr-button">
                         Iniciar Escáner
