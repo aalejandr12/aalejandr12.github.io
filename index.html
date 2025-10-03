@@ -163,11 +163,46 @@
             will-change: transform, opacity;}
     </style>
     <script>
+        // Registro del service worker con manejo de actualizaciones.
+        // Cuando detecte un worker en `waiting` le pedimos `skipWaiting` y recargamos
+        // la página en `controllerchange` para que los usuarios vean la versión nueva.
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').catch(function(err){
+            window.addEventListener('load', async () => {
+                try {
+                    const reg = await navigator.serviceWorker.register('/sw.js');
+                    console.log('ServiceWorker registrado:', reg);
+
+                    // Si ya hay un worker esperando, pedirle que se active inmediatamente
+                    if (reg.waiting) {
+                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    }
+
+                    // Cuando se detecta una nueva instalación
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed') {
+                                // Si ya hay un controller, significa que se trata de una actualización
+                                if (navigator.serviceWorker.controller) {
+                                    // Pedimos al worker que se active inmediatamente
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                }
+                            }
+                        });
+                    });
+
+                    // Recargar cuando el nuevo service worker tome el control
+                    let refreshing = false;
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (refreshing) return;
+                        refreshing = true;
+                        window.location.reload();
+                    });
+
+                } catch (err) {
                     console.log('SW registration failed:', err);
-                });
+                }
             });
         }
     </script>
