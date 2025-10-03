@@ -337,7 +337,7 @@
                 </div>
 
                 <div class="flex justify-center sm:justify-end flex-wrap gap-4 pt-6">
-                    <button type="button" class="px-8 py-3 rounded-xl font-semibold secondary-button w-full sm:w-auto">Cancelar</button>
+                    <button type="button" class="px-8 py-3 rounded-xl font-semibold secondary-button w-full sm:w-auto" onclick="location.reload()">Limpiar</button>
                     <button type="button" class="px-8 py-3 rounded-xl font-semibold text-white purr-button w-full sm:w-auto" onclick="generateFinalInvoice()">Generar Factura</button>
                 </div>
             </form>
@@ -466,7 +466,15 @@
             </script>
         </div>
     </main>
-    </div>
+
+    <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+        <div class="flex justify-center space-x-6 mb-4">
+            <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
+            <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
+        </div>
+        <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
+    </footer>
+</div>
 
     <script>
         const statusDiv = document.getElementById('status');
@@ -1214,15 +1222,6 @@ El campo "notas" debe quedar en blanco si no hay información adicional relevant
         // Event listener para descarga de PDF
         document.getElementById('download-pdf').addEventListener('click', downloadPDF);
     </script>
-        
-    <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
-        <div class="flex justify-center space-x-6 mb-4">
-            <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
-            <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
-        </div>
-        <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
-    </footer>
-</div>
 
 </body>
 </html>
