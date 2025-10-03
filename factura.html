@@ -869,6 +869,11 @@
                     const orderNumber = document.getElementById('preview-order-number').textContent || 'factura';
                     pdf.save(`factura-${orderNumber}.pdf`);
                     
+                    // Recargar la página después de un breve delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                    
                 } catch (error) {
                     console.error('Error al generar PDF:', error);
                     alert('Error al generar el PDF. Por favor, intente nuevamente.');

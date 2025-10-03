@@ -12,6 +12,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
     <meta name="apple-mobile-web-app-title" content="PurrCrafter"/>
 
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1897264775520223" crossorigin="anonymous"></script>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -176,11 +179,47 @@
 </head>
 
 <body class="antialiased">
-    <div class="container mx-auto px-4 py-8">
-        <header class="text-center w-full max-w-4xl mb-6 mx-auto">
+    <div class="container mx-auto px-4 min-h-screen flex flex-col items-center pt-10">
+        <header class="text-center w-full max-w-4xl mb-8">
+            <a class="inline-block mb-6 text-[var(--primary-color)] hover:text-[var(--accent-color)] transition-colors" href="index.html">
+                <div class="flex items-center space-x-2">
+                    <span class="material-symbols-outlined">
+                        arrow_back
+                    </span>
+                    <span>Volver a Inicio</span>
+                </div>
+            </a>
             <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-color)] drop-shadow-sm">Generador de Factura desde JSON</h1>
-            <p class="text-lg text-[var(--text-muted-color)] mt-2">Pega tu JSON y genera facturas profesionales automáticamente</p>
+            <p class="text-lg text-[var(--text-muted-color)] mt-2">Se genera factura mediante JSON creado por inteligencia artificial.</p>
         </header>
+
+        <!-- Bloque de anuncios AdSense superior -->
+        <div class="w-full max-w-4xl mb-8 flex justify-center print-hidden">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1897264775520223"
+                 data-ad-slot="2473509960"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Explicación de Uso -->
+        <div class="w-full max-w-4xl mb-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <h2 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-2">info</span>
+                ¿Cómo usar esta herramienta?
+            </h2>
+            <div class="space-y-3 text-blue-700">
+                <p><strong>Paso 1:</strong> Haz clic en "Copiar Prompt" para obtener las instrucciones para la IA.</p>
+                <p><strong>Paso 2:</strong> Ve a tu IA de preferencia (ChatGPT, Claude, Gemini, etc.) y pega el prompt.</p>
+                <p><strong>Paso 3:</strong> En el mismo mensaje, adjunta tus documentos: PDFs de facturas, capturas de pantalla o fotos.</p>
+                <p><strong>Paso 4:</strong> La IA te dará un JSON ordenado. Copia ese resultado y pégalo en el campo de texto de abajo.</p>
+                <p><strong>Paso 5:</strong> Haz clic en "Generar Factura" y podrás editarlo antes de descargar el PDF final.</p>
+            </div>
+        </div>
 
         <main class="max-w-4xl mx-auto">
             <!-- Formulario de entrada -->
@@ -548,6 +587,12 @@ Genera el JSON completo y válido:`;
                     pdf.save(fileName);
                     
                     showStatus('✅ PDF descargado exitosamente', 'success');
+                    
+                    // Recargar la página después de un breve delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                    
                 }).catch(error => {
                     console.error('Error al generar PDF:', error);
                     showStatus(`❌ Error al generar PDF: ${error.message}`, 'error');
@@ -598,5 +643,29 @@ Genera el JSON completo y válido:`;
         // Event listener para descarga de PDF
         document.getElementById('download-pdf').addEventListener('click', downloadPDF);
     </script>
+    
+    <!-- Bloque de anuncios AdSense -->
+    <div class="mt-12 mb-8 flex justify-center w-full max-w-4xl mx-auto">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-1897264775520223"
+             data-ad-slot="2473509960"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+        </main>
+        
+        <footer class="w-full max-w-4xl py-8 mt-12 text-center text-sm text-[var(--text-muted-color)]">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="terminos.html">Términos y Condiciones</a>
+                <a class="hover:text-[var(--accent-color)] transition-colors" href="privacidad.html">Privacidad</a>
+            </div>
+            <p>© 2025 PurrCrafter. Todos los derechos reservados.</p>
+        </footer>
+    </div>
 </body>
 </html>
