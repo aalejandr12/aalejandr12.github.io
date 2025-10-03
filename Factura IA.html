@@ -520,7 +520,7 @@ Responde ÚNICAMENTE con un JSON válido siguiendo este formato:
     "ciudad": "",
     "estado": "",
     "codigo_postal": "",
-    "pais": "Estados Unidos"
+    "pais": ""
   },
   "metodo_envio": "",
   "productos": [
@@ -551,11 +551,24 @@ Unifica los datos de todas las imágenes o archivos en un único JSON.
 
 Usa el formato ISO AAAA-MM-DD para las fechas.
 
+Si la factura no trae fechas, los campos deben quedar exactamente así:
+
+"fecha_pedido_iso": "AAAA-MM-DD",
+"fecha_envio_iso": "AAAA-MM-DD"
+
+
 Emplea punto como separador decimal y dos decimales en importes monetarios.
 
 Los impuestos siempre son 0 y el envío siempre es 0, a menos que en la factura adjunta se indique expresamente que se cobró algo.
 
-La dirección de envío (pais) debe ser "Estados Unidos" por defecto si no está especificada. Los demás campos de la dirección deben dejarse en blanco si no aparecen en la factura.
+Si los datos de dirección, ciudad, estado, código postal o país no aparecen en la factura, se deben completar obligatoriamente con los siguientes valores exactos (respetando mayúsculas/minúsculas):
+
+"direccion": "Dirección Desconocida",
+"ciudad": "Ciudad Desconocida",
+"estado": "Estado Desconocido",
+"codigo_postal": "00000",
+"pais": "País Desconocido"
+
 
 El campo "notas" debe quedar en blanco si no hay información adicional relevante.`;
             
